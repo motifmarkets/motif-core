@@ -4,8 +4,8 @@
  * License: motionite.trade/license/motif
  */
 
-import { ExtStringId } from '../../res/res-internal-api';
-import { ExtensionHandle, Handle, Integer, MapKey as SysMapKey, ModifierKey } from '../../sys/sys-internal-api';
+import { ExtStringId } from '../res/res-internal-api';
+import { ExtensionHandle, Handle, Integer, ModifierKey } from '../sys/sys-internal-api';
 
 export interface Command {
     readonly extensionHandle: ExtensionHandle;
@@ -27,7 +27,7 @@ export namespace Command {
 
     const mapKeyPartsDelimiter = ':';
 
-    export function generateMapKey(extensionHandle: ExtensionHandle, name: string): SysMapKey {
+    export function generateMapKey(extensionHandle: ExtensionHandle, name: string): KeyboardShortcut.MapKey {
         return extensionHandle.toString(10) + mapKeyPartsDelimiter + name;
     }
 
@@ -37,7 +37,7 @@ export namespace Command {
     }
 
     export namespace KeyboardShortcut {
-        export type MapKey = SysMapKey;
+        export type MapKey = string;
 
         export function createMapKey(shortcut: KeyboardShortcut): MapKey {
             return shortcut.modifierKeys.toString() + ':' + shortcut.key;

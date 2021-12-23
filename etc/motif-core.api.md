@@ -3877,13 +3877,20 @@ export interface Command {
 // @public (undocumented)
 export namespace Command {
     // (undocumented)
-    export function generateMapKey(extensionHandle: ExtensionHandle, name: string): MapKey;
+    export function generateMapKey(extensionHandle: ExtensionHandle, name: string): KeyboardShortcut.MapKey;
     // (undocumented)
     export interface KeyboardShortcut {
         // (undocumented)
         key: string;
         // (undocumented)
         modifierKeys: ModifierKey.IdSet;
+    }
+    // (undocumented)
+    export namespace KeyboardShortcut {
+        // (undocumented)
+        export function createMapKey(shortcut: KeyboardShortcut): MapKey;
+        // (undocumented)
+        export type MapKey = string;
     }
     // (undocumented)
     export interface MenuBarItemPosition {
@@ -3899,6 +3906,7 @@ export namespace Command {
 }
 
 // Warning: (ae-missing-release-tag) "CommandContext" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "CommandContext" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export class CommandContext {
@@ -3906,47 +3914,19 @@ export class CommandContext {
     // (undocumented)
     addCommand(command: Command): void;
     // (undocumented)
+    executeCommand(command: Command): void;
+    // (undocumented)
+    executeEvent: CommandContext.ExecuteEvent;
+    // (undocumented)
     readonly htmlElement: HTMLElement;
     // (undocumented)
     readonly name: string;
 }
 
-// Warning: (ae-missing-release-tag) "CommandParameters" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public
-export interface CommandParameters {
-}
-
-// Warning: (ae-missing-release-tag) "CommandProcessor" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "CommandProcessor" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
-export abstract class CommandProcessor {
+export namespace CommandContext {
     // (undocumented)
-    abstract get commandCount(): Integer;
-    // (undocumented)
-    abstract createCommandContext(command: Command): CommandContext;
-    // (undocumented)
-    abstract executeCommand(commandName: string, parameters: CommandParameters): void;
-    // (undocumented)
-    abstract getBarExecutableCommands(): readonly Command[];
-}
-
-// @public (undocumented)
-export namespace CommandProcessor {
-    // (undocumented)
-    export class NullCommandProcessor {
-        // (undocumented)
-        readonly commandCount: 0;
-        // (undocumented)
-        createCommandContext(command: Command): CommandContext;
-        // (undocumented)
-        executeCommand(commandName: string, parameters: CommandParameters): void;
-        // (undocumented)
-        getBarExecutableCommands(): never[];
-    }
-    const // (undocumented)
-    nullCommandProcessor: NullCommandProcessor;
+    export type ExecuteEvent = (this: void, command: Command) => void;
 }
 
 // Warning: (ae-missing-release-tag) "CommandRegisterService" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -3981,6 +3961,14 @@ export namespace CommandRegisterService {
     }
     // (undocumented)
     export type RegistrationHandle = Handle;
+}
+
+// Warning: (ae-internal-missing-underscore) The name "CommandStaticInitialise" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export namespace CommandStaticInitialise {
+    // (undocumented)
+    export function initialise(): void;
 }
 
 // Warning: (ae-missing-release-tag) "CommandUiAction" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -16652,64 +16640,6 @@ export class PriceTableGridValue extends BaseDecimalTableGridValue {
 // @public (undocumented)
 export function priorityCompareInteger(left: Integer, right: Integer, priority: Integer): ComparisonResult;
 
-// Warning: (ae-missing-release-tag) "ProcessorCommandUiAction" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "ProcessorCommandUiAction" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export class ProcessorCommandUiAction extends UiAction {
-    constructor(_commandRegisterService: CommandRegisterService);
-    // (undocumented)
-    commitValue(value: ProcessorCommandUiAction.Item | undefined, typeId: UiAction.CommitTypeId): void;
-    // (undocumented)
-    get definedValue(): ProcessorCommandUiAction.Item;
-    // (undocumented)
-    isValueDefined(): boolean;
-    // (undocumented)
-    get items(): readonly ProcessorCommandUiAction.Item[];
-    // (undocumented)
-    latestItemsWantedEvent: ProcessorCommandUiAction.LatestItemsWantedEventHandler | undefined;
-    // (undocumented)
-    notifyLatestItemsWanted(): void;
-    // (undocumented)
-    pushItems(itemsArray: readonly ProcessorCommandUiAction.Item[]): void;
-    // (undocumented)
-    pushValue(value: ProcessorCommandUiAction.Item | undefined): void;
-    // (undocumented)
-    protected repushValue(): void;
-    // (undocumented)
-    subscribePushEvents(handlersInterface: ProcessorCommandUiAction.PushEventHandlersInterface): number;
-    // (undocumented)
-    unsubscribePushEvents(subscriptionId: MultiEvent.SubscriptionId): void;
-    // (undocumented)
-    get value(): ProcessorCommandUiAction.Item | undefined;
-    // (undocumented)
-    get valueUndefined(): boolean;
-}
-
-// @public (undocumented)
-export namespace ProcessorCommandUiAction {
-    // (undocumented)
-    export interface Item {
-        // (undocumented)
-        readonly command: Command;
-        // (undocumented)
-        readonly processor: CommandProcessor;
-    }
-    // (undocumented)
-    export type ItemsPushEventHandler = (this: void) => void;
-    // (undocumented)
-    export type LatestItemsWantedEventHandler = (this: void) => void;
-    // (undocumented)
-    export interface PushEventHandlersInterface extends UiAction.PushEventHandlersInterface {
-        // (undocumented)
-        items?: ItemsPushEventHandler;
-        // (undocumented)
-        value?: ValuePushEventHandler;
-    }
-    // (undocumented)
-    export type ValuePushEventHandler = (this: void, value: ProcessorCommandUiAction.Item | undefined) => void;
-}
-
 // Warning: (ae-missing-release-tag) "Publisher" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -18774,6 +18704,14 @@ export namespace SettingsService {
     }
     // (undocumented)
     export type RegistryEntry = SettingsGroup | undefined;
+}
+
+// Warning: (ae-internal-missing-underscore) The name "SettingsStaticInitialise" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export namespace SettingsStaticInitialise {
+    // (undocumented)
+    export function initialise(): void;
 }
 
 // Warning: (ae-missing-release-tag) "ShortDepthRecord" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)

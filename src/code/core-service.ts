@@ -15,19 +15,19 @@ import {
     TableRecordDefinitionListDirectory,
     TableRecordDefinitionListFactory
 } from "./grid/grid-internal-api";
+import { CommandRegisterService } from "./command/command-internal-api";
+import { KeyboardService } from "./keyboard/keyboard-internal-api";
 import {
     AppStorageService,
-    CommandRegisterService,
-    KeyboardService,
     MotifServicesService,
     setSymbolDetailCache,
-    SettingsService,
     SymbolDetailCache,
     SymbolsService,
     textFormatter,
     TextFormatter,
     TextFormatterModule
 } from "./services/services-internal-api";
+import { SettingsService } from './settings/settings-internal-api';
 import { MultiEvent } from './sys/sys-internal-api';
 // import { textFormatter } from './text-formatter';
 

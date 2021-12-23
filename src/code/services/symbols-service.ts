@@ -35,7 +35,7 @@ import {
     UnreachableCaseError,
     UsableListChangeTypeId
 } from '../sys/sys-internal-api';
-import { ExchangeSettings, SettingsService, CoreSettings } from './settings/services-settings-internal-api';
+import { ExchangeSettings, SettingsService, CoreSettings } from '../settings/settings-internal-api';
 
 export class SymbolsService {
     private _finalised = false;

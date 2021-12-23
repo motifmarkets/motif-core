@@ -4,8 +4,9 @@
  * License: motionite.trade/license/motif
  */
 
-import { ExtensionOrInternalError, ExternalError } from '../../sys/external-error';
-import { CancelContext, CommandContext } from '../command/services-command-internal-api';
+import { ExtensionOrInternalError, ExternalError } from '../sys/external-error';
+import { CancelContext } from './cancel-context';
+import { CommandContext } from './command-context';
 
 export class KeyboardService {
     private readonly _registeredCommandContexts = new Array<CommandContext>();

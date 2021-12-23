@@ -4,7 +4,7 @@
  * License: motionite.trade/license/motif
  */
 
-import { Command } from './command';
+import { Command } from '../command/command';
 
 export class CommandContext {
     executeEvent: CommandContext.ExecuteEvent;

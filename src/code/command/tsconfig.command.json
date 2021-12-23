@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "../../../tsbuildinfo/command.tsbuildinfo"
+  },
+  "include": [
+    "*.ts", "../keyboard/cancel-context.ts", "../keyboard/command-context.ts",
+  ],
+  "references": [
+    { "path": "../sys/tsconfig.sys.json" },
+    { "path": "../res/tsconfig.res.json" },
+  ]
+}

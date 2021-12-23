@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "../../../tsbuildinfo/keyboard.tsbuildinfo"
+  },
+  "include": [
+    "*.ts",
+  ],
+  "references": [
+    { "path": "../command/tsconfig.command.json" },
+    { "path": "../sys/tsconfig.sys.json" },
+    { "path": "../res/tsconfig.res.json" },
+  ]
+}
