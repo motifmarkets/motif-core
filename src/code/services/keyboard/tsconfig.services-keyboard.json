@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "../../../../tsbuildinfo/services-keyboard.tsbuildinfo"
+  },
+  "include": [
+    "*.ts", "../command/keyboard-shortcut.ts",
+  ],
+  "references": [
+    { "path": "../command/tsconfig.services-command.json" },
+    { "path": "../../sys/tsconfig.sys.json" },
+    { "path": "../../res/tsconfig.res.json" },
+  ]
+}

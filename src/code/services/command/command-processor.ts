@@ -24,7 +24,7 @@ export namespace CommandProcessor {
         }
 
         createCommandContext(command: Command) {
-            return {};
+            return new CommandContext('', globalThis.document.createElement('div'));
         }
 
         // eslint-disable-next-line @typescript-eslint/no-empty-function

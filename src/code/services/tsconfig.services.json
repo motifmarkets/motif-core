@@ -7,7 +7,6 @@
     "*.ts",
     "settings/*.ts",
     "key-value-store/*.ts",
-    "command/*.ts"
   ],
   "exclude": [
     "layout.ts",
@@ -16,6 +15,8 @@
     "motif-services-instance-service.ts",
   ],
   "references": [
+    { "path": "./keyboard/tsconfig.services-keyboard.json" },
+    { "path": "./command/tsconfig.services-command.json" },
     { "path": "../adi/tsconfig.adi.json" },
     { "path": "../sys/tsconfig.sys.json" },
     { "path": "../res/tsconfig.res.json" },

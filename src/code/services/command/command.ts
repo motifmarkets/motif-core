@@ -5,7 +5,7 @@
  */
 
 import { ExtStringId } from '../../res/res-internal-api';
-import { ExtensionHandle, Handle, Integer, MapKey } from '../../sys/sys-internal-api';
+import { ExtensionHandle, Handle, Integer, MapKey as SysMapKey, ModifierKey } from '../../sys/sys-internal-api';
 
 export interface Command {
     readonly extensionHandle: ExtensionHandle;
@@ -13,6 +13,7 @@ export interface Command {
     readonly registrationHandle: Handle;
     readonly defaultDisplayIndex: ExtStringId.Index;
     readonly defaultMenuBarItemPosition?: Command.MenuBarItemPosition;
+    readonly defaultKeyboardShortcut?: Command.KeyboardShortcut;
 }
 
 export namespace Command {
@@ -26,7 +27,20 @@ export namespace Command {
 
     const mapKeyPartsDelimiter = ':';
 
-    export function generateMapKey(extensionHandle: ExtensionHandle, name: string): MapKey {
+    export function generateMapKey(extensionHandle: ExtensionHandle, name: string): SysMapKey {
         return extensionHandle.toString(10) + mapKeyPartsDelimiter + name;
+    }
+
+    export interface KeyboardShortcut {
+        key: string;
+        modifierKeys: ModifierKey.IdSet;
+    }
+
+    export namespace KeyboardShortcut {
+        export type MapKey = SysMapKey;
+
+        export function createMapKey(shortcut: KeyboardShortcut): MapKey {
+            return shortcut.modifierKeys.toString() + ':' + shortcut.key;
+        }
     }
 }

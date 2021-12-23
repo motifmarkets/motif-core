@@ -8,11 +8,131 @@ import { AssertInternalError } from '../../sys/sys-internal-api';
 import { Command } from './command';
 
 export interface InternalCommand extends Command {
-    readonly name: InternalCommand.Name;
+    readonly name: InternalCommand.NameId;
 }
 
 export namespace InternalCommand {
-    export const enum Name {
+    export const enum Id {
+        Null,
+        Missing,
+        // // Menu
+        // ChildMenu = 'ChildMenu',
+        // MenuDivider = 'MenuDivider',
+
+        CommandParametersExecute,
+
+        LitIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed,
+        RoutedIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed,
+
+        // Ditem
+        ToggleSymbolLinking,
+        SetSymbolLinking,
+        ToggleAccountLinking,
+        SetAccountLinking,
+        // Content
+        ApplySymbol,
+        SelectGridColumns,
+        AutoSizeGridColumnWidths,
+        // Desktop
+        NewPlaceholderDitem,
+        NewExtensionsDitem,
+        NewSymbolsDitem,
+        NewDepthAndTradesDitem,
+        NewWatchlistDitem,
+        NewDepthDitem,
+        NewNewsHeadlinesDitem,
+        NewNewsBodyDitem,
+        NewTopShareholdersDitem,
+        NewStatusDitem,
+        NewTradesDitem,
+        NewOrderRequestDitem,
+        NewBrokerageAccountsDitem,
+        NewOrdersDitem,
+        NewHoldingsDitem,
+        NewBalancesDitem,
+        NewSettingsDitem,
+        NewEtoPriceQuotationDitem,
+        NewGeneralWebPageDitem,
+        NewBrandingSplashWebPageDitem,
+        NewBuyOrderRequestDitem,
+        NewSellOrderRequestDitem,
+        SaveLayout,
+        ResetLayout,
+        SignOut,
+        // SignedOut component
+        SignInAgain,
+
+        ColorSelector_Lighten,
+        ColorSelector_Darken,
+        ColorSelector_Brighten,
+        ColorSelector_Complement,
+        ColorSelector_Saturate,
+        ColorSelector_Desaturate,
+        ColorSelector_Spin,
+        ColorSelector_Copy,
+
+        ColorSettings_SaveScheme,
+
+        ContentGridLayoutEditor_Ok,
+        ContentGridLayoutEditor_Cancel,
+
+        Watchlist_DeleteSymbol,
+        Watchlist_New,
+        Watchlist_Open,
+        Watchlist_Save,
+
+        DepthGridsLayoutEditor_BidDepth,
+        DepthGridsLayoutEditor_AskDepth,
+        DepthGridsLayoutEditor_Ok,
+        DepthGridsLayoutEditor_Cancel,
+
+        PariDepthGridsLayoutEditor_BidDepth,
+        PariDepthGridsLayoutEditor_AskDepth,
+        PariDepthGridsLayoutEditor_Watchlist,
+        PariDepthGridsLayoutEditor_Trades,
+        PariDepthGridsLayoutEditor_Ok,
+        PariDepthGridsLayoutEditor_Cancel,
+
+        GridLayoutEditor_CancelSearch,
+        GridLayoutEditor_SearchNext,
+        GridLayoutEditor_MoveUp,
+        GridLayoutEditor_MoveTop,
+        GridLayoutEditor_MoveDown,
+        GridLayoutEditor_MoveBottom,
+
+        ColorSchemePresetCode_Ok,
+        ColorSchemePresetCode_CopyToClipboard,
+
+        Symbols_Query,
+        Symbols_Subscribe,
+        Symbols_NextPage,
+
+        Depth_Rollup,
+        Depth_Expand,
+        Depth_Filter,
+
+        TopShareholders_TodayMode,
+        TopShareholders_HistoricalMode,
+        TopShareholders_CompareMode,
+        TopShareholders_DetailsMode,
+        TopShareholders_Compare,
+
+        OrderRequest_New,
+        OrderRequest_Back,
+        OrderRequest_Review,
+        OrderRequest_Send,
+        OrderRequest_TogglePrimary,
+
+        BuyOrderPad,
+        SellOrderPad,
+        AmendOrderPad,
+        CancelOrderPad,
+        MoveOrderPad,
+
+        EtoPriceQuotation_ApplySymbol,
+    }
+
+    export const enum NameId {
         Null = 'Null',
         Missing = 'Missing',
         // // Menu
@@ -132,118 +252,132 @@ export namespace InternalCommand {
         EtoPriceQuotation_ApplySymbol = 'EtoPriceQuotation_ApplySymbol',
     }
 
-    export type NameUnion = keyof typeof Name;
+    export type Name = keyof typeof NameId;
+
+    interface Info {
+        readonly id: Id;
+        readonly nameId: NameId;
+        readonly defaultKeyboardShortcut?: Command.KeyboardShortcut;
+    }
 
     // InfosObject is just used to check for typos in Name enum
-    type InfosObject = { [name in keyof typeof Name]: Name };
+    type InfosObject = { [nameId in Name]: Info };
 
     const infosObject: InfosObject = {
-        Null: Name.Null,
-        Missing: Name.Missing,
+        Null: { id: Id.Null, nameId: NameId.Null },
+        Missing: { id: Id.Missing, nameId: NameId.Missing },
         // ChildMenu: Name.ChildMenu,
         // MenuDivider: Name.MenuDivider,
-        CommandParametersExecute: Name.CommandParametersExecute,
-        LitIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed: Name.LitIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed,
-        RoutedIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed: Name.RoutedIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed,
-        ToggleSymbolLinking: Name.ToggleSymbolLinking,
-        SetSymbolLinking: Name.SetSymbolLinking,
-        ToggleAccountLinking: Name.ToggleAccountLinking,
-        SetAccountLinking: Name.SetAccountLinking,
-        ApplySymbol: Name.ApplySymbol,
-        SelectGridColumns: Name.SelectGridColumns,
-        AutoSizeGridColumnWidths: Name.AutoSizeGridColumnWidths,
-        NewPlaceholderDitem: Name.NewPlaceholderDitem,
-        NewExtensionsDitem: Name.NewExtensionsDitem,
-        NewSymbolsDitem: Name.NewSymbolsDitem,
-        NewDepthAndTradesDitem: Name.NewDepthAndTradesDitem,
-        NewWatchlistDitem: Name.NewWatchlistDitem,
-        NewDepthDitem: Name.NewDepthDitem,
-        NewNewsHeadlinesDitem: Name.NewNewsHeadlinesDitem,
-        NewNewsBodyDitem: Name.NewNewsBodyDitem,
-        NewTopShareholdersDitem: Name.NewTopShareholdersDitem,
-        NewStatusDitem: Name.NewStatusDitem,
-        NewTradesDitem: Name.NewTradesDitem,
-        NewOrderRequestDitem: Name.NewOrderRequestDitem,
-        NewBrokerageAccountsDitem: Name.NewBrokerageAccountsDitem,
-        NewOrdersDitem: Name.NewOrdersDitem,
-        NewHoldingsDitem: Name.NewHoldingsDitem,
-        NewBalancesDitem: Name.NewBalancesDitem,
-        NewSettingsDitem: Name.NewSettingsDitem,
-        NewEtoPriceQuotationDitem: Name.NewEtoPriceQuotationDitem,
-        NewGeneralWebPageDitem: Name.NewGeneralWebPageDitem,
-        NewBrandingSplashWebPageDitem: Name.NewBrandingSplashWebPageDitem,
-        NewBuyOrderRequestDitem: Name.NewBuyOrderRequestDitem,
-        NewSellOrderRequestDitem: Name.NewSellOrderRequestDitem,
-        SaveLayout: Name.SaveLayout,
-        ResetLayout: Name.ResetLayout,
-        SignOut: Name.SignOut,
-        SignInAgain: Name.SignInAgain,
-        ColorSelector_Lighten: Name.ColorSelector_Lighten,
-        ColorSelector_Darken: Name.ColorSelector_Darken,
-        ColorSelector_Brighten: Name.ColorSelector_Brighten,
-        ColorSelector_Complement: Name.ColorSelector_Complement,
-        ColorSelector_Saturate: Name.ColorSelector_Saturate,
-        ColorSelector_Desaturate: Name.ColorSelector_Desaturate,
-        ColorSelector_Spin: Name.ColorSelector_Spin,
-        ColorSelector_Copy: Name.ColorSelector_Copy,
-        ColorSettings_SaveScheme: Name.ColorSettings_SaveScheme,
-        ContentGridLayoutEditor_Ok: Name.ContentGridLayoutEditor_Ok,
-        ContentGridLayoutEditor_Cancel: Name.ContentGridLayoutEditor_Cancel,
-        Watchlist_DeleteSymbol: Name.Watchlist_DeleteSymbol,
-        Watchlist_New: Name.Watchlist_New,
-        Watchlist_Open: Name.Watchlist_Open,
-        Watchlist_Save: Name.Watchlist_Save,
-        DepthGridsLayoutEditor_BidDepth: Name.DepthGridsLayoutEditor_BidDepth,
-        DepthGridsLayoutEditor_AskDepth: Name.DepthGridsLayoutEditor_AskDepth,
-        DepthGridsLayoutEditor_Ok: Name.DepthGridsLayoutEditor_Ok,
-        DepthGridsLayoutEditor_Cancel: Name.DepthGridsLayoutEditor_Cancel,
-        PariDepthGridsLayoutEditor_BidDepth: Name.PariDepthGridsLayoutEditor_BidDepth,
-        PariDepthGridsLayoutEditor_AskDepth: Name.PariDepthGridsLayoutEditor_AskDepth,
-        PariDepthGridsLayoutEditor_Watchlist: Name.PariDepthGridsLayoutEditor_Watchlist,
-        PariDepthGridsLayoutEditor_Trades: Name.PariDepthGridsLayoutEditor_Trades,
-        PariDepthGridsLayoutEditor_Ok: Name.PariDepthGridsLayoutEditor_Ok,
-        PariDepthGridsLayoutEditor_Cancel: Name.PariDepthGridsLayoutEditor_Cancel,
-        GridLayoutEditor_CancelSearch: Name.GridLayoutEditor_CancelSearch,
-        GridLayoutEditor_SearchNext: Name.GridLayoutEditor_SearchNext,
-        GridLayoutEditor_MoveUp: Name.GridLayoutEditor_MoveUp,
-        GridLayoutEditor_MoveTop: Name.GridLayoutEditor_MoveTop,
-        GridLayoutEditor_MoveDown: Name.GridLayoutEditor_MoveDown,
-        GridLayoutEditor_MoveBottom: Name.GridLayoutEditor_MoveBottom,
-        ColorSchemePresetCode_Ok: Name.ColorSchemePresetCode_Ok,
-        ColorSchemePresetCode_CopyToClipboard: Name.ColorSchemePresetCode_CopyToClipboard,
-        Symbols_Query: Name.Symbols_Query,
-        Symbols_Subscribe: Name.Symbols_Subscribe,
-        Symbols_NextPage: Name.Symbols_NextPage,
-        Depth_Rollup: Name.Depth_Rollup,
-        Depth_Expand: Name.Depth_Expand,
-        Depth_Filter: Name.Depth_Filter,
-        TopShareholders_TodayMode: Name.TopShareholders_TodayMode,
-        TopShareholders_HistoricalMode: Name.TopShareholders_HistoricalMode,
-        TopShareholders_CompareMode: Name.TopShareholders_CompareMode,
-        TopShareholders_DetailsMode: Name.TopShareholders_DetailsMode,
-        TopShareholders_Compare: Name.TopShareholders_Compare,
-        OrderRequest_New: Name.OrderRequest_New,
-        OrderRequest_Back: Name.OrderRequest_Back,
-        OrderRequest_Review: Name.OrderRequest_Review,
-        OrderRequest_Send: Name.OrderRequest_Send,
-        OrderRequest_TogglePrimary: Name.OrderRequest_TogglePrimary,
-        BuyOrderPad: Name.BuyOrderPad,
-        SellOrderPad: Name.SellOrderPad,
-        AmendOrderPad: Name.AmendOrderPad,
-        CancelOrderPad: Name.CancelOrderPad,
-        MoveOrderPad: Name.MoveOrderPad,
-        EtoPriceQuotation_ApplySymbol: Name.EtoPriceQuotation_ApplySymbol,
+        CommandParametersExecute: { id: Id.CommandParametersExecute, nameId: NameId.CommandParametersExecute },
+        LitIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed: { id: Id.LitIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed, nameId: NameId.LitIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed },
+        RoutedIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed: { id: Id.RoutedIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed, nameId: NameId.RoutedIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed },
+        ToggleSymbolLinking: { id: Id.ToggleSymbolLinking, nameId: NameId.ToggleSymbolLinking },
+        SetSymbolLinking: { id: Id.SetSymbolLinking, nameId: NameId.SetSymbolLinking },
+        ToggleAccountLinking: { id: Id.ToggleAccountLinking, nameId: NameId.ToggleAccountLinking },
+        SetAccountLinking: { id: Id.SetAccountLinking, nameId: NameId.SetAccountLinking },
+        ApplySymbol: { id: Id.ApplySymbol, nameId: NameId.ApplySymbol },
+        SelectGridColumns: { id: Id.SelectGridColumns, nameId: NameId.SelectGridColumns },
+        AutoSizeGridColumnWidths: { id: Id.AutoSizeGridColumnWidths, nameId: NameId.AutoSizeGridColumnWidths },
+        NewPlaceholderDitem: { id: Id.NewPlaceholderDitem, nameId: NameId.NewPlaceholderDitem },
+        NewExtensionsDitem: { id: Id.NewExtensionsDitem, nameId: NameId.NewExtensionsDitem },
+        NewSymbolsDitem: { id: Id.NewSymbolsDitem, nameId: NameId.NewSymbolsDitem },
+        NewDepthAndTradesDitem: { id: Id.NewDepthAndTradesDitem, nameId: NameId.NewDepthAndTradesDitem },
+        NewWatchlistDitem: { id: Id.NewWatchlistDitem, nameId: NameId.NewWatchlistDitem },
+        NewDepthDitem: { id: Id.NewDepthDitem, nameId: NameId.NewDepthDitem },
+        NewNewsHeadlinesDitem: { id: Id.NewNewsHeadlinesDitem, nameId: NameId.NewNewsHeadlinesDitem },
+        NewNewsBodyDitem: { id: Id.NewNewsBodyDitem, nameId: NameId.NewNewsBodyDitem },
+        NewTopShareholdersDitem: { id: Id.NewTopShareholdersDitem, nameId: NameId.NewTopShareholdersDitem },
+        NewStatusDitem: { id: Id.NewStatusDitem, nameId: NameId.NewStatusDitem },
+        NewTradesDitem: { id: Id.NewTradesDitem, nameId: NameId.NewTradesDitem },
+        NewOrderRequestDitem: { id: Id.NewOrderRequestDitem, nameId: NameId.NewOrderRequestDitem },
+        NewBrokerageAccountsDitem: { id: Id.NewBrokerageAccountsDitem, nameId: NameId.NewBrokerageAccountsDitem },
+        NewOrdersDitem: { id: Id.NewOrdersDitem, nameId: NameId.NewOrdersDitem },
+        NewHoldingsDitem: { id: Id.NewHoldingsDitem, nameId: NameId.NewHoldingsDitem },
+        NewBalancesDitem: { id: Id.NewBalancesDitem, nameId: NameId.NewBalancesDitem },
+        NewSettingsDitem: { id: Id.NewSettingsDitem, nameId: NameId.NewSettingsDitem },
+        NewEtoPriceQuotationDitem: { id: Id.NewEtoPriceQuotationDitem, nameId: NameId.NewEtoPriceQuotationDitem },
+        NewGeneralWebPageDitem: { id: Id.NewGeneralWebPageDitem, nameId: NameId.NewGeneralWebPageDitem },
+        NewBrandingSplashWebPageDitem: { id: Id.NewBrandingSplashWebPageDitem, nameId: NameId.NewBrandingSplashWebPageDitem },
+        NewBuyOrderRequestDitem: { id: Id.NewBuyOrderRequestDitem, nameId: NameId.NewBuyOrderRequestDitem },
+        NewSellOrderRequestDitem: { id: Id.NewSellOrderRequestDitem, nameId: NameId.NewSellOrderRequestDitem },
+        SaveLayout: { id: Id.SaveLayout, nameId: NameId.SaveLayout },
+        ResetLayout: { id: Id.ResetLayout, nameId: NameId.ResetLayout },
+        SignOut: { id: Id.SignOut, nameId: NameId.SignOut },
+        SignInAgain: { id: Id.SignInAgain, nameId: NameId.SignInAgain },
+        ColorSelector_Lighten: { id: Id.ColorSelector_Lighten, nameId: NameId.ColorSelector_Lighten },
+        ColorSelector_Darken: { id: Id.ColorSelector_Darken, nameId: NameId.ColorSelector_Darken },
+        ColorSelector_Brighten: { id: Id.ColorSelector_Brighten, nameId: NameId.ColorSelector_Brighten },
+        ColorSelector_Complement: { id: Id.ColorSelector_Complement, nameId: NameId.ColorSelector_Complement },
+        ColorSelector_Saturate: { id: Id.ColorSelector_Saturate, nameId: NameId.ColorSelector_Saturate },
+        ColorSelector_Desaturate: { id: Id.ColorSelector_Desaturate, nameId: NameId.ColorSelector_Desaturate },
+        ColorSelector_Spin: { id: Id.ColorSelector_Spin, nameId: NameId.ColorSelector_Spin },
+        ColorSelector_Copy: { id: Id.ColorSelector_Copy, nameId: NameId.ColorSelector_Copy },
+        ColorSettings_SaveScheme: { id: Id.ColorSettings_SaveScheme, nameId: NameId.ColorSettings_SaveScheme },
+        ContentGridLayoutEditor_Ok: { id: Id.ContentGridLayoutEditor_Ok, nameId: NameId.ContentGridLayoutEditor_Ok },
+        ContentGridLayoutEditor_Cancel: { id: Id.ContentGridLayoutEditor_Cancel, nameId: NameId.ContentGridLayoutEditor_Cancel },
+        Watchlist_DeleteSymbol: { id: Id.Watchlist_DeleteSymbol, nameId: NameId.Watchlist_DeleteSymbol },
+        Watchlist_New: { id: Id.Watchlist_New, nameId: NameId.Watchlist_New },
+        Watchlist_Open: { id: Id.Watchlist_Open, nameId: NameId.Watchlist_Open },
+        Watchlist_Save: { id: Id.Watchlist_Save, nameId: NameId.Watchlist_Save },
+        DepthGridsLayoutEditor_BidDepth: { id: Id.DepthGridsLayoutEditor_BidDepth, nameId: NameId.DepthGridsLayoutEditor_BidDepth },
+        DepthGridsLayoutEditor_AskDepth: { id: Id.DepthGridsLayoutEditor_AskDepth, nameId: NameId.DepthGridsLayoutEditor_AskDepth },
+        DepthGridsLayoutEditor_Ok: { id: Id.DepthGridsLayoutEditor_Ok, nameId: NameId.DepthGridsLayoutEditor_Ok },
+        DepthGridsLayoutEditor_Cancel: { id: Id.DepthGridsLayoutEditor_Cancel, nameId: NameId.DepthGridsLayoutEditor_Cancel },
+        PariDepthGridsLayoutEditor_BidDepth: { id: Id.PariDepthGridsLayoutEditor_BidDepth, nameId: NameId.PariDepthGridsLayoutEditor_BidDepth },
+        PariDepthGridsLayoutEditor_AskDepth: { id: Id.PariDepthGridsLayoutEditor_AskDepth, nameId: NameId.PariDepthGridsLayoutEditor_AskDepth },
+        PariDepthGridsLayoutEditor_Watchlist: { id: Id.PariDepthGridsLayoutEditor_Watchlist, nameId: NameId.PariDepthGridsLayoutEditor_Watchlist },
+        PariDepthGridsLayoutEditor_Trades: { id: Id.PariDepthGridsLayoutEditor_Trades, nameId: NameId.PariDepthGridsLayoutEditor_Trades },
+        PariDepthGridsLayoutEditor_Ok: { id: Id.PariDepthGridsLayoutEditor_Ok, nameId: NameId.PariDepthGridsLayoutEditor_Ok },
+        PariDepthGridsLayoutEditor_Cancel: { id: Id.PariDepthGridsLayoutEditor_Cancel, nameId: NameId.PariDepthGridsLayoutEditor_Cancel },
+        GridLayoutEditor_CancelSearch: { id: Id.GridLayoutEditor_CancelSearch, nameId: NameId.GridLayoutEditor_CancelSearch },
+        GridLayoutEditor_SearchNext: { id: Id.GridLayoutEditor_SearchNext, nameId: NameId.GridLayoutEditor_SearchNext },
+        GridLayoutEditor_MoveUp: { id: Id.GridLayoutEditor_MoveUp, nameId: NameId.GridLayoutEditor_MoveUp },
+        GridLayoutEditor_MoveTop: { id: Id.GridLayoutEditor_MoveTop, nameId: NameId.GridLayoutEditor_MoveTop },
+        GridLayoutEditor_MoveDown: { id: Id.GridLayoutEditor_MoveDown, nameId: NameId.GridLayoutEditor_MoveDown },
+        GridLayoutEditor_MoveBottom: { id: Id.GridLayoutEditor_MoveBottom, nameId: NameId.GridLayoutEditor_MoveBottom },
+        ColorSchemePresetCode_Ok: { id: Id.ColorSchemePresetCode_Ok, nameId: NameId.ColorSchemePresetCode_Ok },
+        ColorSchemePresetCode_CopyToClipboard: { id: Id.ColorSchemePresetCode_CopyToClipboard, nameId: NameId.ColorSchemePresetCode_CopyToClipboard },
+        Symbols_Query: { id: Id.Symbols_Query, nameId: NameId.Symbols_Query },
+        Symbols_Subscribe: { id: Id.Symbols_Subscribe, nameId: NameId.Symbols_Subscribe },
+        Symbols_NextPage: { id: Id.Symbols_NextPage, nameId: NameId.Symbols_NextPage },
+        Depth_Rollup: { id: Id.Depth_Rollup, nameId: NameId.Depth_Rollup },
+        Depth_Expand: { id: Id.Depth_Expand, nameId: NameId.Depth_Expand },
+        Depth_Filter: { id: Id.Depth_Filter, nameId: NameId.Depth_Filter },
+        TopShareholders_TodayMode: { id: Id.TopShareholders_TodayMode, nameId: NameId.TopShareholders_TodayMode },
+        TopShareholders_HistoricalMode: { id: Id.TopShareholders_HistoricalMode, nameId: NameId.TopShareholders_HistoricalMode },
+        TopShareholders_CompareMode: { id: Id.TopShareholders_CompareMode, nameId: NameId.TopShareholders_CompareMode },
+        TopShareholders_DetailsMode: { id: Id.TopShareholders_DetailsMode, nameId: NameId.TopShareholders_DetailsMode },
+        TopShareholders_Compare: { id: Id.TopShareholders_Compare, nameId: NameId.TopShareholders_Compare },
+        OrderRequest_New: { id: Id.OrderRequest_New, nameId: NameId.OrderRequest_New },
+        OrderRequest_Back: { id: Id.OrderRequest_Back, nameId: NameId.OrderRequest_Back },
+        OrderRequest_Review: { id: Id.OrderRequest_Review, nameId: NameId.OrderRequest_Review },
+        OrderRequest_Send: { id: Id.OrderRequest_Send, nameId: NameId.OrderRequest_Send },
+        OrderRequest_TogglePrimary: { id: Id.OrderRequest_TogglePrimary, nameId: NameId.OrderRequest_TogglePrimary },
+        BuyOrderPad: { id: Id.BuyOrderPad, nameId: NameId.BuyOrderPad },
+        SellOrderPad: { id: Id.SellOrderPad, nameId: NameId.SellOrderPad },
+        AmendOrderPad: { id: Id.AmendOrderPad, nameId: NameId.AmendOrderPad },
+        CancelOrderPad: { id: Id.CancelOrderPad, nameId: NameId.CancelOrderPad },
+        MoveOrderPad: { id: Id.MoveOrderPad, nameId: NameId.MoveOrderPad },
+        EtoPriceQuotation_ApplySymbol: { id: Id.EtoPriceQuotation_ApplySymbol, nameId: NameId.EtoPriceQuotation_ApplySymbol },
     } as const;
 
+    const infos = Object.values(infosObject);
+    const idCount = infos.length;
+
     export function initialise() {
-        const keys = Object.keys(infosObject);
-        const values = Object.values(infosObject);
-        const count = keys.length;
-        for (let i = 0; i < count; i++) {
-            if (keys[i] !== values[i]) {
-                throw new AssertInternalError('ICI300918843', i.toString());
+        for (let id = 0; id < idCount; id++) {
+            if (id !== infos[id].id) {
+                throw new AssertInternalError('ICI300918843', infos[id].nameId);
             }
         }
+    }
+
+    export function idToNameId(id: Id) {
+        return infos[id].nameId;
+    }
+
+    export function idToDefaultKeyboardShortcut(id: Id) {
+        return infos[id].defaultKeyboardShortcut;
     }
 }
 

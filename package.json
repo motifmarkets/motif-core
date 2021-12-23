@@ -35,7 +35,7 @@
     "types": "npm run lib && npm run rollup",
     "api": "npm run build && npm run rollup",
     "force-api": "npm run force-build && npm run rollup",
-    "clean": "npx trash-cli ./dist && npx trash-cli ./lib",
+    "clean": "npx trash-cli ./dist/* && npx trash-cli ./lib/*",
     "dist": "npm run clean && npm run force-api",
     "publish": "npm publish --access=public"
   },

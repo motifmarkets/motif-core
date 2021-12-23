@@ -6,8 +6,8 @@
 
 import { CallPutModule } from './call-put';
 import { ChartHistoryIntervalModule } from './chart-history-interval';
-import { ColorSchemeModule } from './color-scheme';
-import { ColorSchemePreset } from './color-scheme-preset';
+import { ColorSchemeModule } from './settings/color-scheme';
+import { ColorSchemePreset } from './settings/color-scheme-preset';
 import { InternalCommandModule } from './command/services-command-internal-api';
 import { MotifServicesServiceModule } from './motif-services-service';
 import { OrderPadModule } from './order-pad';

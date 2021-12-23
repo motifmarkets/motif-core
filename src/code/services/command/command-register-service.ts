@@ -22,7 +22,7 @@ export class CommandRegisterService {
 
     setInternalExtensionHandle(value: ExtensionHandle) {
         this._internalExtensionHandle = value;
-        this._nullCommand = this.getOrRegisterInternalCommand(InternalCommand.Name.Null, StringId.InternalCommandDisplay_Null);
+        this._nullCommand = this.getOrRegisterInternalCommand(InternalCommand.Id.Null, StringId.InternalCommandDisplay_Null);
     }
 
     getCommand(extensionHandle: ExtensionHandle, name: string) {
@@ -30,8 +30,12 @@ export class CommandRegisterService {
         return this.getCommandByKey(key);
     }
 
-    getOrRegisterCommand(extensionHandle: ExtensionHandle, name: string,
-        defaultDisplayIndex: ExtStringId.Index, menuBarItemPosition?: Command.MenuBarItemPosition
+    getOrRegisterCommand(
+        extensionHandle: ExtensionHandle,
+        name: string,
+        defaultDisplayIndex: ExtStringId.Index,
+        defaultMenuBarItemPosition?: Command.MenuBarItemPosition,
+        defaultKeyboardShortcut?: Command.KeyboardShortcut
     ) {
         const key = Command.generateMapKey(extensionHandle, name);
         let command = this.getCommandByKey(key);
@@ -41,7 +45,8 @@ export class CommandRegisterService {
                 name,
                 registrationHandle: this._registrations.length,
                 defaultDisplayIndex,
-                defaultMenuBarItemPosition: menuBarItemPosition,
+                defaultMenuBarItemPosition,
+                defaultKeyboardShortcut,
             } as const;
 
             const registration: CommandRegisterService.Registration = {
@@ -59,9 +64,11 @@ export class CommandRegisterService {
         return this.getCommand(this._internalExtensionHandle, name) as InternalCommand;
     }
 
-    getOrRegisterInternalCommand(name: InternalCommand.Name, displayId: StringId, menuBarItemPosition?: Command.MenuBarItemPosition) {
+    getOrRegisterInternalCommand(id: InternalCommand.Id, displayId: StringId, menuBarItemPosition?: Command.MenuBarItemPosition) {
+        const name = InternalCommand.idToNameId(id);
+        const defaultKeyboardShortcut = InternalCommand.idToDefaultKeyboardShortcut(id);
         return this.getOrRegisterCommand(this._internalExtensionHandle,
-            name, displayId, menuBarItemPosition) as InternalCommand;
+            name, displayId, menuBarItemPosition, defaultKeyboardShortcut) as InternalCommand;
     }
 
     private getCommandByKey(key: string) {
@@ -78,6 +85,6 @@ export namespace CommandRegisterService {
     }
 
     export function isNullCommand(command: Command) {
-        return command.name === InternalCommand.Name.Null;
+        return command.name === InternalCommand.NameId.Null;
     }
 }
