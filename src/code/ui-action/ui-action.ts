@@ -439,6 +439,7 @@ export namespace UiAction {
         MouseClick,
         EnterKeyPress,
         SpacebarKeyPress,
+        KeyboardShortcut,
     }
 
     export const enum AutoAcceptanceTypeId {

@@ -1637,7 +1637,7 @@ export const enum StringId {
     DayTradesDataItemRecordTypeIdDisplay_Trade,
     DayTradesDataItemRecordTypeIdDisplay_Canceller,
     DayTradesDataItemRecordTypeIdDisplay_Cancelled,
-    InternalCommandDisplay_Null,
+    // InternalCommandDisplay_Null,
     InternalCommandDisplay_ChildMenu,
     InternalCommandDisplay_MenuDivider,
     DitemCommandDisplay_ToggleSecurityLinking,
@@ -9940,11 +9940,11 @@ export namespace I18nStrings {
                 en: 'Cancelled',
             }
         },
-        InternalCommandDisplay_Null: {
-            id: StringId.InternalCommandDisplay_Null, translations: {
-                en: '',
-            }
-        },
+        // InternalCommandDisplay_Null: {
+        //     id: StringId.InternalCommandDisplay_Null, translations: {
+        //         en: '',
+        //     }
+        // },
         InternalCommandDisplay_ChildMenu: {
             id: StringId.InternalCommandDisplay_ChildMenu, translations: {
                 en: 'Child Menu',

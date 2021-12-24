@@ -22,6 +22,7 @@
     { "path": "./services/tsconfig.services.json" },
     { "path": "./sequence-history/tsconfig.sequence-history.json" },
     { "path": "./ui-action/tsconfig.ui-action.json" },
+    { "path": "./command-context/tsconfig.command-context.json" },
     { "path": "./keyboard/tsconfig.keyboard.json" },
     { "path": "./grid/tsconfig.grid.json" },
   ]

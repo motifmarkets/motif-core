@@ -15,14 +15,11 @@ export class CommandRegisterService {
     private readonly _registrations: CommandRegisterService.Registration[] = [];
     private readonly _registrationMap = new Map<string, CommandRegisterService.Registration>();
 
-    private _nullCommand: InternalCommand;
-
     get internalExtensionHandle() { return this._internalExtensionHandle; }
-    get nullCommand() { return this._nullCommand; }
 
     setInternalExtensionHandle(value: ExtensionHandle) {
         this._internalExtensionHandle = value;
-        this._nullCommand = this.getOrRegisterInternalCommand(InternalCommand.Id.Null, StringId.InternalCommandDisplay_Null);
+        // this._nullCommand = this.getOrRegisterInternalCommand(InternalCommand.Id.Null, StringId.InternalCommandDisplay_Null);
     }
 
     getCommand(extensionHandle: ExtensionHandle, name: string) {
@@ -43,6 +40,7 @@ export class CommandRegisterService {
             command = {
                 extensionHandle,
                 name,
+                key,
                 registrationHandle: this._registrations.length,
                 defaultDisplayIndex,
                 defaultMenuBarItemPosition,
@@ -84,7 +82,7 @@ export namespace CommandRegisterService {
         readonly command: Command;
     }
 
-    export function isNullCommand(command: Command) {
-        return command.name === InternalCommand.NameId.Null;
-    }
+    // export function isNullCommand(command: Command) {
+    //     return command.name === InternalCommand.NameId.Null;
+    // }
 }

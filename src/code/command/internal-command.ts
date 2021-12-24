@@ -13,7 +13,7 @@ export interface InternalCommand extends Command {
 
 export namespace InternalCommand {
     export const enum Id {
-        Null,
+        // Null,
         Missing,
         // // Menu
         // ChildMenu = 'ChildMenu',
@@ -133,8 +133,8 @@ export namespace InternalCommand {
     }
 
     export const enum NameId {
-        Null = 'Null',
-        Missing = 'Missing',
+        // Null = 'Null',
+        // Missing = 'Missing',
         // // Menu
         // ChildMenu = 'ChildMenu',
         // MenuDivider = 'MenuDivider',
@@ -264,8 +264,8 @@ export namespace InternalCommand {
     type InfosObject = { [nameId in Name]: Info };
 
     const infosObject: InfosObject = {
-        Null: { id: Id.Null, nameId: NameId.Null },
-        Missing: { id: Id.Missing, nameId: NameId.Missing },
+        // Null: { id: Id.Null, nameId: NameId.Null },
+        // Missing: { id: Id.Missing, nameId: NameId.Missing },
         // ChildMenu: Name.ChildMenu,
         // MenuDivider: Name.MenuDivider,
         CommandParametersExecute: { id: Id.CommandParametersExecute, nameId: NameId.CommandParametersExecute },

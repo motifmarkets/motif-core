@@ -2669,12 +2669,6 @@ export class CallPutTableValueSource extends TableValueSource {
     protected getfieldCount(): Integer;
 }
 
-// Warning: (ae-missing-release-tag) "CancelContext" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public
-export interface CancelContext {
-}
-
 // Warning: (ae-missing-release-tag) "CancelOrderDataItem" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -3869,6 +3863,8 @@ export interface Command {
     // (undocumented)
     readonly extensionHandle: ExtensionHandle;
     // (undocumented)
+    readonly key: string;
+    // (undocumented)
     readonly name: string;
     // (undocumented)
     readonly registrationHandle: Handle;
@@ -3878,6 +3874,8 @@ export interface Command {
 export namespace Command {
     // (undocumented)
     export function generateMapKey(extensionHandle: ExtensionHandle, name: string): KeyboardShortcut.MapKey;
+    // (undocumented)
+    export function isKeyEqual(left: Command, right: Command): boolean;
     // (undocumented)
     export interface KeyboardShortcut {
         // (undocumented)
@@ -3905,30 +3903,6 @@ export namespace Command {
     export type MenuBarMenuPath = readonly MenuBarMenuName[];
 }
 
-// Warning: (ae-missing-release-tag) "CommandContext" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "CommandContext" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export class CommandContext {
-    constructor(name: string, htmlElement: HTMLElement);
-    // (undocumented)
-    addCommand(command: Command): void;
-    // (undocumented)
-    executeCommand(command: Command): void;
-    // (undocumented)
-    executeEvent: CommandContext.ExecuteEvent;
-    // (undocumented)
-    readonly htmlElement: HTMLElement;
-    // (undocumented)
-    readonly name: string;
-}
-
-// @public (undocumented)
-export namespace CommandContext {
-    // (undocumented)
-    export type ExecuteEvent = (this: void, command: Command) => void;
-}
-
 // Warning: (ae-missing-release-tag) "CommandRegisterService" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 // Warning: (ae-missing-release-tag) "CommandRegisterService" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -3945,15 +3919,11 @@ export class CommandRegisterService {
     // (undocumented)
     get internalExtensionHandle(): number;
     // (undocumented)
-    get nullCommand(): InternalCommand;
-    // (undocumented)
     setInternalExtensionHandle(value: ExtensionHandle): void;
 }
 
 // @public (undocumented)
 export namespace CommandRegisterService {
-    // (undocumented)
-    export function isNullCommand(command: Command): boolean;
     // (undocumented)
     export interface Registration {
         // (undocumented)
@@ -4645,9 +4615,9 @@ export namespace CoreSettings {
     };
 }
 
-// Warning: (ae-internal-missing-underscore) The name "CoreStaticInitialise" should be prefixed with an underscore because the declaration is marked as @internal
+// Warning: (ae-missing-release-tag) "CoreStaticInitialise" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @internal (undocumented)
+// @public (undocumented)
 export namespace CoreStaticInitialise {
     // (undocumented)
     export function initialise(): void;
@@ -7443,6 +7413,8 @@ export namespace ExternalError {
         // (undocumented)
         CallPutTableRecordDefinitionLoadFromJsonKeyUndefined = "CPTRDLFJKU",
         // (undocumented)
+        CancelContextNotRegistered = "CACNR22996",
+        // (undocumented)
         CHMCPD87777354332 = "CHMCPD87777354332",
         // (undocumented)
         CHMCPMA2233498 = "CHMCPMA2233498",
@@ -7457,7 +7429,7 @@ export namespace ExternalError {
         // (undocumented)
         COMCPMT1009199929 = "COMCPMT1009199929",
         // (undocumented)
-        CommandContextNotRegistered = "CCNR22996",
+        CommandContextNotRegistered = "COCNR22996",
         // (undocumented)
         CSDZLPJ788831131 = "CSDZLPJ788831131",
         // (undocumented)
@@ -10081,191 +10053,189 @@ export namespace InternalCommand {
     // (undocumented)
     export const enum Id {
         // (undocumented)
-        AmendOrderPad = 89,
+        AmendOrderPad = 88,
         // (undocumented)
-        ApplySymbol = 9,
+        ApplySymbol = 8,
         // (undocumented)
-        AutoSizeGridColumnWidths = 11,
+        AutoSizeGridColumnWidths = 10,
         // (undocumented)
-        BuyOrderPad = 87,
+        BuyOrderPad = 86,
         // (undocumented)
-        CancelOrderPad = 90,
+        CancelOrderPad = 89,
         // (undocumented)
-        ColorSchemePresetCode_CopyToClipboard = 70,
+        ColorSchemePresetCode_CopyToClipboard = 69,
         // (undocumented)
-        ColorSchemePresetCode_Ok = 69,
+        ColorSchemePresetCode_Ok = 68,
         // (undocumented)
-        ColorSelector_Brighten = 40,
+        ColorSelector_Brighten = 39,
         // (undocumented)
-        ColorSelector_Complement = 41,
+        ColorSelector_Complement = 40,
         // (undocumented)
-        ColorSelector_Copy = 45,
+        ColorSelector_Copy = 44,
         // (undocumented)
-        ColorSelector_Darken = 39,
+        ColorSelector_Darken = 38,
         // (undocumented)
-        ColorSelector_Desaturate = 43,
+        ColorSelector_Desaturate = 42,
         // (undocumented)
-        ColorSelector_Lighten = 38,
+        ColorSelector_Lighten = 37,
         // (undocumented)
-        ColorSelector_Saturate = 42,
+        ColorSelector_Saturate = 41,
         // (undocumented)
-        ColorSelector_Spin = 44,
+        ColorSelector_Spin = 43,
         // (undocumented)
-        ColorSettings_SaveScheme = 46,
+        ColorSettings_SaveScheme = 45,
         // (undocumented)
-        CommandParametersExecute = 2,
+        CommandParametersExecute = 1,
         // (undocumented)
-        ContentGridLayoutEditor_Cancel = 48,
+        ContentGridLayoutEditor_Cancel = 47,
         // (undocumented)
-        ContentGridLayoutEditor_Ok = 47,
+        ContentGridLayoutEditor_Ok = 46,
         // (undocumented)
-        Depth_Expand = 75,
+        Depth_Expand = 74,
         // (undocumented)
-        Depth_Filter = 76,
+        Depth_Filter = 75,
         // (undocumented)
-        Depth_Rollup = 74,
+        Depth_Rollup = 73,
         // (undocumented)
-        DepthGridsLayoutEditor_AskDepth = 54,
+        DepthGridsLayoutEditor_AskDepth = 53,
         // (undocumented)
-        DepthGridsLayoutEditor_BidDepth = 53,
+        DepthGridsLayoutEditor_BidDepth = 52,
         // (undocumented)
-        DepthGridsLayoutEditor_Cancel = 56,
+        DepthGridsLayoutEditor_Cancel = 55,
         // (undocumented)
-        DepthGridsLayoutEditor_Ok = 55,
+        DepthGridsLayoutEditor_Ok = 54,
         // (undocumented)
-        EtoPriceQuotation_ApplySymbol = 92,
+        EtoPriceQuotation_ApplySymbol = 91,
         // (undocumented)
-        GridLayoutEditor_CancelSearch = 63,
+        GridLayoutEditor_CancelSearch = 62,
         // (undocumented)
-        GridLayoutEditor_MoveBottom = 68,
+        GridLayoutEditor_MoveBottom = 67,
         // (undocumented)
-        GridLayoutEditor_MoveDown = 67,
+        GridLayoutEditor_MoveDown = 66,
         // (undocumented)
-        GridLayoutEditor_MoveTop = 66,
+        GridLayoutEditor_MoveTop = 65,
         // (undocumented)
-        GridLayoutEditor_MoveUp = 65,
+        GridLayoutEditor_MoveUp = 64,
         // (undocumented)
-        GridLayoutEditor_SearchNext = 64,
+        GridLayoutEditor_SearchNext = 63,
         // (undocumented)
-        LitIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed = 3,
+        LitIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed = 2,
         // (undocumented)
-        Missing = 1,
+        Missing = 0,
         // (undocumented)
-        MoveOrderPad = 91,
+        MoveOrderPad = 90,
         // (undocumented)
-        NewBalancesDitem = 27,
+        NewBalancesDitem = 26,
         // (undocumented)
-        NewBrandingSplashWebPageDitem = 31,
+        NewBrandingSplashWebPageDitem = 30,
         // (undocumented)
-        NewBrokerageAccountsDitem = 24,
+        NewBrokerageAccountsDitem = 23,
         // (undocumented)
-        NewBuyOrderRequestDitem = 32,
+        NewBuyOrderRequestDitem = 31,
         // (undocumented)
-        NewDepthAndTradesDitem = 15,
+        NewDepthAndTradesDitem = 14,
         // (undocumented)
-        NewDepthDitem = 17,
+        NewDepthDitem = 16,
         // (undocumented)
-        NewEtoPriceQuotationDitem = 29,
+        NewEtoPriceQuotationDitem = 28,
         // (undocumented)
-        NewExtensionsDitem = 13,
+        NewExtensionsDitem = 12,
         // (undocumented)
-        NewGeneralWebPageDitem = 30,
+        NewGeneralWebPageDitem = 29,
         // (undocumented)
-        NewHoldingsDitem = 26,
+        NewHoldingsDitem = 25,
         // (undocumented)
-        NewNewsBodyDitem = 19,
+        NewNewsBodyDitem = 18,
         // (undocumented)
-        NewNewsHeadlinesDitem = 18,
+        NewNewsHeadlinesDitem = 17,
         // (undocumented)
-        NewOrderRequestDitem = 23,
+        NewOrderRequestDitem = 22,
         // (undocumented)
-        NewOrdersDitem = 25,
+        NewOrdersDitem = 24,
         // (undocumented)
-        NewPlaceholderDitem = 12,
+        NewPlaceholderDitem = 11,
         // (undocumented)
-        NewSellOrderRequestDitem = 33,
+        NewSellOrderRequestDitem = 32,
         // (undocumented)
-        NewSettingsDitem = 28,
+        NewSettingsDitem = 27,
         // (undocumented)
-        NewStatusDitem = 21,
+        NewStatusDitem = 20,
         // (undocumented)
-        NewSymbolsDitem = 14,
+        NewSymbolsDitem = 13,
         // (undocumented)
-        NewTopShareholdersDitem = 20,
+        NewTopShareholdersDitem = 19,
         // (undocumented)
-        NewTradesDitem = 22,
+        NewTradesDitem = 21,
         // (undocumented)
-        NewWatchlistDitem = 16,
+        NewWatchlistDitem = 15,
         // (undocumented)
-        Null = 0,
+        OrderRequest_Back = 82,
         // (undocumented)
-        OrderRequest_Back = 83,
+        OrderRequest_New = 81,
         // (undocumented)
-        OrderRequest_New = 82,
+        OrderRequest_Review = 83,
         // (undocumented)
-        OrderRequest_Review = 84,
+        OrderRequest_Send = 84,
         // (undocumented)
-        OrderRequest_Send = 85,
+        OrderRequest_TogglePrimary = 85,
         // (undocumented)
-        OrderRequest_TogglePrimary = 86,
+        PariDepthGridsLayoutEditor_AskDepth = 57,
         // (undocumented)
-        PariDepthGridsLayoutEditor_AskDepth = 58,
+        PariDepthGridsLayoutEditor_BidDepth = 56,
         // (undocumented)
-        PariDepthGridsLayoutEditor_BidDepth = 57,
+        PariDepthGridsLayoutEditor_Cancel = 61,
         // (undocumented)
-        PariDepthGridsLayoutEditor_Cancel = 62,
+        PariDepthGridsLayoutEditor_Ok = 60,
         // (undocumented)
-        PariDepthGridsLayoutEditor_Ok = 61,
+        PariDepthGridsLayoutEditor_Trades = 59,
         // (undocumented)
-        PariDepthGridsLayoutEditor_Trades = 60,
+        PariDepthGridsLayoutEditor_Watchlist = 58,
         // (undocumented)
-        PariDepthGridsLayoutEditor_Watchlist = 59,
+        ResetLayout = 34,
         // (undocumented)
-        ResetLayout = 35,
+        RoutedIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed = 3,
         // (undocumented)
-        RoutedIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed = 4,
+        SaveLayout = 33,
         // (undocumented)
-        SaveLayout = 34,
+        SelectGridColumns = 9,
         // (undocumented)
-        SelectGridColumns = 10,
+        SellOrderPad = 87,
         // (undocumented)
-        SellOrderPad = 88,
+        SetAccountLinking = 7,
         // (undocumented)
-        SetAccountLinking = 8,
+        SetSymbolLinking = 5,
         // (undocumented)
-        SetSymbolLinking = 6,
+        SignInAgain = 36,
         // (undocumented)
-        SignInAgain = 37,
+        SignOut = 35,
         // (undocumented)
-        SignOut = 36,
+        Symbols_NextPage = 72,
         // (undocumented)
-        Symbols_NextPage = 73,
+        Symbols_Query = 70,
         // (undocumented)
-        Symbols_Query = 71,
+        Symbols_Subscribe = 71,
         // (undocumented)
-        Symbols_Subscribe = 72,
+        ToggleAccountLinking = 6,
         // (undocumented)
-        ToggleAccountLinking = 7,
+        ToggleSymbolLinking = 4,
         // (undocumented)
-        ToggleSymbolLinking = 5,
+        TopShareholders_Compare = 80,
         // (undocumented)
-        TopShareholders_Compare = 81,
+        TopShareholders_CompareMode = 78,
         // (undocumented)
-        TopShareholders_CompareMode = 79,
+        TopShareholders_DetailsMode = 79,
         // (undocumented)
-        TopShareholders_DetailsMode = 80,
+        TopShareholders_HistoricalMode = 77,
         // (undocumented)
-        TopShareholders_HistoricalMode = 78,
+        TopShareholders_TodayMode = 76,
         // (undocumented)
-        TopShareholders_TodayMode = 77,
+        Watchlist_DeleteSymbol = 48,
         // (undocumented)
-        Watchlist_DeleteSymbol = 49,
+        Watchlist_New = 49,
         // (undocumented)
-        Watchlist_New = 50,
+        Watchlist_Open = 50,
         // (undocumented)
-        Watchlist_Open = 51,
-        // (undocumented)
-        Watchlist_Save = 52
+        Watchlist_Save = 51
     }
     // (undocumented)
     export function idToDefaultKeyboardShortcut(id: Id): Command.KeyboardShortcut | undefined;
@@ -10346,8 +10316,6 @@ export namespace InternalCommand {
         // (undocumented)
         LitIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed = "LitIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed",
         // (undocumented)
-        Missing = "Missing",
-        // (undocumented)
         MoveOrderPad = "MoveOrderPad",
         // (undocumented)
         NewBalancesDitem = "NewBalancesDitem",
@@ -10393,8 +10361,6 @@ export namespace InternalCommand {
         NewTradesDitem = "NewTradesDitem",
         // (undocumented)
         NewWatchlistDitem = "NewWatchlistDitem",
-        // (undocumented)
-        Null = "Null",
         // (undocumented)
         OrderRequest_Back = "OrderRequest_Back",
         // (undocumented)
@@ -11103,15 +11069,37 @@ export namespace JsonValue {
 export type JsonValueArray = Array<JsonValue>;
 
 // Warning: (ae-missing-release-tag) "KeyboardService" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "KeyboardService" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export class KeyboardService {
     // (undocumented)
-    deregisterCommandContext(context: CommandContext): void;
+    deregisterCancelContext(context: CancelCommandContext): void;
     // (undocumented)
-    registerCancelContext(context: CancelContext): void;
+    deregisterCommandContext(context: ActionCommandContext): void;
+    // Warning: (ae-forgotten-export) The symbol "ActionCommandContext" needs to be exported by the entry point public-api.d.ts
+    //
     // (undocumented)
-    registerCommandContext(context: CommandContext): void;
+    registerActionCommandContext(context: ActionCommandContext, root?: boolean): void;
+    // Warning: (ae-forgotten-export) The symbol "CancelCommandContext" needs to be exported by the entry point public-api.d.ts
+    //
+    // (undocumented)
+    registerCancelContext(context: CancelCommandContext): void;
+}
+
+// @public (undocumented)
+export namespace KeyboardService {
+    // (undocumented)
+    export interface ActionCommandContextRegistration {
+        // (undocumented)
+        context: ActionCommandContext;
+        // (undocumented)
+        keyboardEventListener: KeyboardEventListener;
+        // (undocumented)
+        root: boolean;
+    }
+    // (undocumented)
+    export type KeyboardEventListener = (event: KeyboardEvent) => void;
 }
 
 // Warning: (ae-missing-release-tag) "LastIntervalHistorySequenceSeries" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -19830,75 +19818,75 @@ export const enum StringId {
     // (undocumented)
     DepthStyleDisplay_Short = 726,
     // (undocumented)
-    Desktop_ResetLayoutCaption = 1670,
+    Desktop_ResetLayoutCaption = 1669,
     // (undocumented)
-    Desktop_SaveLayoutCaption = 1669,
+    Desktop_SaveLayoutCaption = 1668,
     // (undocumented)
-    Desktop_SignOutCaption = 1671,
+    Desktop_SignOutCaption = 1670,
     // (undocumented)
     Disabled = 60,
     // (undocumented)
-    DitemCommandDisplay_SetAccountLinking = 1636,
+    DitemCommandDisplay_SetAccountLinking = 1635,
     // (undocumented)
-    DitemCommandDisplay_SetSecurityLinking = 1634,
+    DitemCommandDisplay_SetSecurityLinking = 1633,
     // (undocumented)
-    DitemCommandDisplay_ToggleAccountLinking = 1635,
+    DitemCommandDisplay_ToggleAccountLinking = 1634,
     // (undocumented)
-    DitemCommandDisplay_ToggleSecurityLinking = 1633,
+    DitemCommandDisplay_ToggleSecurityLinking = 1632,
     // (undocumented)
-    DitemComponent_ComponentTypeIsInvalid = 1733,
+    DitemComponent_ComponentTypeIsInvalid = 1732,
     // (undocumented)
-    DitemComponent_ComponentTypeIsNotSpecified = 1732,
+    DitemComponent_ComponentTypeIsNotSpecified = 1731,
     // (undocumented)
-    DitemComponent_ConstructionMethodIsInvalid = 1731,
+    DitemComponent_ConstructionMethodIsInvalid = 1730,
     // (undocumented)
-    DitemComponent_ConstructionMethodIsNotSpecified = 1730,
+    DitemComponent_ConstructionMethodIsNotSpecified = 1729,
     // (undocumented)
-    DitemComponent_PersistableIsNotSpecified = 1729,
+    DitemComponent_PersistableIsNotSpecified = 1728,
     // (undocumented)
-    DitemMenuDisplay_Balances = 1662,
+    DitemMenuDisplay_Balances = 1661,
     // (undocumented)
-    DitemMenuDisplay_BrandingSplashWebPage = 1666,
+    DitemMenuDisplay_BrandingSplashWebPage = 1665,
     // (undocumented)
-    DitemMenuDisplay_BrokerageAccounts = 1659,
+    DitemMenuDisplay_BrokerageAccounts = 1658,
     // (undocumented)
-    DitemMenuDisplay_Depth = 1652,
+    DitemMenuDisplay_Depth = 1651,
     // (undocumented)
-    DitemMenuDisplay_DepthAndTrades = 1650,
+    DitemMenuDisplay_DepthAndTrades = 1649,
     // (undocumented)
-    DitemMenuDisplay_EtoPriceQuotation = 1664,
+    DitemMenuDisplay_EtoPriceQuotation = 1663,
     // (undocumented)
-    DitemMenuDisplay_Extensions = 1648,
+    DitemMenuDisplay_Extensions = 1647,
     // (undocumented)
-    DitemMenuDisplay_GeneralWebPage = 1665,
+    DitemMenuDisplay_GeneralWebPage = 1664,
     // (undocumented)
-    DitemMenuDisplay_Holdings = 1661,
+    DitemMenuDisplay_Holdings = 1660,
     // (undocumented)
-    DitemMenuDisplay_NewsBody = 1654,
+    DitemMenuDisplay_NewsBody = 1653,
     // (undocumented)
-    DitemMenuDisplay_NewsHeadlines = 1653,
+    DitemMenuDisplay_NewsHeadlines = 1652,
     // (undocumented)
-    DitemMenuDisplay_OrderRequest = 1658,
+    DitemMenuDisplay_OrderRequest = 1657,
     // (undocumented)
-    DitemMenuDisplay_OrderRequest_Buy = 1667,
+    DitemMenuDisplay_OrderRequest_Buy = 1666,
     // (undocumented)
-    DitemMenuDisplay_OrderRequest_Sell = 1668,
+    DitemMenuDisplay_OrderRequest_Sell = 1667,
     // (undocumented)
-    DitemMenuDisplay_Orders = 1660,
+    DitemMenuDisplay_Orders = 1659,
     // (undocumented)
-    DitemMenuDisplay_Placeholder = 1647,
+    DitemMenuDisplay_Placeholder = 1646,
     // (undocumented)
-    DitemMenuDisplay_Settings = 1663,
+    DitemMenuDisplay_Settings = 1662,
     // (undocumented)
-    DitemMenuDisplay_Status = 1656,
+    DitemMenuDisplay_Status = 1655,
     // (undocumented)
-    DitemMenuDisplay_Symbols = 1649,
+    DitemMenuDisplay_Symbols = 1648,
     // (undocumented)
-    DitemMenuDisplay_TopShareholders = 1655,
+    DitemMenuDisplay_TopShareholders = 1654,
     // (undocumented)
-    DitemMenuDisplay_Trades = 1657,
+    DitemMenuDisplay_Trades = 1656,
     // (undocumented)
-    DitemMenuDisplay_Watchlist = 1651,
+    DitemMenuDisplay_Watchlist = 1650,
     // (undocumented)
     Editing = 65,
     // (undocumented)
@@ -20032,77 +20020,77 @@ export const enum StringId {
     // (undocumented)
     ExtensionExternalError = 20,
     // (undocumented)
-    ExtensionId_ExtensionNameIsInvalid = 1728,
+    ExtensionId_ExtensionNameIsInvalid = 1727,
     // (undocumented)
-    ExtensionId_ExtensionNameIsNotSpecified = 1727,
+    ExtensionId_ExtensionNameIsNotSpecified = 1726,
     // (undocumented)
-    ExtensionId_PersistableIsNotSpecified = 1722,
+    ExtensionId_PersistableIsNotSpecified = 1721,
     // (undocumented)
-    ExtensionId_PublisherIsInvalid = 1726,
+    ExtensionId_PublisherIsInvalid = 1725,
     // (undocumented)
-    ExtensionId_PublisherIsNotSpecified = 1725,
+    ExtensionId_PublisherIsNotSpecified = 1724,
     // (undocumented)
-    ExtensionId_PublisherTypeIsInvalid = 1724,
+    ExtensionId_PublisherTypeIsInvalid = 1723,
     // (undocumented)
-    ExtensionId_PublisherTypeIsNotSpecified = 1723,
+    ExtensionId_PublisherTypeIsNotSpecified = 1722,
     // (undocumented)
-    ExtensionInfo_ApiVersionIsInvalid = 1737,
+    ExtensionInfo_ApiVersionIsInvalid = 1736,
     // (undocumented)
-    ExtensionInfo_ApiVersionIsNotSpecified = 1736,
+    ExtensionInfo_ApiVersionIsNotSpecified = 1735,
     // (undocumented)
-    ExtensionInfo_LongDescriptionIsInvalid = 1741,
+    ExtensionInfo_LongDescriptionIsInvalid = 1740,
     // (undocumented)
-    ExtensionInfo_LongDescriptionIsNotSpecified = 1740,
+    ExtensionInfo_LongDescriptionIsNotSpecified = 1739,
     // (undocumented)
-    ExtensionInfo_ShortDescriptionIsInvalid = 1739,
+    ExtensionInfo_ShortDescriptionIsInvalid = 1738,
     // (undocumented)
-    ExtensionInfo_ShortDescriptionIsNotSpecified = 1738,
+    ExtensionInfo_ShortDescriptionIsNotSpecified = 1737,
     // (undocumented)
-    ExtensionInfo_UrlPathIsInvalid = 1743,
+    ExtensionInfo_UrlPathIsInvalid = 1742,
     // (undocumented)
-    ExtensionInfo_UrlPathIsNotSpecified = 1742,
+    ExtensionInfo_UrlPathIsNotSpecified = 1741,
     // (undocumented)
-    ExtensionInfo_VersionIsInvalid = 1735,
+    ExtensionInfo_VersionIsInvalid = 1734,
     // (undocumented)
-    ExtensionInfo_VersionIsNotSpecified = 1734,
+    ExtensionInfo_VersionIsNotSpecified = 1733,
     // (undocumented)
     ExtensionOrInternalExternalError = 21,
     // (undocumented)
-    ExtensionPublisherTypeId_Abbreviation_Builtin = 1717,
+    ExtensionPublisherTypeId_Abbreviation_Builtin = 1716,
     // (undocumented)
-    ExtensionPublisherTypeId_Abbreviation_Invalid = 1715,
+    ExtensionPublisherTypeId_Abbreviation_Invalid = 1714,
     // (undocumented)
-    ExtensionPublisherTypeId_Abbreviation_Organisation = 1721,
+    ExtensionPublisherTypeId_Abbreviation_Organisation = 1720,
     // (undocumented)
-    ExtensionPublisherTypeId_Abbreviation_User = 1719,
+    ExtensionPublisherTypeId_Abbreviation_User = 1718,
     // (undocumented)
-    ExtensionPublisherTypeId_Display_Builtin = 1716,
+    ExtensionPublisherTypeId_Display_Builtin = 1715,
     // (undocumented)
-    ExtensionPublisherTypeId_Display_Invalid = 1714,
+    ExtensionPublisherTypeId_Display_Invalid = 1713,
     // (undocumented)
-    ExtensionPublisherTypeId_Display_Organisation = 1720,
+    ExtensionPublisherTypeId_Display_Organisation = 1719,
     // (undocumented)
-    ExtensionPublisherTypeId_Display_User = 1718,
+    ExtensionPublisherTypeId_Display_User = 1717,
     // (undocumented)
-    Extensions_AvailableExtensionsHeadingCaption = 1702,
+    Extensions_AvailableExtensionsHeadingCaption = 1701,
     // (undocumented)
-    Extensions_DownloadTimeout = 1697,
+    Extensions_DownloadTimeout = 1696,
     // (undocumented)
-    Extensions_ExtensionDidNotCreateComponent = 1696,
+    Extensions_ExtensionDidNotCreateComponent = 1695,
     // (undocumented)
-    Extensions_ExtensionDisableCaption = 1701,
+    Extensions_ExtensionDisableCaption = 1700,
     // (undocumented)
-    Extensions_ExtensionEnableCaption = 1700,
+    Extensions_ExtensionEnableCaption = 1699,
     // (undocumented)
-    Extensions_ExtensionInstallCaption = 1698,
+    Extensions_ExtensionInstallCaption = 1697,
     // (undocumented)
-    Extensions_ExtensionNotInstalledOrEnabled = 1694,
+    Extensions_ExtensionNotInstalledOrEnabled = 1693,
     // (undocumented)
-    Extensions_ExtensionUninstallCaption = 1699,
+    Extensions_ExtensionUninstallCaption = 1698,
     // (undocumented)
-    Extensions_InstalledExtensionsHeadingCaption = 1703,
+    Extensions_InstalledExtensionsHeadingCaption = 1702,
     // (undocumented)
-    Extensions_LocalDesktopNotLoaded = 1695,
+    Extensions_LocalDesktopNotLoaded = 1694,
     // (undocumented)
     ExternalError = 10,
     // (undocumented)
@@ -20324,11 +20312,9 @@ export const enum StringId {
     // (undocumented)
     InsufficientCharacters = 56,
     // (undocumented)
-    InternalCommandDisplay_ChildMenu = 1631,
+    InternalCommandDisplay_ChildMenu = 1630,
     // (undocumented)
-    InternalCommandDisplay_MenuDivider = 1632,
-    // (undocumented)
-    InternalCommandDisplay_Null = 1630,
+    InternalCommandDisplay_MenuDivider = 1631,
     // (undocumented)
     InternalError = 0,
     // (undocumented)
@@ -20672,25 +20658,25 @@ export const enum StringId {
     // (undocumented)
     Markets = 132,
     // (undocumented)
-    MenuAccessKey_Commands = 1642,
+    MenuAccessKey_Commands = 1641,
     // (undocumented)
-    MenuAccessKey_Help = 1646,
+    MenuAccessKey_Help = 1645,
     // (undocumented)
-    MenuAccessKey_Price = 1638,
+    MenuAccessKey_Price = 1637,
     // (undocumented)
-    MenuAccessKey_Tools = 1644,
+    MenuAccessKey_Tools = 1643,
     // (undocumented)
-    MenuAccessKey_Trading = 1640,
+    MenuAccessKey_Trading = 1639,
     // (undocumented)
-    MenuDisplay_Commands = 1641,
+    MenuDisplay_Commands = 1640,
     // (undocumented)
-    MenuDisplay_Help = 1645,
+    MenuDisplay_Help = 1644,
     // (undocumented)
-    MenuDisplay_Price = 1637,
+    MenuDisplay_Price = 1636,
     // (undocumented)
-    MenuDisplay_Tools = 1643,
+    MenuDisplay_Tools = 1642,
     // (undocumented)
-    MenuDisplay_Trading = 1639,
+    MenuDisplay_Trading = 1638,
     // (undocumented)
     Missing = 59,
     // (undocumented)
@@ -20792,17 +20778,17 @@ export const enum StringId {
     // (undocumented)
     NotBoolean = 75,
     // (undocumented)
-    NotCurrentVersion_ClickButtonToAttemptLoadCurrentText = 1691,
+    NotCurrentVersion_ClickButtonToAttemptLoadCurrentText = 1690,
     // (undocumented)
-    NotCurrentVersion_CurrentCaption = 1689,
+    NotCurrentVersion_CurrentCaption = 1688,
     // (undocumented)
-    NotCurrentVersion_MoreInfo = 1693,
+    NotCurrentVersion_MoreInfo = 1692,
     // (undocumented)
-    NotCurrentVersion_NotRunningCurrentVersion = 1688,
+    NotCurrentVersion_NotRunningCurrentVersion = 1687,
     // (undocumented)
-    NotCurrentVersion_ReloadAppCaption = 1692,
+    NotCurrentVersion_ReloadAppCaption = 1691,
     // (undocumented)
-    NotCurrentVersion_RunningCaption = 1690,
+    NotCurrentVersion_RunningCaption = 1689,
     // (undocumented)
     NotImplementedInternalError = 6,
     // (undocumented)
@@ -21680,25 +21666,25 @@ export const enum StringId {
     // (undocumented)
     Physical = 163,
     // (undocumented)
-    PlaceholderDitem_ComponentIsNotAvailable = 1706,
+    PlaceholderDitem_ComponentIsNotAvailable = 1705,
     // (undocumented)
-    PlaceholderDitem_ComponentStateIsInvalid = 1705,
+    PlaceholderDitem_ComponentStateIsInvalid = 1704,
     // (undocumented)
-    PlaceholderDitem_ComponentStateNotSpecified = 1704,
+    PlaceholderDitem_ComponentStateNotSpecified = 1703,
     // (undocumented)
-    PlaceholderDitem_InvalidCaption = 1713,
+    PlaceholderDitem_InvalidCaption = 1712,
     // (undocumented)
-    PlaceholderDitem_PlaceheldComponentStateCaption = 1711,
+    PlaceholderDitem_PlaceheldComponentStateCaption = 1710,
     // (undocumented)
-    PlaceholderDitem_PlaceheldComponentTypeNameCaption = 1710,
+    PlaceholderDitem_PlaceheldComponentTypeNameCaption = 1709,
     // (undocumented)
-    PlaceholderDitem_PlaceheldConstructionMethodCaption = 1709,
+    PlaceholderDitem_PlaceheldConstructionMethodCaption = 1708,
     // (undocumented)
-    PlaceholderDitem_PlaceheldExtensionNameCaption = 1708,
+    PlaceholderDitem_PlaceheldExtensionNameCaption = 1707,
     // (undocumented)
-    PlaceholderDitem_PlaceheldExtensionPublisherCaption = 1707,
+    PlaceholderDitem_PlaceheldExtensionPublisherCaption = 1706,
     // (undocumented)
-    PlaceholderDitem_PlaceheldReasonCaption = 1712,
+    PlaceholderDitem_PlaceheldReasonCaption = 1711,
     // (undocumented)
     Prerequisite = 61,
     // (undocumented)
@@ -22658,37 +22644,37 @@ export const enum StringId {
     // (undocumented)
     ZenithUnexpectedCaseExternalError = 17,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_AbnormalClosure = 1677,
+    ZenithWebsocketCloseCodeId_AbnormalClosure = 1676,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_BadGateway = 1685,
+    ZenithWebsocketCloseCodeId_BadGateway = 1684,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_GoingAway = 1673,
+    ZenithWebsocketCloseCodeId_GoingAway = 1672,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_InvalidFramePayloadData = 1678,
+    ZenithWebsocketCloseCodeId_InvalidFramePayloadData = 1677,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_MessageTooBig = 1680,
+    ZenithWebsocketCloseCodeId_MessageTooBig = 1679,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_MissingExtension = 1681,
+    ZenithWebsocketCloseCodeId_MissingExtension = 1680,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_NormalClosure = 1672,
+    ZenithWebsocketCloseCodeId_NormalClosure = 1671,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_NoStatusReceived = 1676,
+    ZenithWebsocketCloseCodeId_NoStatusReceived = 1675,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_PolicyViolation = 1679,
+    ZenithWebsocketCloseCodeId_PolicyViolation = 1678,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_ProtocolError = 1674,
+    ZenithWebsocketCloseCodeId_ProtocolError = 1673,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_ServerError = 1682,
+    ZenithWebsocketCloseCodeId_ServerError = 1681,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_ServerRestart = 1683,
+    ZenithWebsocketCloseCodeId_ServerRestart = 1682,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_Session = 1687,
+    ZenithWebsocketCloseCodeId_Session = 1686,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_TlsHandshake = 1686,
+    ZenithWebsocketCloseCodeId_TlsHandshake = 1685,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_TryAgainLater = 1684,
+    ZenithWebsocketCloseCodeId_TryAgainLater = 1683,
     // (undocumented)
-    ZenithWebsocketCloseCodeId_UnsupportedData = 1675
+    ZenithWebsocketCloseCodeId_UnsupportedData = 1674
 }
 
 // Warning: (ae-missing-release-tag) "StringRenderValue" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -27535,6 +27521,8 @@ export namespace UiAction {
     export const enum SignalTypeId {
         // (undocumented)
         EnterKeyPress = 1,
+        // (undocumented)
+        KeyboardShortcut = 3,
         // (undocumented)
         MouseClick = 0,
         // (undocumented)

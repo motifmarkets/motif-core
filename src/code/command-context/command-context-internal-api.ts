@@ -4,6 +4,6 @@
  * License: motionite.trade/license/motif
  */
 
-export interface CancelContext {
+export * from './action-command-context';
+export * from './cancel-command-context';
 
-}

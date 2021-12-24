@@ -11,7 +11,6 @@ export * from './core-settings';
 export * from './exchange-settings';
 export * from './exchanges-settings';
 export * from './master-settings';
-export * from './settings-internal-api';
 export * from './settings-group';
 export * from './settings-service';
 export * from './settings-static-initialise';

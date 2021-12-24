@@ -1,10 +1,16 @@
+/**
+ * @license Motif
+ * (c) 2021 Paritech Wealth Technology
+ * License: motionite.trade/license/motif
+ */
+
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "tsBuildInfoFile": "../../../tsbuildinfo/command.tsbuildinfo"
   },
   "include": [
-    "*.ts", "../keyboard/cancel-context.ts", "../keyboard/command-context.ts",
+    "*.ts",
   ],
   "references": [
     { "path": "../sys/tsconfig.sys.json" },

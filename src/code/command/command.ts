@@ -10,6 +10,7 @@ import { ExtensionHandle, Handle, Integer, ModifierKey } from '../sys/sys-intern
 export interface Command {
     readonly extensionHandle: ExtensionHandle;
     readonly name: string;
+    readonly key: string;
     readonly registrationHandle: Handle;
     readonly defaultDisplayIndex: ExtStringId.Index;
     readonly defaultMenuBarItemPosition?: Command.MenuBarItemPosition;
@@ -29,6 +30,10 @@ export namespace Command {
 
     export function generateMapKey(extensionHandle: ExtensionHandle, name: string): KeyboardShortcut.MapKey {
         return extensionHandle.toString(10) + mapKeyPartsDelimiter + name;
+    }
+
+    export function isKeyEqual(left: Command, right: Command) {
+        return left.key === right.key;
     }
 
     export interface KeyboardShortcut {
