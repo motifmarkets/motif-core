@@ -14,8 +14,8 @@ export interface InternalCommand extends Command {
 export namespace InternalCommand {
     export const enum Id {
         // Null,
-        Missing,
-        // // Menu
+        // Missing,
+        // Menu
         // ChildMenu = 'ChildMenu',
         // MenuDivider = 'MenuDivider',
 

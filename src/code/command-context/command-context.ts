@@ -6,18 +6,21 @@
 
 import { Command } from '../command/command-internal-api';
 import { StringId } from '../res/res-internal-api';
-import { ExtensionHandle } from '../sys/sys-internal-api';
+import { ExtensionHandle, ExtensionOrInternalError, ExternalError, SysTick } from '../sys/sys-internal-api';
 import { CommandUiAction, UiAction } from '../ui-action/ui-action-internal-api';
+import { Cancellable } from './cancellable';
 
-export class ActionCommandContext {
+export class CommandContext {
     private readonly _actions = new Array<CommandUiAction>();
 
+    readonly timestampedCancellables = new Array<CommandContext.TimestampedCancellable>();
+
     constructor (
-        public readonly id: ActionCommandContext.Id,
+        public readonly id: CommandContext.Id,
         public readonly displayId: StringId,
         public readonly htmlElement: HTMLElement,
-        private readonly _multipleActionsResolveEventer: ActionCommandContext.MultipleActionsResolveEventer,
-        private readonly _inheritedContext?: ActionCommandContext,
+        private readonly _multipleActionsResolveEventer: CommandContext.MultipleActionsResolveEventer,
+        private readonly _inheritedContext?: CommandContext,
     ) {
 
     }
@@ -35,7 +38,27 @@ export class ActionCommandContext {
         }
     }
 
-    resolveContextualCommandsToAction(contextualCommands: readonly ActionCommandContext.ContextualCommand[]) {
+    addCancellable(cancellable: Cancellable) {
+        const timestampedCancellable: CommandContext.TimestampedCancellable = {
+            cancellable,
+            timestamp: SysTick.now(),
+        }
+        this.timestampedCancellables.push(timestampedCancellable);
+    }
+
+    removeCancellable(cancellable: Cancellable) {
+        const index = this.timestampedCancellables.findIndex(
+            (timestampedCancellable) => timestampedCancellable.cancellable === cancellable
+        );
+
+        if (index < 0) {
+            throw new ExtensionOrInternalError(ExternalError.Code.CancellableNotFound, cancellable.name);
+        } else {
+            this.timestampedCancellables.splice(index, 1);
+        }
+    }
+
+    resolveContextualCommandsToAction(contextualCommands: readonly CommandContext.ContextualCommand[]) {
         const maxCount = contextualCommands.length
         const enabledActions = new Array<CommandUiAction>(maxCount);
         let aDisabledAction: CommandUiAction | undefined;
@@ -63,9 +86,9 @@ export class ActionCommandContext {
         }
     }
 
-    resolveContextualCommandToAction(contextualCommand: ActionCommandContext.ContextualCommand) {
+    resolveContextualCommandToAction(contextualCommand: CommandContext.ContextualCommand) {
         let action: CommandUiAction | undefined;
-        if (ActionCommandContext.Id.isEqual(contextualCommand.contextId, this.id)) {
+        if (CommandContext.Id.isEqual(contextualCommand.contextId, this.id)) {
             action = this.findAction(contextualCommand);
         } else {
             if (this._inheritedContext !== undefined) {
@@ -89,7 +112,9 @@ export class ActionCommandContext {
     }
 }
 
-export namespace ActionCommandContext {
+export namespace CommandContext {
+    export type CancellableAddedEventer = (this: void, cancellable: Cancellable) => void;
+    export type CancellableRemovedEventer = (this: void, cancellable: Cancellable) => void;
     export type MultipleActionsResolveEventer = (this: void, actions: CommandUiAction[]) => CommandUiAction | undefined;
 
     export interface Id {
@@ -111,5 +136,10 @@ export namespace ActionCommandContext {
         export function isKeyEqual(left: ContextualCommand, right: ContextualCommand) {
             return Command.isKeyEqual(left, right) && Id.isEqual(left.contextId, right.contextId);
         }
+    }
+
+    export interface TimestampedCancellable {
+        cancellable: Cancellable;
+        timestamp: SysTick.Time;
     }
 }

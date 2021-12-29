@@ -4,14 +4,14 @@
  * License: motionite.trade/license/motif
  */
 
-import { ActionCommandContext } from '../command-context/command-context-internal-api';
+import { CommandContext } from '../command-context/command-context-internal-api';
 import { Command } from '../command/command-internal-api';
 
 export class KeyboardShortcutRegistry {
     private readonly _shortcutEntries = new Array<KeyboardShortcutRegistry.Entry>();
     private readonly _shortcutEntryMap = new Map<string, KeyboardShortcutRegistry.Entry>();
 
-    registerCommandShortcut(shortcut: Command.KeyboardShortcut, contextualCommand: ActionCommandContext.ContextualCommand) {
+    registerCommandShortcut(shortcut: Command.KeyboardShortcut, contextualCommand: CommandContext.ContextualCommand) {
         const shortcutMapKey = Command.KeyboardShortcut.createMapKey(shortcut);
         const existingEntry = this._shortcutEntryMap.get(shortcutMapKey);
         if (existingEntry === undefined) {
@@ -23,7 +23,7 @@ export class KeyboardShortcutRegistry {
         }
     }
 
-    deregisterShortcut(shortcut: Command.KeyboardShortcut, contextualCommand: ActionCommandContext.ContextualCommand) {
+    deregisterShortcut(shortcut: Command.KeyboardShortcut, contextualCommand: CommandContext.ContextualCommand) {
         const shortcutMapKey = Command.KeyboardShortcut.createMapKey(shortcut);
         const existingEntry = this._shortcutEntryMap.get(shortcutMapKey);
         if (existingEntry !== undefined) {
@@ -44,37 +44,37 @@ export class KeyboardShortcutRegistry {
 
 export namespace KeyboardShortcutRegistry {
     export class Entry {
-        private readonly _commands: ActionCommandContext.ContextualCommand[];
+        private readonly _commands: CommandContext.ContextualCommand[];
 
         constructor(
             private readonly _shortcut: Command.KeyboardShortcut,
-            initialCommand: ActionCommandContext.ContextualCommand
+            initialCommand: CommandContext.ContextualCommand
         ) {
             this._commands = [initialCommand];
         }
 
-        get commands(): readonly ActionCommandContext.ContextualCommand[] { return this._commands; }
+        get commands(): readonly CommandContext.ContextualCommand[] { return this._commands; }
 
-        includesCommand(command: ActionCommandContext.ContextualCommand) {
+        includesCommand(command: CommandContext.ContextualCommand) {
             for (const existingCommand of this._commands) {
-                if (ActionCommandContext.ContextualCommand.isKeyEqual(existingCommand, command)) {
+                if (CommandContext.ContextualCommand.isKeyEqual(existingCommand, command)) {
                     return true;
                 }
             }
             return false;
         }
 
-        addCommand(command: ActionCommandContext.ContextualCommand) {
+        addCommand(command: CommandContext.ContextualCommand) {
             if (!this.includesCommand(command)) {
                 this._commands.push(command);
             }
         }
 
-        removeCommand(command: ActionCommandContext.ContextualCommand) {
+        removeCommand(command: CommandContext.ContextualCommand) {
             const existingCommandCount = this._commands.length;
             for (let i = 0; i < existingCommandCount; i++) {
                 const existingCommand = this._commands[i];
-                if (ActionCommandContext.ContextualCommand.isKeyEqual(existingCommand, command)) {
+                if (CommandContext.ContextualCommand.isKeyEqual(existingCommand, command)) {
                     this._commands.splice(i, 1);
                     return;
                 }

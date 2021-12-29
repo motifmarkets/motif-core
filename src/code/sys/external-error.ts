@@ -305,7 +305,7 @@ export namespace ExternalError {
         GLHFPGLCTNP34458 = 'GLHFPGLCTNP34458',
         GridLayoutColumnNotFoundForField = 'GLCNFFF95224',
         GridLayoutFieldDoesNotExist = 'GLFDNE95224',
-        CommandContextNotRegistered = 'COCNR22996',
-        CancelContextNotRegistered = 'CACNR22996',
+        CommandContextNotRegistered = 'CCNR22996',
+        CancellableNotFound = 'CNF22997',
     }
 }

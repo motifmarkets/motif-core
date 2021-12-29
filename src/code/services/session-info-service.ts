@@ -8,6 +8,7 @@ import { ExchangeEnvironmentId, LitIvemId } from '../adi/adi-internal-api';
 import { MultiEvent } from '../sys/sys-internal-api';
 import { SessionStateId } from './session-state';
 
+/** @public */
 export class SessionInfoService {
     private _stateId: SessionStateId;
     private _kickedOff: boolean;
@@ -121,6 +122,7 @@ export class SessionInfoService {
     }
 }
 
+/** @public */
 export namespace SessionInfoService {
     export type StateChangedEventHandler = (this: void) => void;
     export type KickedOffChangedEventHandler = (this: void) => void;

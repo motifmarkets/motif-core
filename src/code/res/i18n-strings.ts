@@ -1751,6 +1751,7 @@ export const enum StringId {
     ExtensionInfo_LongDescriptionIsInvalid,
     ExtensionInfo_UrlPathIsNotSpecified,
     ExtensionInfo_UrlPathIsInvalid,
+    CommandContextDisplay_Root,
 }
 
 /** @public */
@@ -10508,6 +10509,11 @@ export namespace I18nStrings {
         ExtensionInfo_UrlPathIsInvalid: {
             id: StringId.ExtensionInfo_UrlPathIsInvalid, translations: {
                 en: 'UrlPath is invalid',
+            }
+        },
+        CommandContextDisplay_Root: {
+            id: StringId.CommandContextDisplay_Root, translations: {
+                en: 'Root',
             }
         },
 

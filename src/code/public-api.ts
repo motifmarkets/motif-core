@@ -5,6 +5,7 @@
  */
 
 export * from './adi/adi-internal-api';
+export * from './command-context/command-context-internal-api';
 export * from './command/command-internal-api';
 export * from './core-service';
 export * from './core-static-initialise';

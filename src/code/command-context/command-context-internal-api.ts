@@ -4,6 +4,6 @@
  * License: motionite.trade/license/motif
  */
 
-export * from './action-command-context';
-export * from './cancel-command-context';
+export * from './command-context';
+export * from './cancellable';
 

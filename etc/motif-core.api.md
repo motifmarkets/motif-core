@@ -2669,6 +2669,38 @@ export class CallPutTableValueSource extends TableValueSource {
     protected getfieldCount(): Integer;
 }
 
+// Warning: (ae-missing-release-tag) "Cancellable" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "Cancellable" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export class Cancellable {
+    constructor(name: string, // for error reporting only
+    priority: Cancellable.Priority, cancelEventer: Cancellable.ExecuteEventer);
+    // (undocumented)
+    cancel(): void;
+    // (undocumented)
+    readonly cancelEventer: Cancellable.ExecuteEventer;
+    // (undocumented)
+    readonly name: string;
+    // (undocumented)
+    readonly priority: Cancellable.Priority;
+}
+
+// @public (undocumented)
+export namespace Cancellable {
+    // (undocumented)
+    export type ExecuteEventer = (this: void) => void;
+    // (undocumented)
+    export const enum Priority {
+        // (undocumented)
+        High = 1000,
+        // (undocumented)
+        Low = 10000,
+        // (undocumented)
+        Menu = 100
+    }
+}
+
 // Warning: (ae-missing-release-tag) "CancelOrderDataItem" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -3901,6 +3933,73 @@ export namespace Command {
     export type MenuBarMenuName = string;
     // (undocumented)
     export type MenuBarMenuPath = readonly MenuBarMenuName[];
+}
+
+// Warning: (ae-missing-release-tag) "CommandContext" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "CommandContext" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export class CommandContext {
+    constructor(id: CommandContext.Id, displayId: StringId, htmlElement: HTMLElement, _multipleActionsResolveEventer: CommandContext.MultipleActionsResolveEventer, _inheritedContext?: CommandContext | undefined);
+    // (undocumented)
+    addAction(action: CommandUiAction): void;
+    // (undocumented)
+    addCancellable(cancellable: Cancellable): void;
+    // (undocumented)
+    readonly displayId: StringId;
+    // (undocumented)
+    readonly htmlElement: HTMLElement;
+    // (undocumented)
+    readonly id: CommandContext.Id;
+    // (undocumented)
+    removeAction(action: CommandUiAction): void;
+    // (undocumented)
+    removeCancellable(cancellable: Cancellable): void;
+    // (undocumented)
+    resolveContextualCommandsToAction(contextualCommands: readonly CommandContext.ContextualCommand[]): CommandUiAction | undefined;
+    // (undocumented)
+    resolveContextualCommandToAction(contextualCommand: CommandContext.ContextualCommand): CommandUiAction | undefined;
+    // (undocumented)
+    readonly timestampedCancellables: CommandContext.TimestampedCancellable[];
+}
+
+// @public (undocumented)
+export namespace CommandContext {
+    // (undocumented)
+    export type CancellableAddedEventer = (this: void, cancellable: Cancellable) => void;
+    // (undocumented)
+    export type CancellableRemovedEventer = (this: void, cancellable: Cancellable) => void;
+    // (undocumented)
+    export interface ContextualCommand extends Command {
+        // (undocumented)
+        contextId: Id;
+    }
+    // (undocumented)
+    export namespace ContextualCommand {
+        // (undocumented)
+        export function isKeyEqual(left: ContextualCommand, right: ContextualCommand): boolean;
+    }
+    // (undocumented)
+    export interface Id {
+        // (undocumented)
+        readonly extensionHandle: ExtensionHandle;
+        // (undocumented)
+        readonly name: string;
+    }
+    // (undocumented)
+    export namespace Id {
+        // (undocumented)
+        export function isEqual(left: Id, right: Id): boolean;
+    }
+    // (undocumented)
+    export type MultipleActionsResolveEventer = (this: void, actions: CommandUiAction[]) => CommandUiAction | undefined;
+    // (undocumented)
+    export interface TimestampedCancellable {
+        // (undocumented)
+        cancellable: Cancellable;
+        // (undocumented)
+        timestamp: SysTick.Time;
+    }
 }
 
 // Warning: (ae-missing-release-tag) "CommandRegisterService" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -7413,7 +7512,7 @@ export namespace ExternalError {
         // (undocumented)
         CallPutTableRecordDefinitionLoadFromJsonKeyUndefined = "CPTRDLFJKU",
         // (undocumented)
-        CancelContextNotRegistered = "CACNR22996",
+        CancellableNotFound = "CNF22997",
         // (undocumented)
         CHMCPD87777354332 = "CHMCPD87777354332",
         // (undocumented)
@@ -7429,7 +7528,7 @@ export namespace ExternalError {
         // (undocumented)
         COMCPMT1009199929 = "COMCPMT1009199929",
         // (undocumented)
-        CommandContextNotRegistered = "COCNR22996",
+        CommandContextNotRegistered = "CCNR22996",
         // (undocumented)
         CSDZLPJ788831131 = "CSDZLPJ788831131",
         // (undocumented)
@@ -10053,189 +10152,187 @@ export namespace InternalCommand {
     // (undocumented)
     export const enum Id {
         // (undocumented)
-        AmendOrderPad = 88,
+        AmendOrderPad = 87,
         // (undocumented)
-        ApplySymbol = 8,
+        ApplySymbol = 7,
         // (undocumented)
-        AutoSizeGridColumnWidths = 10,
+        AutoSizeGridColumnWidths = 9,
         // (undocumented)
-        BuyOrderPad = 86,
+        BuyOrderPad = 85,
         // (undocumented)
-        CancelOrderPad = 89,
+        CancelOrderPad = 88,
         // (undocumented)
-        ColorSchemePresetCode_CopyToClipboard = 69,
+        ColorSchemePresetCode_CopyToClipboard = 68,
         // (undocumented)
-        ColorSchemePresetCode_Ok = 68,
+        ColorSchemePresetCode_Ok = 67,
         // (undocumented)
-        ColorSelector_Brighten = 39,
+        ColorSelector_Brighten = 38,
         // (undocumented)
-        ColorSelector_Complement = 40,
+        ColorSelector_Complement = 39,
         // (undocumented)
-        ColorSelector_Copy = 44,
+        ColorSelector_Copy = 43,
         // (undocumented)
-        ColorSelector_Darken = 38,
+        ColorSelector_Darken = 37,
         // (undocumented)
-        ColorSelector_Desaturate = 42,
+        ColorSelector_Desaturate = 41,
         // (undocumented)
-        ColorSelector_Lighten = 37,
+        ColorSelector_Lighten = 36,
         // (undocumented)
-        ColorSelector_Saturate = 41,
+        ColorSelector_Saturate = 40,
         // (undocumented)
-        ColorSelector_Spin = 43,
+        ColorSelector_Spin = 42,
         // (undocumented)
-        ColorSettings_SaveScheme = 45,
+        ColorSettings_SaveScheme = 44,
         // (undocumented)
-        CommandParametersExecute = 1,
+        CommandParametersExecute = 0,
         // (undocumented)
-        ContentGridLayoutEditor_Cancel = 47,
+        ContentGridLayoutEditor_Cancel = 46,
         // (undocumented)
-        ContentGridLayoutEditor_Ok = 46,
+        ContentGridLayoutEditor_Ok = 45,
         // (undocumented)
-        Depth_Expand = 74,
+        Depth_Expand = 73,
         // (undocumented)
-        Depth_Filter = 75,
+        Depth_Filter = 74,
         // (undocumented)
-        Depth_Rollup = 73,
+        Depth_Rollup = 72,
         // (undocumented)
-        DepthGridsLayoutEditor_AskDepth = 53,
+        DepthGridsLayoutEditor_AskDepth = 52,
         // (undocumented)
-        DepthGridsLayoutEditor_BidDepth = 52,
+        DepthGridsLayoutEditor_BidDepth = 51,
         // (undocumented)
-        DepthGridsLayoutEditor_Cancel = 55,
+        DepthGridsLayoutEditor_Cancel = 54,
         // (undocumented)
-        DepthGridsLayoutEditor_Ok = 54,
+        DepthGridsLayoutEditor_Ok = 53,
         // (undocumented)
-        EtoPriceQuotation_ApplySymbol = 91,
+        EtoPriceQuotation_ApplySymbol = 90,
         // (undocumented)
-        GridLayoutEditor_CancelSearch = 62,
+        GridLayoutEditor_CancelSearch = 61,
         // (undocumented)
-        GridLayoutEditor_MoveBottom = 67,
+        GridLayoutEditor_MoveBottom = 66,
         // (undocumented)
-        GridLayoutEditor_MoveDown = 66,
+        GridLayoutEditor_MoveDown = 65,
         // (undocumented)
-        GridLayoutEditor_MoveTop = 65,
+        GridLayoutEditor_MoveTop = 64,
         // (undocumented)
-        GridLayoutEditor_MoveUp = 64,
+        GridLayoutEditor_MoveUp = 63,
         // (undocumented)
-        GridLayoutEditor_SearchNext = 63,
+        GridLayoutEditor_SearchNext = 62,
         // (undocumented)
-        LitIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed = 2,
+        LitIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed = 1,
         // (undocumented)
-        Missing = 0,
+        MoveOrderPad = 89,
         // (undocumented)
-        MoveOrderPad = 90,
+        NewBalancesDitem = 25,
         // (undocumented)
-        NewBalancesDitem = 26,
+        NewBrandingSplashWebPageDitem = 29,
         // (undocumented)
-        NewBrandingSplashWebPageDitem = 30,
+        NewBrokerageAccountsDitem = 22,
         // (undocumented)
-        NewBrokerageAccountsDitem = 23,
+        NewBuyOrderRequestDitem = 30,
         // (undocumented)
-        NewBuyOrderRequestDitem = 31,
+        NewDepthAndTradesDitem = 13,
         // (undocumented)
-        NewDepthAndTradesDitem = 14,
+        NewDepthDitem = 15,
         // (undocumented)
-        NewDepthDitem = 16,
+        NewEtoPriceQuotationDitem = 27,
         // (undocumented)
-        NewEtoPriceQuotationDitem = 28,
+        NewExtensionsDitem = 11,
         // (undocumented)
-        NewExtensionsDitem = 12,
+        NewGeneralWebPageDitem = 28,
         // (undocumented)
-        NewGeneralWebPageDitem = 29,
+        NewHoldingsDitem = 24,
         // (undocumented)
-        NewHoldingsDitem = 25,
+        NewNewsBodyDitem = 17,
         // (undocumented)
-        NewNewsBodyDitem = 18,
+        NewNewsHeadlinesDitem = 16,
         // (undocumented)
-        NewNewsHeadlinesDitem = 17,
+        NewOrderRequestDitem = 21,
         // (undocumented)
-        NewOrderRequestDitem = 22,
+        NewOrdersDitem = 23,
         // (undocumented)
-        NewOrdersDitem = 24,
+        NewPlaceholderDitem = 10,
         // (undocumented)
-        NewPlaceholderDitem = 11,
+        NewSellOrderRequestDitem = 31,
         // (undocumented)
-        NewSellOrderRequestDitem = 32,
+        NewSettingsDitem = 26,
         // (undocumented)
-        NewSettingsDitem = 27,
+        NewStatusDitem = 19,
         // (undocumented)
-        NewStatusDitem = 20,
+        NewSymbolsDitem = 12,
         // (undocumented)
-        NewSymbolsDitem = 13,
+        NewTopShareholdersDitem = 18,
         // (undocumented)
-        NewTopShareholdersDitem = 19,
+        NewTradesDitem = 20,
         // (undocumented)
-        NewTradesDitem = 21,
+        NewWatchlistDitem = 14,
         // (undocumented)
-        NewWatchlistDitem = 15,
+        OrderRequest_Back = 81,
         // (undocumented)
-        OrderRequest_Back = 82,
+        OrderRequest_New = 80,
         // (undocumented)
-        OrderRequest_New = 81,
+        OrderRequest_Review = 82,
         // (undocumented)
-        OrderRequest_Review = 83,
+        OrderRequest_Send = 83,
         // (undocumented)
-        OrderRequest_Send = 84,
+        OrderRequest_TogglePrimary = 84,
         // (undocumented)
-        OrderRequest_TogglePrimary = 85,
+        PariDepthGridsLayoutEditor_AskDepth = 56,
         // (undocumented)
-        PariDepthGridsLayoutEditor_AskDepth = 57,
+        PariDepthGridsLayoutEditor_BidDepth = 55,
         // (undocumented)
-        PariDepthGridsLayoutEditor_BidDepth = 56,
+        PariDepthGridsLayoutEditor_Cancel = 60,
         // (undocumented)
-        PariDepthGridsLayoutEditor_Cancel = 61,
+        PariDepthGridsLayoutEditor_Ok = 59,
         // (undocumented)
-        PariDepthGridsLayoutEditor_Ok = 60,
+        PariDepthGridsLayoutEditor_Trades = 58,
         // (undocumented)
-        PariDepthGridsLayoutEditor_Trades = 59,
+        PariDepthGridsLayoutEditor_Watchlist = 57,
         // (undocumented)
-        PariDepthGridsLayoutEditor_Watchlist = 58,
+        ResetLayout = 33,
         // (undocumented)
-        ResetLayout = 34,
+        RoutedIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed = 2,
         // (undocumented)
-        RoutedIvemIdSelect_ToggleSearchTermNotExchangedMarketProcessed = 3,
+        SaveLayout = 32,
         // (undocumented)
-        SaveLayout = 33,
+        SelectGridColumns = 8,
         // (undocumented)
-        SelectGridColumns = 9,
+        SellOrderPad = 86,
         // (undocumented)
-        SellOrderPad = 87,
+        SetAccountLinking = 6,
         // (undocumented)
-        SetAccountLinking = 7,
+        SetSymbolLinking = 4,
         // (undocumented)
-        SetSymbolLinking = 5,
+        SignInAgain = 35,
         // (undocumented)
-        SignInAgain = 36,
+        SignOut = 34,
         // (undocumented)
-        SignOut = 35,
+        Symbols_NextPage = 71,
         // (undocumented)
-        Symbols_NextPage = 72,
+        Symbols_Query = 69,
         // (undocumented)
-        Symbols_Query = 70,
+        Symbols_Subscribe = 70,
         // (undocumented)
-        Symbols_Subscribe = 71,
+        ToggleAccountLinking = 5,
         // (undocumented)
-        ToggleAccountLinking = 6,
+        ToggleSymbolLinking = 3,
         // (undocumented)
-        ToggleSymbolLinking = 4,
+        TopShareholders_Compare = 79,
         // (undocumented)
-        TopShareholders_Compare = 80,
+        TopShareholders_CompareMode = 77,
         // (undocumented)
-        TopShareholders_CompareMode = 78,
+        TopShareholders_DetailsMode = 78,
         // (undocumented)
-        TopShareholders_DetailsMode = 79,
+        TopShareholders_HistoricalMode = 76,
         // (undocumented)
-        TopShareholders_HistoricalMode = 77,
+        TopShareholders_TodayMode = 75,
         // (undocumented)
-        TopShareholders_TodayMode = 76,
+        Watchlist_DeleteSymbol = 47,
         // (undocumented)
-        Watchlist_DeleteSymbol = 48,
+        Watchlist_New = 48,
         // (undocumented)
-        Watchlist_New = 49,
+        Watchlist_Open = 49,
         // (undocumented)
-        Watchlist_Open = 50,
-        // (undocumented)
-        Watchlist_Save = 51
+        Watchlist_Save = 50
     }
     // (undocumented)
     export function idToDefaultKeyboardShortcut(id: Id): Command.KeyboardShortcut | undefined;
@@ -11068,33 +11165,26 @@ export namespace JsonValue {
 // @public (undocumented)
 export type JsonValueArray = Array<JsonValue>;
 
-// Warning: (ae-missing-release-tag) "KeyboardService" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "KeyboardService" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export class KeyboardService {
     // (undocumented)
-    deregisterCancelContext(context: CancelCommandContext): void;
+    deregisterCommandContext(context: CommandContext): void;
     // (undocumented)
-    deregisterCommandContext(context: ActionCommandContext): void;
-    // Warning: (ae-forgotten-export) The symbol "ActionCommandContext" needs to be exported by the entry point public-api.d.ts
-    //
+    registerCommandContext(context: CommandContext, root?: boolean): void;
     // (undocumented)
-    registerActionCommandContext(context: ActionCommandContext, root?: boolean): void;
-    // Warning: (ae-forgotten-export) The symbol "CancelCommandContext" needs to be exported by the entry point public-api.d.ts
-    //
-    // (undocumented)
-    registerCancelContext(context: CancelCommandContext): void;
+    get rootCommandContext(): CommandContext;
 }
 
 // @public (undocumented)
 export namespace KeyboardService {
     // (undocumented)
-    export interface ActionCommandContextRegistration {
+    export interface CommandContextRegistration {
         // (undocumented)
-        context: ActionCommandContext;
+        context: CommandContext;
         // (undocumented)
-        keyboardEventListener: KeyboardEventListener;
+        keyboardBubblingEventListener: KeyboardEventListener;
+        // (undocumented)
+        keyboardCaptureEventListener: KeyboardEventListener;
         // (undocumented)
         root: boolean;
     }
@@ -18418,9 +18508,6 @@ export namespace ServicesStaticInitialise {
     export function initialise(): void;
 }
 
-// Warning: (ae-missing-release-tag) "SessionInfoService" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-// Warning: (ae-missing-release-tag) "SessionInfoService" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export class SessionInfoService {
     // (undocumented)
@@ -19731,6 +19818,8 @@ export const enum StringId {
     ColorSettingsItemStateDisplay_Never = 956,
     // (undocumented)
     ColorSettingsItemStateDisplay_Value = 958,
+    // (undocumented)
+    CommandContextDisplay_Root = 1743,
     // (undocumented)
     ConfigExternalError = 12,
     // (undocumented)

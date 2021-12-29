@@ -4,21 +4,21 @@
  * License: motionite.trade/license/motif
  */
 
-export class CancelCommandContext {
+export class Cancellable {
     constructor (
         public readonly name: string, // for error reporting only
-        public readonly priority: CancelCommandContext.Priority,
-        public readonly executeEventer: CancelCommandContext.ExecuteEventer,
+        public readonly priority: Cancellable.Priority,
+        public readonly cancelEventer: Cancellable.ExecuteEventer,
     ) {
         // no code
     }
 
-    execute() {
-        this.executeEventer();
+    cancel() {
+        this.cancelEventer();
     }
 }
 
-export namespace CancelCommandContext {
+export namespace Cancellable {
     export type ExecuteEventer = (this: void) => void;
 
     export const enum Priority {
