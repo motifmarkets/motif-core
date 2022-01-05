@@ -240,20 +240,10 @@ export const enum TBrokerageAccOrAggFieldId {
 export const enum SideId {
     Buy,
     Sell,
-    BuyMinus,
-    SellPlus,
-    SellShort,
-    SellShortExempt,
-    Undisclosed,
-    Cross,
-    CrossShort,
-    CrossShortExempt,
-    AsDefined,
-    Opposite,
-    Subscribe,
-    Redeem,
-    Lend,
-    Borrow,
+    IntraDayShortSell,
+    RegulatedShortSell,
+    ProprietaryShortSell,
+    ProprietaryDayTrade,
 }
 
 export const enum SymbolFieldId {
@@ -3181,16 +3171,22 @@ export namespace MarketInfo {
 //    const NzxAllowedOrderTypes = [];
 
     const MyxAllowedOrderTypeIds = [OrderTypeId.Limit, OrderTypeId.Market, OrderTypeId.MarketAtBest];
-    const MyxAllowedTimeInForceIds =
-        [
-            TimeInForceId.Day,
-            TimeInForceId.GoodTillCancel,
-            TimeInForceId.FillOrKill,
-            TimeInForceId.FillAndKill,
-            TimeInForceId.GoodTillDate
-        ];
-    const StandardAllowedSideTypeIds = [SideId.Buy, SideId.Sell, SideId.SellShort];
-    const MyxAllowedSideTypeIds = [SideId.Buy, SideId.Sell, SideId.SellShort, SideId.SellShortExempt];
+    const MyxAllowedTimeInForceIds = [
+        TimeInForceId.Day,
+        TimeInForceId.GoodTillCancel,
+        TimeInForceId.FillOrKill,
+        TimeInForceId.FillAndKill,
+        TimeInForceId.GoodTillDate
+    ];
+    const StandardAllowedSideTypeIds = [SideId.Buy, SideId.Sell];
+    const MyxAllowedSideTypeIds = [
+        SideId.Buy,
+        SideId.Sell,
+        SideId.IntraDayShortSell,
+        SideId.RegulatedShortSell,
+        SideId.ProprietaryShortSell,
+        SideId.ProprietaryDayTrade,
+    ];
 
     interface Info {
         readonly id: Id;
@@ -5918,27 +5914,19 @@ export namespace Side {
     export const all = [
         SideId.Buy,
         SideId.Sell,
-        SideId.BuyMinus,
-        SideId.SellPlus,
-        SideId.SellShort,
-        SideId.SellShortExempt,
-        SideId.Undisclosed,
-        SideId.Cross,
-        SideId.CrossShort,
-        SideId.CrossShortExempt,
-        SideId.AsDefined,
-        SideId.Opposite,
-        SideId.Subscribe,
-        SideId.Redeem,
-        SideId.Lend,
-        SideId.Borrow,
+        SideId.IntraDayShortSell,
+        SideId.RegulatedShortSell,
+        SideId.ProprietaryShortSell,
+        SideId.ProprietaryDayTrade,
     ];
 
     interface Info {
-        id: Id;
-        name: string;
-        display: StringId;
-        bidAsk: BidAskSideId | undefined;
+        readonly id: Id;
+        readonly name: string;
+        readonly bidAskSideId: BidAskSideId | undefined;
+        readonly shortSell: boolean;
+        readonly displayId: StringId;
+        readonly abbreviationId: StringId;
     }
 
     type InfosObject = { [id in keyof typeof SideId]: Info };
@@ -5947,98 +5935,50 @@ export namespace Side {
         Buy: {
             id: SideId.Buy,
             name: 'Buy',
-            display: StringId.SideDisplay_Buy,
-            bidAsk: BidAskSideId.Bid,
+            bidAskSideId: BidAskSideId.Bid,
+            shortSell: false,
+            displayId: StringId.SideDisplay_Buy,
+            abbreviationId: StringId.SideAbbreviation_Buy,
         },
         Sell: {
             id: SideId.Sell,
             name: 'Sell',
-            display: StringId.SideDisplay_Sell,
-            bidAsk: BidAskSideId.Ask,
+            bidAskSideId: BidAskSideId.Ask,
+            shortSell: false,
+            displayId: StringId.SideDisplay_Sell,
+            abbreviationId: StringId.SideAbbreviation_Sell,
         },
-        BuyMinus: {
-            id: SideId.BuyMinus,
-            name: 'BuyMinus',
-            display: StringId.SideDisplay_BuyMinus,
-            bidAsk: BidAskSideId.Bid,
+        IntraDayShortSell: {
+            id: SideId.IntraDayShortSell,
+            name: 'IntraDayShortSell',
+            bidAskSideId: BidAskSideId.Ask,
+            shortSell: true,
+            displayId: StringId.SideDisplay_IntraDayShortSell,
+            abbreviationId: StringId.SideAbbreviation_IntraDayShortSell,
         },
-        SellPlus: {
-            id: SideId.SellPlus,
-            name: 'SellPlus',
-            display: StringId.SideDisplay_SellPlus,
-            bidAsk: BidAskSideId.Ask,
+        RegulatedShortSell: {
+            id: SideId.RegulatedShortSell,
+            name: 'RegulatedShortSell',
+            bidAskSideId: BidAskSideId.Ask,
+            shortSell: true,
+            displayId: StringId.SideDisplay_RegulatedShortSell,
+            abbreviationId: StringId.SideAbbreviation_RegulatedShortSell,
         },
-        SellShort: {
-            id: SideId.SellShort,
-            name: 'SellShort',
-            display: StringId.SideDisplay_SellShort,
-            bidAsk: BidAskSideId.Ask,
+        ProprietaryShortSell: {
+            id: SideId.ProprietaryShortSell,
+            name: 'ProprietaryShortSell',
+            bidAskSideId: BidAskSideId.Ask,
+            shortSell: true,
+            displayId: StringId.SideDisplay_ProprietaryShortSell,
+            abbreviationId: StringId.SideAbbreviation_ProprietaryShortSell,
         },
-        SellShortExempt: {
-            id: SideId.SellShortExempt,
-            name: 'SellShortExempt',
-            display: StringId.SideDisplay_SellShortExempt,
-            bidAsk: BidAskSideId.Ask,
-        },
-        Undisclosed: {
-            id: SideId.Undisclosed,
-            name: 'Undisclosed',
-            display: StringId.SideDisplay_Undisclosed,
-            bidAsk: undefined,
-        },
-        Cross: {
-            id: SideId.Cross,
-            name: 'Cross',
-            display: StringId.SideDisplay_Cross,
-            bidAsk: undefined,
-        },
-        CrossShort: {
-            id: SideId.CrossShort,
-            name: 'CrossShort',
-            display: StringId.SideDisplay_CrossShort,
-            bidAsk: undefined,
-        },
-        CrossShortExempt: {
-            id: SideId.CrossShortExempt,
-            name: 'CrossShortExempt',
-            display: StringId.SideDisplay_CrossShortExempt,
-            bidAsk: undefined,
-        },
-        AsDefined: {
-            id: SideId.AsDefined,
-            name: 'AsDefined',
-            display: StringId.SideDisplay_AsDefined,
-            bidAsk: undefined,
-        },
-        Opposite: {
-            id: SideId.Opposite,
-            name: 'Opposite',
-            display: StringId.SideDisplay_Opposite,
-            bidAsk: undefined,
-        },
-        Subscribe: {
-            id: SideId.Subscribe,
-            name: 'Subscribe',
-            display: StringId.SideDisplay_Subscribe,
-            bidAsk: undefined,
-        },
-        Redeem: {
-            id: SideId.Redeem,
-            name: 'Redeem',
-            display: StringId.SideDisplay_Redeem,
-            bidAsk: undefined,
-        },
-        Lend: {
-            id: SideId.Lend,
-            name: 'Lend',
-            display: StringId.SideDisplay_Lend,
-            bidAsk: undefined,
-        },
-        Borrow: {
-            id: SideId.Borrow,
-            name: 'Borrow',
-            display: StringId.SideDisplay_Borrow,
-            bidAsk: undefined,
+        ProprietaryDayTrade: {
+            id: SideId.ProprietaryDayTrade,
+            name: 'ProprietaryDayTrade',
+            bidAskSideId: BidAskSideId.Ask,
+            shortSell: true,
+            displayId: StringId.SideDisplay_ProprietaryDayTrade,
+            abbreviationId: StringId.SideAbbreviation_ProprietaryDayTrade,
         },
     } as const;
 
@@ -6054,11 +5994,19 @@ export namespace Side {
     }
 
     export function idToDisplayId(id: Id): StringId {
-        return infos[id].display;
+        return infos[id].displayId;
     }
 
     export function idToDisplay(id: Id): string {
         return Strings[idToDisplayId(id)];
+    }
+
+    export function idToAbbreviationId(id: Id): StringId {
+        return infos[id].abbreviationId;
+    }
+
+    export function idToAbbreviation(id: Id): string {
+        return Strings[idToAbbreviationId(id)];
     }
 
     export function compareId(left: Id, right: Id): Integer {
@@ -6074,7 +6022,7 @@ export namespace Side {
     }
 
     export function tryIdToBidAskSideId(id: Id) {
-        return infos[id].bidAsk;
+        return infos[id].bidAskSideId;
     }
 
     export function tryNameToId(name: string): Id | undefined {
@@ -6084,6 +6032,10 @@ export namespace Side {
 
     export function tryJsonValueToId(json: string): Id | undefined {
         return tryNameToId(json);
+    }
+
+    export function idIsShortSell(id: Id): boolean {
+        return infos[id].shortSell;
     }
 }
 

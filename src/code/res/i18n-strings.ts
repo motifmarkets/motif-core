@@ -637,21 +637,17 @@ export const enum StringId {
     BidAskSideDisplay_Bid,
     BidAskSideDisplay_Ask,
     SideDisplay_Buy,
+    SideAbbreviation_Buy,
     SideDisplay_Sell,
-    SideDisplay_BuyMinus,
-    SideDisplay_SellPlus,
-    SideDisplay_SellShort,
-    SideDisplay_SellShortExempt,
-    SideDisplay_Undisclosed,
-    SideDisplay_Cross,
-    SideDisplay_CrossShort,
-    SideDisplay_CrossShortExempt,
-    SideDisplay_AsDefined,
-    SideDisplay_Opposite,
-    SideDisplay_Subscribe,
-    SideDisplay_Redeem,
-    SideDisplay_Lend,
-    SideDisplay_Borrow,
+    SideAbbreviation_Sell,
+    SideDisplay_IntraDayShortSell,
+    SideAbbreviation_IntraDayShortSell,
+    SideDisplay_RegulatedShortSell,
+    SideAbbreviation_RegulatedShortSell,
+    SideDisplay_ProprietaryShortSell,
+    SideAbbreviation_ProprietaryShortSell,
+    SideDisplay_ProprietaryDayTrade,
+    SideAbbreviation_ProprietaryDayTrade,
     EquityOrderTypeDisplay_Limit,
     EquityOrderTypeDisplay_Best,
     EquityOrderTypeDisplay_Market,
@@ -4940,79 +4936,59 @@ export namespace I18nStrings {
                 en: 'Buy',
             }
         },
+        SideAbbreviation_Buy: {
+            id: StringId.SideAbbreviation_Buy, translations: {
+                en: 'Buy',
+            }
+        },
         SideDisplay_Sell: {
             id: StringId.SideDisplay_Sell, translations: {
                 en: 'Sell',
             }
         },
-        SideDisplay_BuyMinus: {
-            id: StringId.SideDisplay_BuyMinus, translations: {
-                en: 'BuyMinus',
+        SideAbbreviation_Sell: {
+            id: StringId.SideAbbreviation_Sell, translations: {
+                en: 'Sell',
             }
         },
-        SideDisplay_SellPlus: {
-            id: StringId.SideDisplay_SellPlus, translations: {
-                en: 'SellPlus',
+        SideDisplay_IntraDayShortSell: {
+            id: StringId.SideDisplay_IntraDayShortSell, translations: {
+                en: 'Intra-Day Short-Sell',
             }
         },
-        SideDisplay_SellShort: {
-            id: StringId.SideDisplay_SellShort, translations: {
-                en: 'SellShort',
+        SideAbbreviation_IntraDayShortSell: {
+            id: StringId.SideAbbreviation_IntraDayShortSell, translations: {
+                en: 'IDSS',
             }
         },
-        SideDisplay_SellShortExempt: {
-            id: StringId.SideDisplay_SellShortExempt, translations: {
-                en: 'SellShortExempt',
+        SideDisplay_RegulatedShortSell: {
+            id: StringId.SideDisplay_RegulatedShortSell, translations: {
+                en: 'Regulated Short-Sell',
             }
         },
-        SideDisplay_Undisclosed: {
-            id: StringId.SideDisplay_Undisclosed, translations: {
-                en: 'Undisclosed',
+        SideAbbreviation_RegulatedShortSell: {
+            id: StringId.SideAbbreviation_RegulatedShortSell, translations: {
+                en: 'RSS',
             }
         },
-        SideDisplay_Cross: {
-            id: StringId.SideDisplay_Cross, translations: {
-                en: 'Cross',
+        SideDisplay_ProprietaryShortSell: {
+            id: StringId.SideDisplay_ProprietaryShortSell, translations: {
+                en: 'Proprietary Short-Sell',
             }
         },
-        SideDisplay_CrossShort: {
-            id: StringId.SideDisplay_CrossShort, translations: {
-                en: 'CrossShort',
+        SideAbbreviation_ProprietaryShortSell: {
+            id: StringId.SideAbbreviation_ProprietaryShortSell, translations: {
+                en: 'PSS',
             }
         },
-        SideDisplay_CrossShortExempt: {
-            id: StringId.SideDisplay_CrossShortExempt, translations: {
-                en: 'CrossShortExempt',
+        SideDisplay_ProprietaryDayTrade: {
+            id: StringId.SideDisplay_ProprietaryDayTrade, translations: {
+                en: 'Proprietary Day Trade',
             }
         },
-        SideDisplay_AsDefined: {
-            id: StringId.SideDisplay_AsDefined, translations: {
-                en: 'AsDefined',
-            }
-        },
-        SideDisplay_Opposite: {
-            id: StringId.SideDisplay_Opposite, translations: {
-                en: 'Opposite',
-            }
-        },
-        SideDisplay_Subscribe: {
-            id: StringId.SideDisplay_Subscribe, translations: {
-                en: 'Subscribe',
-            }
-        },
-        SideDisplay_Redeem: {
-            id: StringId.SideDisplay_Redeem, translations: {
-                en: 'Redeem',
-            }
-        },
-        SideDisplay_Lend: {
-            id: StringId.SideDisplay_Lend, translations: {
-                en: 'Lend',
-            }
-        },
-        SideDisplay_Borrow: {
-            id: StringId.SideDisplay_Borrow, translations: {
-                en: 'Borrow',
+        SideAbbreviation_ProprietaryDayTrade: {
+            id: StringId.SideAbbreviation_ProprietaryDayTrade, translations: {
+                en: 'PDT',
             }
         },
         EquityOrderTypeDisplay_Limit: {

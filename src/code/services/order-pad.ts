@@ -17,6 +17,7 @@ import {
     BrokerageAccountsDataItem,
     CancelOrderRequestDataDefinition,
     DataItemIncubator,
+    ExchangeId,
     ExchangeInfo,
     FeedStatusId,
     Holding,
@@ -32,7 +33,7 @@ import {
     OrderRequestDataDefinition,
     OrderRequestType,
     OrderRequestTypeId,
-    OrderRoute,
+    OrderRoute, OrderShortSellTypeId,
     OrderTrigger,
     OrderTriggerType,
     OrderTriggerTypeId,
@@ -1049,16 +1050,6 @@ export class OrderPad {
         try {
             this.loadPlace(accountId);
             this.internalSetSideId(SideId.Sell);
-        } finally {
-            this.endChanges();
-        }
-    }
-
-    loadSellShort(accountId?: BrokerageAccountId) {
-        this.beginChanges();
-        try {
-            this.loadPlace(accountId);
-            this.internalSetSideId(SideId.SellShort);
         } finally {
             this.endChanges();
         }
@@ -2848,6 +2839,11 @@ export class OrderPad {
     }
 
     private loadPlaceMarketOrderDetails(details: MarketOrderDetails) {
+        details.brokerageSchedule = undefined; // not supported currently
+        details.shortSellTypeId = undefined; // assume
+        details.instructions = undefined; // assume
+
+
         if (this.routedIvemId === undefined || !this.isFieldOk(OrderPad.FieldId.Symbol)) {
             throw new AssertInternalError('OPLPMODR1445238');
         } else {
@@ -2864,10 +2860,17 @@ export class OrderPad {
             } else {
                 details.sideId = bidAskSideId;
             }
-        }
 
-        details.brokerageSchedule = undefined; // not supported currently
-        details.instructions = undefined; // not supported currently
+            if (Side.idIsShortSell(this.sideId)) {
+                switch (details.exchangeId) {
+                    case ExchangeId.Myx: {
+                        details.shortSellTypeId = OrderShortSellTypeId.ShortSell;
+                        const instructions =
+
+                    }
+                }
+            }
+        }
 
         if (this.orderTypeId === undefined || !this.isFieldOk(OrderPad.FieldId.OrderType)) {
             throw new AssertInternalError('OPLPMODT988445');
@@ -2911,8 +2914,6 @@ export class OrderPad {
                 }
             }
         }
-
-        details.shortSellTypeId = undefined; // not supported currently
     }
 
     private loadAmendMarketOrderDetails(details: MarketOrderDetails) {
