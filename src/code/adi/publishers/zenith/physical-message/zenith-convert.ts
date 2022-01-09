@@ -70,6 +70,7 @@ import {
     MarketsDataMessage,
     MarketTransaction,
     MovementId, OrderDetails,
+    OrderInstructionId,
     OrderPriceUnitTypeId,
     OrderRequestError as AdiOrderRequestError,
     OrderRequestErrorCodeId,
@@ -2039,6 +2040,80 @@ export namespace ZenithConvert {
                 case BidAskSideId.Ask: return Zenith.Side.Ask;
                 default:
                     throw new UnreachableCaseError('ZCSFI8860911', value);
+            }
+        }
+    }
+
+    export namespace OrderInstruction {
+        export function toIdArray(value: Zenith.OrderInstruction[] | undefined): OrderInstructionId[] {
+            if (value === undefined) {
+                return [];
+            } else {
+                const count = value.length;
+                const result = new Array<OrderInstructionId>(count);
+                for (let i = 0; i < count; i++) {
+                    const instruction = value[i];
+                    result[i] = toId(instruction);
+                }
+                return result;
+            }
+        }
+
+        export function fromIdArray(value: OrderInstructionId[]): Zenith.OrderInstruction[] {
+            const count = value.length;
+            const result = new Array<Zenith.OrderInstruction>(count);
+            for (let i = 0; i < count; i++) {
+                const instructionId = value[i];
+                result[i] = fromId(instructionId);
+            }
+            return result;
+        }
+
+        function toId(value: Zenith.OrderInstruction): OrderInstructionId {
+            switch (value) {
+                case Zenith.OrderInstruction.PSS: return OrderInstructionId.PSS;
+                case Zenith.OrderInstruction.IDSS: return OrderInstructionId.IDSS;
+                case Zenith.OrderInstruction.PDT: return OrderInstructionId.PDT;
+                case Zenith.OrderInstruction.RSS: return OrderInstructionId.RSS;
+                case Zenith.OrderInstruction.OnOpen: return OrderInstructionId.OnOpen;
+                case Zenith.OrderInstruction.OnClose: return OrderInstructionId.OnClose;
+                case Zenith.OrderInstruction.Session: return OrderInstructionId.Session;
+                case Zenith.OrderInstruction.Best: return OrderInstructionId.Best;
+                case Zenith.OrderInstruction.Sweep: return OrderInstructionId.Sweep;
+                case Zenith.OrderInstruction.Block: return OrderInstructionId.Block;
+                case Zenith.OrderInstruction.Mid: return OrderInstructionId.Mid;
+                case Zenith.OrderInstruction.MidHalf: return OrderInstructionId.MidHalf;
+                case Zenith.OrderInstruction.Dark: return OrderInstructionId.Dark;
+                case Zenith.OrderInstruction.DarkHalf: return OrderInstructionId.DarkHalf;
+                case Zenith.OrderInstruction.Any: return OrderInstructionId.Any;
+                case Zenith.OrderInstruction.AnyHalf: return OrderInstructionId.AnyHalf;
+                case Zenith.OrderInstruction.Single: return OrderInstructionId.Single;
+                default:
+                    throw new UnreachableCaseError('ZCOITI831992', value);
+            }
+        }
+
+        function fromId(value: OrderInstructionId): Zenith.OrderInstruction {
+            switch (value) {
+                case OrderInstructionId.PSS: return Zenith.OrderInstruction.PSS;
+                case OrderInstructionId.IDSS: return Zenith.OrderInstruction.IDSS;
+                case OrderInstructionId.PDT: return Zenith.OrderInstruction.PDT;
+                case OrderInstructionId.RSS: return Zenith.OrderInstruction.RSS;
+                case OrderInstructionId.OnOpen: return Zenith.OrderInstruction.OnOpen;
+                case OrderInstructionId.OnClose: return Zenith.OrderInstruction.OnClose;
+                case OrderInstructionId.Session: return Zenith.OrderInstruction.Session;
+                case OrderInstructionId.Best: return Zenith.OrderInstruction.Best;
+                case OrderInstructionId.Sweep: return Zenith.OrderInstruction.Sweep;
+                case OrderInstructionId.Block: return Zenith.OrderInstruction.Block;
+                case OrderInstructionId.Mid: return Zenith.OrderInstruction.Mid;
+                case OrderInstructionId.MidHalf: return Zenith.OrderInstruction.MidHalf;
+                case OrderInstructionId.Dark: return Zenith.OrderInstruction.Dark;
+                case OrderInstructionId.DarkHalf: return Zenith.OrderInstruction.DarkHalf;
+                case OrderInstructionId.Any: return Zenith.OrderInstruction.Any;
+                case OrderInstructionId.AnyHalf: return Zenith.OrderInstruction.AnyHalf;
+                case OrderInstructionId.Single: return Zenith.OrderInstruction.Single;
+                default:
+                    throw new UnreachableCaseError('ZCOITI831992', value);
             }
         }
     }

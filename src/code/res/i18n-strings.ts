@@ -1197,7 +1197,10 @@ export const enum StringId {
     OrderPadAccountCaption,
     OrderPadSideTitle_Buy,
     OrderPadSideTitle_Sell,
-    OrderPadSideTitle_SellShort,
+    OrderPadSideTitle_IntraDayShortSell,
+    OrderPadSideTitle_RegulatedShortSell,
+    OrderPadSideTitle_ProprietaryShortSell,
+    OrderPadSideTitle_ProprietaryDayTrade,
     OrderPadSideTitle,
     OrderPadSideCaption,
     OrderPadSymbolTitle,
@@ -7737,9 +7740,24 @@ export namespace I18nStrings {
                 en: 'Sell',
             }
         },
-        OrderPadSideTitle_SellShort: {
-            id: StringId.OrderPadSideTitle_SellShort, translations: {
-                en: 'Short Sell',
+        OrderPadSideTitle_IntraDayShortSell: {
+            id: StringId.OrderPadSideTitle_IntraDayShortSell, translations: {
+                en: 'Intra day short sell',
+            }
+        },
+        OrderPadSideTitle_RegulatedShortSell: {
+            id: StringId.OrderPadSideTitle_RegulatedShortSell, translations: {
+                en: 'Regulated short sell',
+            }
+        },
+        OrderPadSideTitle_ProprietaryShortSell: {
+            id: StringId.OrderPadSideTitle_ProprietaryShortSell, translations: {
+                en: 'Proprietary short sell',
+            }
+        },
+        OrderPadSideTitle_ProprietaryDayTrade: {
+            id: StringId.OrderPadSideTitle_ProprietaryDayTrade, translations: {
+                en: 'Proprietary day trade',
             }
         },
         OrderPadSideTitle: {

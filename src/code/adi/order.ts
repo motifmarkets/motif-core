@@ -1111,6 +1111,7 @@ export namespace Order {
             code: '',
             sideId: BidAskSide.nullId,
             brokerageSchedule: undefined,
+            instructionIds: [],
             equityOrderTypeId: OrderTypeId.Market,
             limitPrice: undefined,
             quantity: 0,

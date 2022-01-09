@@ -151,6 +151,7 @@ export namespace ZenithOrderConvert {
         order.code = value.Code;
         order.sideId = ZenithConvert.Side.toId(value.Side);
         order.brokerageSchedule = value.BrokerageSchedule;
+        order.instructionIds = ZenithConvert.OrderInstruction.toIdArray(value.Instructions);
 
         switch (value.Style) {
             case Zenith.TradingController.OrderStyle.Unknown:

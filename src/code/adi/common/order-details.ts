@@ -8,7 +8,7 @@ import { Decimal } from 'decimal.js-light/decimal';
 import { Integer, newUndefinableDate, newUndefinableDecimal } from '../../sys/sys-internal-api';
 import {
     BidAskSideId, ExchangeId,
-    IvemClassId, OrderPriceUnitTypeId, OrderShortSellTypeId,
+    IvemClassId, OrderInstructionId, OrderPriceUnitTypeId, OrderShortSellTypeId,
     OrderTypeId, TimeInForceId
 } from './data-types';
 
@@ -17,7 +17,7 @@ export abstract class OrderDetails {
     code: string;
     sideId: BidAskSideId;
     brokerageSchedule: string | undefined;
-    instructions: readonly string[] | undefined;
+    instructionIds: readonly OrderInstructionId[];
 
     constructor(private _styleId: IvemClassId) { }
 
@@ -28,7 +28,7 @@ export abstract class OrderDetails {
         this.code = other.code;
         this.sideId = other.sideId;
         this.brokerageSchedule = other.brokerageSchedule;
-        this.instructions = other.instructions;
+        this.instructionIds = other.instructionIds;
     }
 
     abstract createCopy(): OrderDetails;

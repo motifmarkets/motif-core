@@ -16,9 +16,7 @@ import {
     BrokerageAccountsDataDefinition,
     BrokerageAccountsDataItem,
     CancelOrderRequestDataDefinition,
-    DataItemIncubator,
-    ExchangeId,
-    ExchangeInfo,
+    DataItemIncubator, ExchangeInfo,
     FeedStatusId,
     Holding,
     ImmediateOrderTrigger,
@@ -29,12 +27,12 @@ import {
     MovementId,
     MoveOrderRequestDataDefinition,
     Order,
+    OrderExtendedSide,
     OrderId,
     OrderRequestDataDefinition,
     OrderRequestType,
     OrderRequestTypeId,
-    OrderRoute, OrderShortSellTypeId,
-    OrderTrigger,
+    OrderRoute, OrderTrigger,
     OrderTriggerType,
     OrderTriggerTypeId,
     OrderType,
@@ -2840,8 +2838,6 @@ export class OrderPad {
 
     private loadPlaceMarketOrderDetails(details: MarketOrderDetails) {
         details.brokerageSchedule = undefined; // not supported currently
-        details.shortSellTypeId = undefined; // assume
-        details.instructions = undefined; // assume
 
 
         if (this.routedIvemId === undefined || !this.isFieldOk(OrderPad.FieldId.Symbol)) {
@@ -2854,22 +2850,13 @@ export class OrderPad {
         if (this.sideId === undefined || !this.isFieldOk(OrderPad.FieldId.Side)) {
             throw new AssertInternalError('OPLPMODSU4545998');
         } else {
-            const bidAskSideId = Side.tryIdToBidAskSideId(this.sideId);
-            if (bidAskSideId === undefined) {
-                throw new AssertInternalError('OPLPMODSB874448');
-            } else {
-                details.sideId = bidAskSideId;
-            }
+            const orderSideAndShortSellTypeAndInstructions = OrderExtendedSide.calculateOrderSideAndShortSellTypeAndInstructions(
+                this.sideId, details.exchangeId
+            );
 
-            if (Side.idIsShortSell(this.sideId)) {
-                switch (details.exchangeId) {
-                    case ExchangeId.Myx: {
-                        details.shortSellTypeId = OrderShortSellTypeId.ShortSell;
-                        const instructions =
-
-                    }
-                }
-            }
+            details.sideId = orderSideAndShortSellTypeAndInstructions.orderSideId;
+            details.shortSellTypeId = orderSideAndShortSellTypeAndInstructions.shortSellTypeId;
+            details.instructionIds = orderSideAndShortSellTypeAndInstructions.instructionIds;
         }
 
         if (this.orderTypeId === undefined || !this.isFieldOk(OrderPad.FieldId.OrderType)) {

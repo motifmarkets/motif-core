@@ -263,6 +263,26 @@ export const enum BidAskSideId {
     Ask,
 }
 
+export const enum OrderInstructionId {
+    PSS,
+    IDSS,
+    PDT,
+    RSS,
+    OnOpen,
+    OnClose,
+    Session,
+    Best,
+    Sweep,
+    Block,
+    Mid,
+    MidHalf,
+    Dark,
+    DarkHalf,
+    Any,
+    AnyHalf,
+    Single,
+}
+
 export const enum TimeInForceId {
     Day,
     GoodTillCancel,
@@ -5923,7 +5943,7 @@ export namespace Side {
     interface Info {
         readonly id: Id;
         readonly name: string;
-        readonly bidAskSideId: BidAskSideId | undefined;
+        readonly bidAskSideId: BidAskSideId;
         readonly shortSell: boolean;
         readonly displayId: StringId;
         readonly abbreviationId: StringId;
@@ -6021,7 +6041,7 @@ export namespace Side {
         return idToName(id);
     }
 
-    export function tryIdToBidAskSideId(id: Id) {
+    export function idToBidAskSideId(id: Id) {
         return infos[id].bidAskSideId;
     }
 

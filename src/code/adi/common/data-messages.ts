@@ -38,6 +38,7 @@ import {
     MarketId,
     MovementId,
     OrderId,
+    OrderInstructionId,
     OrderPriceUnitTypeId,
     OrderRequestError,
     OrderRequestResultId,
@@ -261,6 +262,7 @@ export namespace OrdersDataMessage {
         code: string;
         sideId: BidAskSideId;
         brokerageSchedule: string | undefined;
+        instructionIds: OrderInstructionId[];
         // market details
         equityOrderTypeId: OrderTypeId;
         limitPrice: Decimal | undefined;
