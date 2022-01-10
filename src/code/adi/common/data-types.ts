@@ -18,6 +18,7 @@ import {
     ComparisonResult,
     CorrectnessId,
     EnumInfoOutOfOrderError,
+    getUniqueElementArraysOverlapElements,
     Integer,
     isArrayEqualUniquely,
     Logger,
@@ -27,8 +28,7 @@ import {
     mSecsPerSec,
     priorityCompareInteger,
     secsPerHour,
-    secsPerMin,
-    UnreachableCaseError
+    secsPerMin, UnreachableCaseError
 } from '../../sys/sys-internal-api';
 
 // No Enum value should have an external dependency or be persisted. Use exports or imports instead.
@@ -237,7 +237,7 @@ export const enum TBrokerageAccOrAggFieldId {
 }
 
 
-export const enum SideId {
+export const enum OrderExtendedSideId {
     Buy,
     Sell,
     IntraDayShortSell,
@@ -258,7 +258,7 @@ export const enum SymbolFieldId {
     Ric,
 }
 
-export const enum BidAskSideId {
+export const enum OrderSideId {
     Bid,
     Ask,
 }
@@ -3198,14 +3198,14 @@ export namespace MarketInfo {
         TimeInForceId.FillAndKill,
         TimeInForceId.GoodTillDate
     ];
-    const StandardAllowedSideTypeIds = [SideId.Buy, SideId.Sell];
+    const StandardAllowedSideTypeIds = [OrderExtendedSideId.Buy, OrderExtendedSideId.Sell];
     const MyxAllowedSideTypeIds = [
-        SideId.Buy,
-        SideId.Sell,
-        SideId.IntraDayShortSell,
-        SideId.RegulatedShortSell,
-        SideId.ProprietaryShortSell,
-        SideId.ProprietaryDayTrade,
+        OrderExtendedSideId.Buy,
+        OrderExtendedSideId.Sell,
+        OrderExtendedSideId.IntraDayShortSell,
+        OrderExtendedSideId.RegulatedShortSell,
+        OrderExtendedSideId.ProprietaryShortSell,
+        OrderExtendedSideId.ProprietaryDayTrade,
     ];
 
     interface Info {
@@ -3225,7 +3225,7 @@ export namespace MarketInfo {
         readonly allowedTimeInForceIds: readonly TimeInForceId[];
         readonly defaultTimeInForceId: TimeInForceId | undefined;
         readonly hasPriceStepRestrictions: boolean; // Should orders to this destination be limited to valid price steps?
-        readonly allowedSideIds: readonly SideId[];
+        readonly allowedSideIds: readonly OrderExtendedSideId[];
         readonly allowedOrderTriggerTypeIds: readonly OrderTriggerTypeId[];
         readonly quantityMultiple: Integer;
         readonly displayPriority: number; // lower is higher priority - only relevant within exchange
@@ -3911,7 +3911,7 @@ export namespace MarketInfo {
         return infos[id].allowedSideIds;
     }
 
-    export function isSideAllowed(id: Id, sideId: SideId) {
+    export function isSideAllowed(id: Id, sideId: OrderExtendedSideId) {
         const allowed = GetAllowedSideIdArray(id);
         return allowed.includes(sideId);
     }
@@ -3944,6 +3944,15 @@ export namespace ExchangeInfo {
         Ptx = 'Ptx',
         Fnsx = 'Fnsx',
         AsxCxa = 'AsxCxa',
+    }
+
+    export namespace Myx {
+        export namespace InstructionId {
+            export const ProprietaryShortSell = OrderInstructionId.PSS;
+            export const IntraDayShortSell = OrderInstructionId.IDSS;
+            export const ProprietaryDayTrade = OrderInstructionId.PDT;
+            export const RegulatedShortSell = OrderInstructionId.RSS;
+        }
     }
 
     let defaultEnvironmentId: ExchangeEnvironmentId;
@@ -5928,74 +5937,74 @@ export namespace OrderPadStatus {
     }
 }
 
-export namespace Side {
-    export type Id = SideId;
+export namespace OrderExtendedSide {
+    export type Id = OrderExtendedSideId;
 
     export const all = [
-        SideId.Buy,
-        SideId.Sell,
-        SideId.IntraDayShortSell,
-        SideId.RegulatedShortSell,
-        SideId.ProprietaryShortSell,
-        SideId.ProprietaryDayTrade,
+        OrderExtendedSideId.Buy,
+        OrderExtendedSideId.Sell,
+        OrderExtendedSideId.IntraDayShortSell,
+        OrderExtendedSideId.RegulatedShortSell,
+        OrderExtendedSideId.ProprietaryShortSell,
+        OrderExtendedSideId.ProprietaryDayTrade,
     ];
 
     interface Info {
         readonly id: Id;
         readonly name: string;
-        readonly bidAskSideId: BidAskSideId;
+        readonly orderSideId: OrderSideId;
         readonly shortSell: boolean;
         readonly displayId: StringId;
         readonly abbreviationId: StringId;
     }
 
-    type InfosObject = { [id in keyof typeof SideId]: Info };
+    type InfosObject = { [id in keyof typeof OrderExtendedSideId]: Info };
 
     const infosObject: InfosObject = {
         Buy: {
-            id: SideId.Buy,
+            id: OrderExtendedSideId.Buy,
             name: 'Buy',
-            bidAskSideId: BidAskSideId.Bid,
+            orderSideId: OrderSideId.Bid,
             shortSell: false,
             displayId: StringId.SideDisplay_Buy,
             abbreviationId: StringId.SideAbbreviation_Buy,
         },
         Sell: {
-            id: SideId.Sell,
+            id: OrderExtendedSideId.Sell,
             name: 'Sell',
-            bidAskSideId: BidAskSideId.Ask,
+            orderSideId: OrderSideId.Ask,
             shortSell: false,
             displayId: StringId.SideDisplay_Sell,
             abbreviationId: StringId.SideAbbreviation_Sell,
         },
         IntraDayShortSell: {
-            id: SideId.IntraDayShortSell,
+            id: OrderExtendedSideId.IntraDayShortSell,
             name: 'IntraDayShortSell',
-            bidAskSideId: BidAskSideId.Ask,
+            orderSideId: OrderSideId.Ask,
             shortSell: true,
             displayId: StringId.SideDisplay_IntraDayShortSell,
             abbreviationId: StringId.SideAbbreviation_IntraDayShortSell,
         },
         RegulatedShortSell: {
-            id: SideId.RegulatedShortSell,
+            id: OrderExtendedSideId.RegulatedShortSell,
             name: 'RegulatedShortSell',
-            bidAskSideId: BidAskSideId.Ask,
+            orderSideId: OrderSideId.Ask,
             shortSell: true,
             displayId: StringId.SideDisplay_RegulatedShortSell,
             abbreviationId: StringId.SideAbbreviation_RegulatedShortSell,
         },
         ProprietaryShortSell: {
-            id: SideId.ProprietaryShortSell,
+            id: OrderExtendedSideId.ProprietaryShortSell,
             name: 'ProprietaryShortSell',
-            bidAskSideId: BidAskSideId.Ask,
+            orderSideId: OrderSideId.Ask,
             shortSell: true,
             displayId: StringId.SideDisplay_ProprietaryShortSell,
             abbreviationId: StringId.SideAbbreviation_ProprietaryShortSell,
         },
         ProprietaryDayTrade: {
-            id: SideId.ProprietaryDayTrade,
+            id: OrderExtendedSideId.ProprietaryDayTrade,
             name: 'ProprietaryDayTrade',
-            bidAskSideId: BidAskSideId.Ask,
+            orderSideId: OrderSideId.Ask,
             shortSell: true,
             displayId: StringId.SideDisplay_ProprietaryDayTrade,
             abbreviationId: StringId.SideAbbreviation_ProprietaryDayTrade,
@@ -6041,8 +6050,8 @@ export namespace Side {
         return idToName(id);
     }
 
-    export function idToBidAskSideId(id: Id) {
-        return infos[id].bidAskSideId;
+    export function idToOrderSideId(id: Id) {
+        return infos[id].orderSideId;
     }
 
     export function tryNameToId(name: string): Id | undefined {
@@ -6057,33 +6066,147 @@ export namespace Side {
     export function idIsShortSell(id: Id): boolean {
         return infos[id].shortSell;
     }
+
+    export function calculateFromOrderSideIdAnd(
+        orderSideId: OrderSideId,
+        exchangeId: ExchangeId,
+        shortSellTypeId: OrderShortSellTypeId | undefined,
+        instructionIds: OrderInstructionId[],
+    ): OrderExtendedSideId {
+        const isAsk = orderSideId === OrderSideId.Ask;
+        if (!isAsk || exchangeId !== ExchangeId.Myx) {
+            if (shortSellTypeId !== undefined) {
+                throw new AssertInternalError(
+                    'DTOESCFOSIAEIASSTI113136',
+                    `${ExchangeInfo.idToAbbreviatedDisplay(exchangeId)}, ${orderSideId === OrderSideId.Ask}`
+                );
+            } else {
+                return isAsk ? OrderExtendedSideId.Sell : OrderExtendedSideId.Buy;
+            }
+        } else {
+            switch (shortSellTypeId) {
+                case undefined: return isAsk ? OrderExtendedSideId.Sell : OrderExtendedSideId.Buy;
+                case OrderShortSellTypeId.ShortSellExempt:
+                    throw new AssertInternalError(
+                        'DTOESCFOSIAEIASSTI113137',
+                        `${ExchangeInfo.idToAbbreviatedDisplay(exchangeId)}, ${orderSideId === OrderSideId.Ask}`
+                    );
+                case OrderShortSellTypeId.ShortSell: {
+                    const shortSellInstructionIds = getUniqueElementArraysOverlapElements(
+                        instructionIds,
+                        [
+                            ExchangeInfo.Myx.InstructionId.IntraDayShortSell,
+                            ExchangeInfo.Myx.InstructionId.RegulatedShortSell,
+                            ExchangeInfo.Myx.InstructionId.ProprietaryShortSell,
+                            ExchangeInfo.Myx.InstructionId.ProprietaryDayTrade,
+                        ]
+                    );
+                    switch (shortSellInstructionIds.length) {
+                        case 0: return isAsk ? OrderExtendedSideId.Sell : OrderExtendedSideId.Buy;
+                        case 1: {
+                            switch (shortSellInstructionIds[0]) {
+                                case OrderInstructionId.IDSS: return OrderExtendedSideId.IntraDayShortSell;
+                                case OrderInstructionId.RSS: return OrderExtendedSideId.RegulatedShortSell;
+                                case OrderInstructionId.PSS: return OrderExtendedSideId.ProprietaryShortSell;
+                                case OrderInstructionId.PDT: return OrderExtendedSideId.ProprietaryDayTrade;
+                                default: return isAsk ? OrderExtendedSideId.Sell : OrderExtendedSideId.Buy;
+                            }
+                        }
+                        default:
+                            throw new AssertInternalError(
+                                'DTOESCFOSIAEIASSTI113138',
+                                `${ExchangeInfo.idToAbbreviatedDisplay(exchangeId)}, ${orderSideId === OrderSideId.Ask}`
+                            );
+                    }
+                }
+                default: {
+                    throw new AssertInternalError(
+                        'DTOESCFOSIAEIASSTI113137',
+                        `${ExchangeInfo.idToAbbreviatedDisplay(exchangeId)}, ${orderSideId === OrderSideId.Ask}`
+                    );
+                }
+            }
+        }
+    }
+
+    export interface OrderSideAndShortSellTypeAndInstructions {
+        readonly orderSideId: OrderSideId;
+        readonly shortSellTypeId: OrderShortSellTypeId | undefined;
+        readonly instructionIds: OrderInstructionId[];
+    }
+
+    export function calculateOrderSideAndShortSellTypeAndInstructions(extendedSideId: OrderExtendedSideId, exchangeId: ExchangeId) {
+        const orderSideId = OrderExtendedSide.idToOrderSideId(extendedSideId);
+        let shortSellTypeId: OrderShortSellTypeId | undefined;
+        let instructionIds: OrderInstructionId[];
+        if (!OrderExtendedSide.idIsShortSell(extendedSideId)) {
+            instructionIds = [];
+        } else {
+            switch (exchangeId) {
+                case ExchangeId.Myx: {
+                    shortSellTypeId = OrderShortSellTypeId.ShortSell;
+                    switch (extendedSideId) {
+                        case OrderExtendedSideId.IntraDayShortSell: {
+                            instructionIds = [ExchangeInfo.Myx.InstructionId.IntraDayShortSell];
+                            break;
+                        }
+                        case OrderExtendedSideId.RegulatedShortSell: {
+                            instructionIds = [ExchangeInfo.Myx.InstructionId.RegulatedShortSell];
+                            break;
+                        }
+                        case OrderExtendedSideId.ProprietaryShortSell: {
+                            instructionIds = [ExchangeInfo.Myx.InstructionId.ProprietaryShortSell];
+                            break;
+                        }
+                        case OrderExtendedSideId.ProprietaryDayTrade: {
+                            instructionIds = [ExchangeInfo.Myx.InstructionId.ProprietaryDayTrade];
+                            break;
+                        }
+                        default:
+                            throw new AssertInternalError('OESCOSASSTAMYXI22244');
+                    }
+                    break;
+                }
+                default:
+                    throw new AssertInternalError('OESCOSASSTADEFI22244');
+            }
+        }
+
+        const result: OrderSideAndShortSellTypeAndInstructions = {
+            orderSideId,
+            shortSellTypeId,
+            instructionIds,
+        }
+
+        return result;
+    }
 }
 
-export namespace BidAskSide {
-    export type Id = BidAskSideId;
-    export const nullId = BidAskSideId.Ask; // not really null - just used as placeholder
+export namespace OrderSide {
+    export type Id = OrderSideId;
+    export const nullId = OrderSideId.Ask; // not really null - just used as placeholder
 
     interface Info {
         readonly id: Id;
         readonly name: string;
         readonly display: StringId;
-        readonly sideId: SideId;
+        readonly baseOrderExtendedSideId: OrderExtendedSideId;
     }
 
-    type InfosObject = { [id in keyof typeof BidAskSideId]: Info };
+    type InfosObject = { [id in keyof typeof OrderSideId]: Info };
 
     const infosObject: InfosObject = {
         Bid: {
-            id: BidAskSideId.Bid,
+            id: OrderSideId.Bid,
             name: 'Bid',
-            display: StringId.BidAskSideDisplay_Bid,
-            sideId: SideId.Buy,
+            display: StringId.OrderSideDisplay_Bid,
+            baseOrderExtendedSideId: OrderExtendedSideId.Buy,
         },
         Ask: {
-            id: BidAskSideId.Ask,
+            id: OrderSideId.Ask,
             name: 'Ask',
-            display: StringId.BidAskSideDisplay_Ask,
-            sideId: SideId.Sell,
+            display: StringId.OrderSideDisplay_Ask,
+            baseOrderExtendedSideId: OrderExtendedSideId.Sell,
         },
     };
 
@@ -6094,7 +6217,7 @@ export namespace BidAskSide {
     export function initialise() {
         const outOfOrderIdx = infos.findIndex((info: Info, index: Integer) => info.id !== index);
         if (outOfOrderIdx >= 0) {
-            throw new EnumInfoOutOfOrderError('BidAskSide', outOfOrderIdx, infos[outOfOrderIdx].name);
+            throw new EnumInfoOutOfOrderError('OrderSide', outOfOrderIdx, infos[outOfOrderIdx].name);
         }
     }
 
@@ -6127,8 +6250,8 @@ export namespace BidAskSide {
         return tryNameToId(json);
     }
 
-    export function idToSideId(id: Id) {
-        return infos[id].sideId;
+    export function idToBaseOrderExtendedSideId(id: Id) {
+        return infos[id].baseOrderExtendedSideId;
     }
 }
 
@@ -6994,8 +7117,8 @@ export namespace DataTypesModule {
         FeedStatus.initialise();
         SubscribabilityExtent.initialise();
         OrderRequestType.initialise();
-        Side.initialise();
-        BidAskSide.initialise();
+        OrderExtendedSide.initialise();
+        OrderSide.initialise();
         OrderType.initialise();
         TimeInForce.initialise();
         OrderRequestAlgorithm.initialise();

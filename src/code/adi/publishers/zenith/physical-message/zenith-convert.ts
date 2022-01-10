@@ -33,9 +33,7 @@ import {
     AuiChangeTypeId,
     AurcChangeTypeId,
     BalancesDataMessage,
-    BestMarketOrderRoute,
-    BidAskSideId,
-    BrokerageAccountId,
+    BestMarketOrderRoute, BrokerageAccountId,
     BrokerageAccountsDataMessage,
     CallOrPutId,
     ChartIntervalId,
@@ -78,8 +76,7 @@ import {
     OrderRequestResultId,
     OrderRoute,
     OrderRouteAlgorithmId,
-    OrderShortSellTypeId,
-    OrderStatus as AdiOrderStatus,
+    OrderShortSellTypeId, OrderSideId, OrderStatus as AdiOrderStatus,
     OrderTrigger,
     OrderTriggerTypeId,
     OrderType,
@@ -2025,19 +2022,19 @@ export namespace ZenithConvert {
     }
 
     export namespace Side {
-        export function toId(value: Zenith.Side): BidAskSideId {
+        export function toId(value: Zenith.Side): OrderSideId {
             switch (value) {
-                case Zenith.Side.Bid: return BidAskSideId.Bid;
-                case Zenith.Side.Ask: return BidAskSideId.Ask;
+                case Zenith.Side.Bid: return OrderSideId.Bid;
+                case Zenith.Side.Ask: return OrderSideId.Ask;
                 default:
                     throw new UnreachableCaseError('ZCSTI66333392', value);
             }
         }
 
-        export function fromId(value: BidAskSideId): Zenith.Side {
+        export function fromId(value: OrderSideId): Zenith.Side {
             switch (value) {
-                case BidAskSideId.Bid: return Zenith.Side.Bid;
-                case BidAskSideId.Ask: return Zenith.Side.Ask;
+                case OrderSideId.Bid: return Zenith.Side.Bid;
+                case OrderSideId.Ask: return Zenith.Side.Ask;
                 default:
                     throw new UnreachableCaseError('ZCSFI8860911', value);
             }

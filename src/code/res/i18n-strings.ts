@@ -634,8 +634,8 @@ export const enum StringId {
     Trend_None,
     Trend_Up,
     Trend_Down,
-    BidAskSideDisplay_Bid,
-    BidAskSideDisplay_Ask,
+    OrderSideDisplay_Bid,
+    OrderSideDisplay_Ask,
     SideDisplay_Buy,
     SideAbbreviation_Buy,
     SideDisplay_Sell,
@@ -1525,7 +1525,7 @@ export const enum StringId {
     DayTradesGridHeading_Time,
     DayTradesGridHeading_FlagIds,
     DayTradesGridHeading_TrendId,
-    DayTradesGridHeading_BidAskSideId,
+    DayTradesGridHeading_OrderSideId,
     DayTradesGridHeading_AffectsIds,
     DayTradesGridHeading_ConditionCodes,
     DayTradesGridHeading_BuyDepthOrderId,
@@ -4924,13 +4924,13 @@ export namespace I18nStrings {
                 en: 'Down',
             }
         },
-        BidAskSideDisplay_Bid: {
-            id: StringId.BidAskSideDisplay_Bid, translations: {
+        OrderSideDisplay_Bid: {
+            id: StringId.OrderSideDisplay_Bid, translations: {
                 en: 'Bid',
             }
         },
-        BidAskSideDisplay_Ask: {
-            id: StringId.BidAskSideDisplay_Ask, translations: {
+        OrderSideDisplay_Ask: {
+            id: StringId.OrderSideDisplay_Ask, translations: {
                 en: 'Ask',
             }
         },
@@ -9382,8 +9382,8 @@ export namespace I18nStrings {
                 en: 'Trend',
             }
         },
-        DayTradesGridHeading_BidAskSideId: {
-            id: StringId.DayTradesGridHeading_BidAskSideId, translations: {
+        DayTradesGridHeading_OrderSideId: {
+            id: StringId.DayTradesGridHeading_OrderSideId, translations: {
                 en: 'Side',
             }
         },

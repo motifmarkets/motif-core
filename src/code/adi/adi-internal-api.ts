@@ -58,7 +58,6 @@ export * from './market-subscription-data-item';
 export * from './markets-data-item';
 export * from './move-order-data-item';
 export * from './order';
-export * from './order-extended-side';
 export * from './order-request-data-item';
 export * from './order-statuses-data-item';
 export * from './order-statuses-fetcher';

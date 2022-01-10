@@ -15,8 +15,6 @@ import {
 import { Account } from './account';
 import { BrokerageAccountDataRecord } from './brokerage-account-data-record';
 import {
-    BidAskSide,
-    BidAskSideId,
     BrokerageAccountId,
     Currency,
     CurrencyId,
@@ -27,7 +25,8 @@ import {
     MarketId,
     MarketInfo, MarketOrderRoute, OrderId,
     OrderPriceUnitType,
-    OrderPriceUnitTypeId, OrderRoute, OrdersDataMessage, OrderStatus, OrderStatuses, OrderTrigger, OrderTypeId,
+    OrderPriceUnitTypeId, OrderRoute, OrdersDataMessage, OrderSide,
+    OrderSideId, OrderStatus, OrderStatuses, OrderTrigger, OrderTypeId,
     TimeInForce,
     TimeInForceId
 } from './common/adi-common-internal-api';
@@ -55,7 +54,7 @@ export class Order implements BrokerageAccountDataRecord {
     private _exchangeId: ExchangeId;
     private _environmentId: ExchangeEnvironmentId;
     private _code: string;
-    private _sideId: BidAskSideId;
+    private _sideId: OrderSideId;
     private _brokerageSchedule: string | undefined;
     // equity details
     private _equityOrderTypeId: OrderTypeId;
@@ -1109,7 +1108,7 @@ export namespace Order {
             exchangeId: ExchangeInfo.nullId,
             environmentId: ExchangeInfo.getDefaultEnvironmentId(),
             code: '',
-            sideId: BidAskSide.nullId,
+            sideId: OrderSide.nullId,
             brokerageSchedule: undefined,
             instructionIds: [],
             equityOrderTypeId: OrderTypeId.Market,

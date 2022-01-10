@@ -7,15 +7,14 @@
 import { Decimal } from 'decimal.js-light/decimal';
 import { Integer, newUndefinableDate, newUndefinableDecimal } from '../../sys/sys-internal-api';
 import {
-    BidAskSideId, ExchangeId,
-    IvemClassId, OrderInstructionId, OrderPriceUnitTypeId, OrderShortSellTypeId,
-    OrderTypeId, TimeInForceId
+    ExchangeId,
+    IvemClassId, OrderInstructionId, OrderPriceUnitTypeId, OrderShortSellTypeId, OrderSideId, OrderTypeId, TimeInForceId
 } from './data-types';
 
 export abstract class OrderDetails {
     exchangeId: ExchangeId;
     code: string;
-    sideId: BidAskSideId;
+    sideId: OrderSideId;
     brokerageSchedule: string | undefined;
     instructionIds: readonly OrderInstructionId[];
 

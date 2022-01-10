@@ -18,9 +18,7 @@ import {
 } from '../../sys/sys-internal-api';
 import {
     AuiChangeTypeId,
-    AurcChangeTypeId,
-    BidAskSideId,
-    broadcastDataItemRequestNr,
+    AurcChangeTypeId, broadcastDataItemRequestNr,
     BrokerageAccountId,
     CallOrPutId,
     CurrencyId,
@@ -41,8 +39,7 @@ import {
     OrderInstructionId,
     OrderPriceUnitTypeId,
     OrderRequestError,
-    OrderRequestResultId,
-    OrderTypeId,
+    OrderRequestResultId, OrderSideId, OrderTypeId,
     TimeInForceId,
     TradeAffectsId,
     TradeFlagId,
@@ -260,7 +257,7 @@ export namespace OrdersDataMessage {
         exchangeId: ExchangeId;
         environmentId: ExchangeEnvironmentId;
         code: string;
-        sideId: BidAskSideId;
+        sideId: OrderSideId;
         brokerageSchedule: string | undefined;
         instructionIds: OrderInstructionId[];
         // market details
@@ -445,7 +442,7 @@ export namespace TradesDataMessage {
         time: SourceTzOffsetDateTime | undefined;
         flagIds: readonly TradeFlagId[];
         trendId: MovementId | undefined;
-        sideId: BidAskSideId | undefined;
+        sideId: OrderSideId | undefined;
         affectsIds: readonly TradeAffectsId[];
         conditionCodes: string | undefined;
         buyDepthOrderId: string | undefined;   // Can be used to identify the order associated with this trade.
@@ -626,7 +623,7 @@ export namespace DepthDataMessage {
 
     export interface DepthOrder {
         id: string;
-        side: BidAskSideId | undefined;
+        side: OrderSideId | undefined;
         price: Decimal | undefined;
         position: Integer | undefined;
         broker: string | undefined;
@@ -659,7 +656,7 @@ export namespace DepthLevelsDataMessage {
 
     export interface Level {
         id: string;
-        sideId: BidAskSideId | undefined;
+        sideId: OrderSideId | undefined;
         price: PriceOrRemainder | undefined;
         volume: Integer | undefined;
         orderCount: Integer | undefined;

@@ -1511,9 +1511,9 @@ export class BestMarketOrderRoute extends OrderRoute {
     // (undocumented)
     get display(): string;
     // (undocumented)
-    getAllowedOrderTypeIds(): OrderTypeId[];
+    getAllowedOrderExtendedSideIds(): OrderExtendedSideId[];
     // (undocumented)
-    getAllowedSideIds(): SideId[];
+    getAllowedOrderTypeIds(): OrderTypeId[];
     // (undocumented)
     getAllowedTimeInForceIdsForOrderType(orderTypeId: OrderTypeId): TimeInForceId[];
     // (undocumented)
@@ -1527,7 +1527,7 @@ export class BestMarketOrderRoute extends OrderRoute {
     // (undocumented)
     isQuantityAllowed(value: Integer): boolean;
     // (undocumented)
-    isSideAllowed(sideId: SideId): boolean;
+    isSideAllowed(sideId: OrderExtendedSideId): boolean;
     // (undocumented)
     isTimeInForceForOrderTypeAllowed(orderTypeId: OrderTypeId, timeInForceId: TimeInForceId): boolean;
     // (undocumented)
@@ -1542,66 +1542,6 @@ export namespace BestMarketOrderRoute {
     export function compareBestByDisplayPriority(left: BestMarketOrderRoute, right: BestMarketOrderRoute): ComparisonResult;
     // (undocumented)
     export function tryCreateFromJson(value: OrderRoute.PersistJson): BestMarketOrderRoute;
-}
-
-// Warning: (ae-missing-release-tag) "BidAskSide" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export namespace BidAskSide {
-    // (undocumented)
-    export function compareId(left: Id, right: Id): Integer;
-    const // (undocumented)
-    nullId = BidAskSideId.Ask;
-    const // (undocumented)
-    idCount: number;
-    // (undocumented)
-    export type Id = BidAskSideId;
-    // (undocumented)
-    export function idToDisplay(id: Id): string;
-    // (undocumented)
-    export function idToDisplayId(id: Id): StringId;
-    // (undocumented)
-    export function idToJson(id: Id): string;
-    // (undocumented)
-    export function idToName(id: Id): string;
-    // (undocumented)
-    export function idToSideId(id: Id): SideId;
-    // (undocumented)
-    export function initialise(): void;
-    // (undocumented)
-    export function tryJsonToId(json: string): Id | undefined;
-    // (undocumented)
-    export function tryNameToId(name: string): Id | undefined;
-}
-
-// Warning: (ae-missing-release-tag) "BidAskSideId" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export const enum BidAskSideId {
-    // (undocumented)
-    Ask = 1,
-    // (undocumented)
-    Bid = 0
-}
-
-// Warning: (ae-missing-release-tag) "BidAskSideIdDayTradesGridField" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export class BidAskSideIdDayTradesGridField extends DayTradesGridField {
-    constructor(getDataItemCorrectnessIdEvent: DayTradesGridField.GetDataItemCorrectnessIdEventHandler);
-    // (undocumented)
-    protected compareValue(left: DayTradesDataItem.Record, right: DayTradesDataItem.Record, ascending: boolean): ComparisonResult;
-    // (undocumented)
-    protected createRenderValue(record: DayTradesDataItem.Record): DayTradesGridField.CreateRenderValueResult;
-    // (undocumented)
-    static readonly fieldStateDefinition: DayTradesGridField.FieldStateDefinition;
-}
-
-// Warning: (ae-missing-release-tag) "BidAskSideIdRenderValue" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export class BidAskSideIdRenderValue extends EnumRenderValue {
-    constructor(data: BidAskSideId | undefined);
 }
 
 // @public (undocumented)
@@ -5954,8 +5894,6 @@ export namespace DayTradesDataItem {
             // (undocumented)
             Attributes = 17,
             // (undocumented)
-            BidAskSideId = 6,
-            // (undocumented)
             BuyBroker = 10,
             // (undocumented)
             BuyCrossRef = 11,
@@ -5969,6 +5907,8 @@ export namespace DayTradesDataItem {
             Id = 0,
             // (undocumented)
             MarketId = 15,
+            // (undocumented)
+            OrderSideId = 6,
             // (undocumented)
             Price = 1,
             // (undocumented)
@@ -6316,31 +6256,31 @@ export class DepthDataItem extends MarketSubscriptionDataItem {
     // (undocumented)
     get depthDefinition(): DepthDataDefinition;
     // (undocumented)
-    getOrders(sideId: BidAskSideId): DepthDataItem.Order[];
+    getOrders(sideId: OrderSideId): DepthDataItem.Order[];
     // (undocumented)
     processMessage(msg: DataMessage): void;
     // (undocumented)
     processSubscriptionPreOnline(): void;
     // (undocumented)
-    subscribeAfterOrderInsertEvent(sideId: BidAskSideId, handler: DepthDataItem.AfterOrderInsertEventHandler): number;
+    subscribeAfterOrderInsertEvent(sideId: OrderSideId, handler: DepthDataItem.AfterOrderInsertEventHandler): number;
     // (undocumented)
-    subscribeBeforeOrderRemoveEvent(sideId: BidAskSideId, handler: DepthDataItem.BeforeOrderRemoveEventHandler): number;
+    subscribeBeforeOrderRemoveEvent(sideId: OrderSideId, handler: DepthDataItem.BeforeOrderRemoveEventHandler): number;
     // (undocumented)
     subscribeBeforeOrdersClearEvent(handler: DepthDataItem.BeforeOrdersClearEventHandler): number;
     // (undocumented)
-    subscribeOrderChangeEvent(sideId: BidAskSideId, handler: DepthDataItem.OrderChangeEventHandler): number;
+    subscribeOrderChangeEvent(sideId: OrderSideId, handler: DepthDataItem.OrderChangeEventHandler): number;
     // (undocumented)
-    subscribeOrderMoveAndChangeEvent(sideId: BidAskSideId, handler: DepthDataItem.OrderMoveAndChangeEventHandler): number;
+    subscribeOrderMoveAndChangeEvent(sideId: OrderSideId, handler: DepthDataItem.OrderMoveAndChangeEventHandler): number;
     // (undocumented)
-    unsubscribeAfterOrderInsertEvent(sideId: BidAskSideId, subscriptionId: MultiEvent.SubscriptionId): void;
+    unsubscribeAfterOrderInsertEvent(sideId: OrderSideId, subscriptionId: MultiEvent.SubscriptionId): void;
     // (undocumented)
-    unsubscribeBeforeOrderRemoveEvent(sideId: BidAskSideId, subscriptionId: MultiEvent.SubscriptionId): void;
+    unsubscribeBeforeOrderRemoveEvent(sideId: OrderSideId, subscriptionId: MultiEvent.SubscriptionId): void;
     // (undocumented)
     unsubscribeBeforeOrdersClearEvent(subscriptionId: MultiEvent.SubscriptionId): void;
     // (undocumented)
-    unsubscribeOrderChangeEvent(sideId: BidAskSideId, subscriptionId: MultiEvent.SubscriptionId): void;
+    unsubscribeOrderChangeEvent(sideId: OrderSideId, subscriptionId: MultiEvent.SubscriptionId): void;
     // (undocumented)
-    unsubscribeOrderMoveAndChangeEvent(sideId: BidAskSideId, subscriptionId: MultiEvent.SubscriptionId): void;
+    unsubscribeOrderMoveAndChangeEvent(sideId: OrderSideId, subscriptionId: MultiEvent.SubscriptionId): void;
 }
 
 // @public (undocumented)
@@ -6358,7 +6298,7 @@ export namespace DepthDataItem {
         // (undocumented)
         listPosition: Integer;
         // (undocumented)
-        side: BidAskSideId;
+        side: OrderSideId;
     }
     // (undocumented)
     export interface Order {
@@ -6381,7 +6321,7 @@ export namespace DepthDataItem {
         // (undocumented)
         quantity: Integer;
         // (undocumented)
-        sideId: BidAskSideId;
+        sideId: OrderSideId;
     }
     // (undocumented)
     export namespace Order {
@@ -6473,7 +6413,7 @@ export namespace DepthDataMessage {
         // (undocumented)
         quantity: Integer | undefined;
         // (undocumented)
-        side: BidAskSideId | undefined;
+        side: OrderSideId | undefined;
     }
 }
 
@@ -6538,27 +6478,27 @@ export class DepthLevelsDataItem extends MarketSubscriptionDataItem {
     // (undocumented)
     get depthLevelsDefinition(): DepthLevelsDataDefinition;
     // (undocumented)
-    getLevels(sideId: BidAskSideId): DepthLevelsDataItem.Level[];
+    getLevels(sideId: OrderSideId): DepthLevelsDataItem.Level[];
     // (undocumented)
     processMessage(msg: DataMessage): void;
     // (undocumented)
     protected processSubscriptionPreOnline(): void;
     // (undocumented)
-    subscribeAfterLevelInsertEvent(sideId: BidAskSideId, handler: DepthLevelsDataItem.AfterLevelInsertEventHandler): number;
+    subscribeAfterLevelInsertEvent(sideId: OrderSideId, handler: DepthLevelsDataItem.AfterLevelInsertEventHandler): number;
     // (undocumented)
-    subscribeBeforeLevelRemoveEvent(sideId: BidAskSideId, handler: DepthLevelsDataItem.BeforeLevelRemoveEventHandler): number;
+    subscribeBeforeLevelRemoveEvent(sideId: OrderSideId, handler: DepthLevelsDataItem.BeforeLevelRemoveEventHandler): number;
     // (undocumented)
     subscribeBeforeLevelsClearEvent(handler: DepthLevelsDataItem.BeforeLevelsClearEventHandler): number;
     // (undocumented)
-    subscribeLevelChangeEvent(sideId: BidAskSideId, handler: DepthLevelsDataItem.LevelChangeEventHandler): number;
+    subscribeLevelChangeEvent(sideId: OrderSideId, handler: DepthLevelsDataItem.LevelChangeEventHandler): number;
     // (undocumented)
-    unsubscribeAfterLevelInsertEvent(sideId: BidAskSideId, subscriptionId: MultiEvent.SubscriptionId): void;
+    unsubscribeAfterLevelInsertEvent(sideId: OrderSideId, subscriptionId: MultiEvent.SubscriptionId): void;
     // (undocumented)
-    unsubscribeBeforeLevelRemoveEvent(sideId: BidAskSideId, subscriptionId: MultiEvent.SubscriptionId): void;
+    unsubscribeBeforeLevelRemoveEvent(sideId: OrderSideId, subscriptionId: MultiEvent.SubscriptionId): void;
     // (undocumented)
     unsubscribeBeforeLevelsClearEvent(subscriptionId: MultiEvent.SubscriptionId): void;
     // (undocumented)
-    unsubscribeLevelChangeEvent(sideId: BidAskSideId, subscriptionId: MultiEvent.SubscriptionId): void;
+    unsubscribeLevelChangeEvent(sideId: OrderSideId, subscriptionId: MultiEvent.SubscriptionId): void;
 }
 
 // @public (undocumented)
@@ -6578,7 +6518,7 @@ export namespace DepthLevelsDataItem {
         // (undocumented)
         levels: DepthLevelsDataItem.Level[];
         // (undocumented)
-        sideId: BidAskSideId;
+        sideId: OrderSideId;
     }
     // (undocumented)
     export interface FindLevelIndexByPriceResult {
@@ -6600,7 +6540,7 @@ export namespace DepthLevelsDataItem {
         // (undocumented)
         price: PriceOrRemainder;
         // (undocumented)
-        sideId: BidAskSideId;
+        sideId: OrderSideId;
         // (undocumented)
         volume: Integer | undefined;
     }
@@ -6681,7 +6621,7 @@ export namespace DepthLevelsDataMessage {
         // (undocumented)
         price: PriceOrRemainder | undefined;
         // (undocumented)
-        sideId: BidAskSideId | undefined;
+        sideId: OrderSideId | undefined;
         // (undocumented)
         volume: Integer | undefined;
     }
@@ -6776,7 +6716,7 @@ export namespace DepthSideGridField {
 //
 // @public (undocumented)
 export abstract class DepthSideGridRecordStore {
-    constructor(_styleId: DepthStyleId, _sideId: BidAskSideId);
+    constructor(_styleId: DepthStyleId, _sideId: OrderSideId);
     // (undocumented)
     protected _auctionVolume: Integer | undefined;
     // (undocumented)
@@ -6828,7 +6768,7 @@ export abstract class DepthSideGridRecordStore {
     // (undocumented)
     setRecordEventers(recordsEventers: GridRecordStoreRecordsEventers): void;
     // (undocumented)
-    get sideId(): BidAskSideId;
+    get sideId(): OrderSideId;
     // (undocumented)
     get styleId(): DepthStyleId;
     // (undocumented)
@@ -7238,10 +7178,10 @@ export namespace ExchangeInfo {
     export type Id = ExchangeId;
     // (undocumented)
     export function idToAbbreviatedDisplay(id: Id): string;
-    const // (undocumented)
-    idCount: number;
     // (undocumented)
     export function idToAbbreviatedDisplayId(id: Id): StringId;
+    const // (undocumented)
+    idCount: number;
     // (undocumented)
     export function idToAllowableSymbolNameFieldIds(id: Id): readonly SymbolFieldId[];
     // (undocumented)
@@ -7266,6 +7206,20 @@ export namespace ExchangeInfo {
     export function idToName(id: Id): Name;
     // (undocumented)
     export function initialise(): void;
+    // (undocumented)
+    export namespace Myx {
+        // (undocumented)
+        export namespace InstructionId {
+            const // (undocumented)
+            ProprietaryShortSell = OrderInstructionId.PSS;
+            const // (undocumented)
+            IntraDayShortSell = OrderInstructionId.IDSS;
+            const // (undocumented)
+            ProprietaryDayTrade = OrderInstructionId.PDT;
+            const // (undocumented)
+            RegulatedShortSell = OrderInstructionId.RSS;
+        }
+    }
     // (undocumented)
     export const enum Name {
         // (undocumented)
@@ -8504,9 +8458,9 @@ export class FixOrderRoute extends OrderRoute {
     // (undocumented)
     get display(): string;
     // (undocumented)
-    getAllowedOrderTypeIds(): OrderTypeId[];
+    getAllowedOrderExtendedSideIds(): OrderExtendedSideId[];
     // (undocumented)
-    getAllowedSideIds(): SideId[];
+    getAllowedOrderTypeIds(): OrderTypeId[];
     // (undocumented)
     getAllowedTimeInForceIdsForOrderType(orderTypeId: OrderTypeId): TimeInForceId[];
     // (undocumented)
@@ -8520,7 +8474,7 @@ export class FixOrderRoute extends OrderRoute {
     // (undocumented)
     isQuantityAllowed(value: Integer): boolean;
     // (undocumented)
-    isSideAllowed(sideId: SideId): boolean;
+    isSideAllowed(sideId: OrderExtendedSideId): boolean;
     // (undocumented)
     isTimeInForceForOrderTypeAllowed(orderTypeId: OrderTypeId, timeInForceId: TimeInForceId): boolean;
     // (undocumented)
@@ -8562,7 +8516,7 @@ export abstract class FullDepthRecord extends DepthRecord {
     // (undocumented)
     abstract getPrice(): Decimal;
     // (undocumented)
-    getRenderValue(id: FullDepthSideFieldId, sideId: BidAskSideId, dataCorrectnessAttribute: RenderValue.Attribute | undefined): RenderValue;
+    getRenderValue(id: FullDepthSideFieldId, sideId: OrderSideId, dataCorrectnessAttribute: RenderValue.Attribute | undefined): RenderValue;
     // (undocumented)
     abstract getUndisclosedCount(): Integer;
     // (undocumented)
@@ -8636,7 +8590,7 @@ export const enum FullDepthSideFieldId {
 //
 // @public (undocumented)
 export class FullDepthSideGridField extends DepthSideGridField {
-    constructor(_id: FullDepthSideFieldId, _sideId: BidAskSideId, _getDataItemCorrectnessIdEvent: FullDepthSideGridField.GetDataItemCorrectnessIdEventHandler);
+    constructor(_id: FullDepthSideFieldId, _sideId: OrderSideId, _getDataItemCorrectnessIdEvent: FullDepthSideGridField.GetDataItemCorrectnessIdEventHandler);
     // (undocumented)
     compare(left: FullDepthRecord, right: FullDepthRecord): number;
     // (undocumented)
@@ -8648,7 +8602,7 @@ export class FullDepthSideGridField extends DepthSideGridField {
 // @public (undocumented)
 export namespace FullDepthSideGridField {
     // (undocumented)
-    export function createAllFieldsAndDefaults(sideId: BidAskSideId, getDataItemCorrectnessIdEventHandler: DepthSideGridField.GetDataItemCorrectnessIdEventHandler): DepthSideGridField.AllFieldsAndDefaults;
+    export function createAllFieldsAndDefaults(sideId: OrderSideId, getDataItemCorrectnessIdEventHandler: DepthSideGridField.GetDataItemCorrectnessIdEventHandler): DepthSideGridField.AllFieldsAndDefaults;
     // (undocumented)
     export type GetDataItemCorrectnessIdEventHandler = (this: void) => CorrectnessId;
 }
@@ -8657,7 +8611,7 @@ export namespace FullDepthSideGridField {
 //
 // @public (undocumented)
 export class FullDepthSideGridRecordStore extends DepthSideGridRecordStore implements GridRecordStore {
-    constructor(styleId: DepthStyleId, sideId: BidAskSideId);
+    constructor(styleId: DepthStyleId, sideId: OrderSideId);
     // (undocumented)
     close(): void;
     // (undocumented)
@@ -8780,6 +8734,9 @@ export function getErrorMessage(e: unknown): string;
 
 // @public (undocumented)
 export function getObjectPropertyValue(object: Object, propertyKey: string): any;
+
+// @public (undocumented)
+export function getUniqueElementArraysOverlapElements<T>(left: readonly T[], right: readonly T[]): T[];
 
 // @public
 export class GridLayout {
@@ -9103,11 +9060,11 @@ export namespace GridRecordRenderValue {
     // (undocumented)
     export interface DepthRecordAttribute extends GridRecordAttribute {
         // (undocumented)
-        bidAskSideId: BidAskSideId;
-        // (undocumented)
         depthRecordTypeId: DepthRecord.TypeId;
         // (undocumented)
         readonly id: RenderValue.AttributeId.DepthRecord;
+        // (undocumented)
+        orderSideId: OrderSideId;
         // (undocumented)
         ownOrder: boolean;
     }
@@ -12808,7 +12765,7 @@ export namespace MarketInfo {
     // (undocumented)
     export function getAllowedOrderTypeArray(id: Id): readonly OrderTypeId[];
     // (undocumented)
-    export function GetAllowedSideIdArray(id: Id): readonly SideId[];
+    export function GetAllowedSideIdArray(id: Id): readonly OrderExtendedSideId[];
     // (undocumented)
     export function getAllowedTimeInForceIdArray(id: Id): readonly TimeInForceId[];
     // (undocumented)
@@ -12854,7 +12811,7 @@ export namespace MarketInfo {
     // (undocumented)
     export function isQuantityAllowed(id: Id, quantity: Integer): boolean;
     // (undocumented)
-    export function isSideAllowed(id: Id, sideId: SideId): boolean;
+    export function isSideAllowed(id: Id, sideId: OrderExtendedSideId): boolean;
     // (undocumented)
     export function isTimeInForceForOrderTypeAllowed(id: Id, orderTypeId: OrderTypeId, timeInForceId: TimeInForceId): boolean;
     // (undocumented)
@@ -12910,9 +12867,9 @@ export class MarketOrderRoute extends OrderRoute {
     // (undocumented)
     get display(): string;
     // (undocumented)
-    getAllowedOrderTypeIds(): readonly OrderTypeId[];
+    getAllowedOrderExtendedSideIds(): readonly OrderExtendedSideId[];
     // (undocumented)
-    getAllowedSideIds(): readonly SideId[];
+    getAllowedOrderTypeIds(): readonly OrderTypeId[];
     // (undocumented)
     getAllowedTimeInForceIdsForOrderType(orderTypeId: OrderTypeId): readonly TimeInForceId[];
     // (undocumented)
@@ -12926,7 +12883,7 @@ export class MarketOrderRoute extends OrderRoute {
     // (undocumented)
     isQuantityAllowed(value: Integer): boolean;
     // (undocumented)
-    isSideAllowed(sideId: SideId): boolean;
+    isSideAllowed(sideId: OrderExtendedSideId): boolean;
     // (undocumented)
     isTimeInForceForOrderTypeAllowed(orderTypeId: OrderTypeId, timeInForceId: TimeInForceId): boolean;
     // (undocumented)
@@ -14238,7 +14195,7 @@ export class Order implements BrokerageAccountDataRecord {
     // (undocumented)
     setListCorrectness(value: CorrectnessId): void;
     // (undocumented)
-    get sideId(): BidAskSideId;
+    get sideId(): OrderSideId;
     // (undocumented)
     get status(): string;
     // (undocumented)
@@ -14480,7 +14437,7 @@ export abstract class OrderDetails {
     // (undocumented)
     instructionIds: readonly OrderInstructionId[];
     // (undocumented)
-    sideId: BidAskSideId;
+    sideId: OrderSideId;
     // (undocumented)
     get styleId(): IvemClassId;
 }
@@ -14490,18 +14447,66 @@ export abstract class OrderDetails {
 // @public (undocumented)
 export namespace OrderExtendedSide {
     // (undocumented)
-    export function calculateFromOrdersDataMessage(change: OrdersDataMessage.AddChange): SideId;
+    export function calculateFromOrderSideIdAnd(orderSideId: OrderSideId, exchangeId: ExchangeId, shortSellTypeId: OrderShortSellTypeId | undefined, instructionIds: OrderInstructionId[]): OrderExtendedSideId;
+    const // (undocumented)
+    all: OrderExtendedSideId[];
+    const // (undocumented)
+    idCount: number;
     // (undocumented)
-    export function calculateOrderSideAndShortSellTypeAndInstructions(extendedSideId: SideId, exchangeId: ExchangeId): OrderSideAndShortSellTypeAndInstructions;
+    export function calculateOrderSideAndShortSellTypeAndInstructions(extendedSideId: OrderExtendedSideId, exchangeId: ExchangeId): OrderSideAndShortSellTypeAndInstructions;
+    // (undocumented)
+    export function compareId(left: Id, right: Id): Integer;
+    // (undocumented)
+    export type Id = OrderExtendedSideId;
+    // (undocumented)
+    export function idIsShortSell(id: Id): boolean;
+    // (undocumented)
+    export function idToAbbreviation(id: Id): string;
+    // (undocumented)
+    export function idToAbbreviationId(id: Id): StringId;
+    // (undocumented)
+    export function idToDisplay(id: Id): string;
+    // (undocumented)
+    export function idToDisplayId(id: Id): StringId;
+    // (undocumented)
+    export function idToJsonValue(id: Id): string;
+    // (undocumented)
+    export function idToName(id: Id): string;
+    // (undocumented)
+    export function idToOrderSideId(id: Id): OrderSideId;
+    // (undocumented)
+    export function initialise(): void;
     // (undocumented)
     export interface OrderSideAndShortSellTypeAndInstructions {
         // (undocumented)
         readonly instructionIds: OrderInstructionId[];
         // (undocumented)
-        readonly orderSideId: BidAskSideId;
+        readonly orderSideId: OrderSideId;
         // (undocumented)
         readonly shortSellTypeId: OrderShortSellTypeId | undefined;
     }
+    // (undocumented)
+    export function tryJsonValueToId(json: string): Id | undefined;
+    // (undocumented)
+    export function tryNameToId(name: string): Id | undefined;
+}
+
+// Warning: (ae-missing-release-tag) "OrderExtendedSideId" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export const enum OrderExtendedSideId {
+    // (undocumented)
+    Buy = 0,
+    // (undocumented)
+    IntraDayShortSell = 2,
+    // (undocumented)
+    ProprietaryDayTrade = 5,
+    // (undocumented)
+    ProprietaryShortSell = 4,
+    // (undocumented)
+    RegulatedShortSell = 3,
+    // (undocumented)
+    Sell = 1
 }
 
 // Warning: (ae-missing-release-tag) "OrderFullDepthRecord" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -14602,7 +14607,7 @@ export class OrderPad {
     // (undocumented)
     get allowedRoutes(): readonly OrderRoute[];
     // (undocumented)
-    get allowedSideIds(): readonly SideId[];
+    get allowedSideIds(): readonly OrderExtendedSideId[];
     // (undocumented)
     get allowedTimeInForceIds(): readonly TimeInForceId[];
     // (undocumented)
@@ -14653,7 +14658,7 @@ export class OrderPad {
     // (undocumented)
     getRoutedIvemIdIfOk(): RoutedIvemId | undefined;
     // (undocumented)
-    getSideIdIfOk(): SideId | undefined;
+    getSideIdIfOk(): OrderExtendedSideId | undefined;
     // (undocumented)
     getSymbolDetailIfOk(): SymbolDetailCache.LitIvemIdDetail | undefined;
     // (undocumented)
@@ -14702,7 +14707,7 @@ export class OrderPad {
     // (undocumented)
     loadCancelFromOrder(order: Order): void;
     // (undocumented)
-    loadFromHolding(holding: Holding, sideId?: SideId): void;
+    loadFromHolding(holding: Holding, sideId?: OrderExtendedSideId): void;
     // (undocumented)
     loadFromJson(orderPadJson: Json): void;
     // (undocumented)
@@ -14710,7 +14715,7 @@ export class OrderPad {
     // (undocumented)
     loadPlace(accountId?: BrokerageAccountId): void;
     // (undocumented)
-    loadPlaceFromOrder(order: Order, sideId: SideId): void;
+    loadPlaceFromOrder(order: Order, sideId: OrderExtendedSideId): void;
     // (undocumented)
     loadSell(accountId?: BrokerageAccountId): void;
     // (undocumented)
@@ -14741,8 +14746,8 @@ export class OrderPad {
     // (undocumented)
     setWritable(): void;
     // (undocumented)
-    get sideId(): SideId | undefined;
-    set sideId(value: SideId | undefined);
+    get sideId(): OrderExtendedSideId | undefined;
+    set sideId(value: OrderExtendedSideId | undefined);
     // (undocumented)
     subscribeFieldsChangedEvent(handler: OrderPad.FieldsChangedEventHandler): number;
     // (undocumented)
@@ -15041,7 +15046,7 @@ export namespace OrderPad {
     const // (undocumented)
     defaultAllowedTriggerTypeIds: OrderTriggerTypeId[];
     const // (undocumented)
-    defaultAllowedSideIds: SideId[];
+    defaultAllowedSideIds: OrderExtendedSideId[];
     const // (undocumented)
     defaultAllowedOrderTypeIds: OrderTypeId[];
     // (undocumented)
@@ -15577,9 +15582,9 @@ export abstract class OrderRoute {
     // (undocumented)
     abstract get display(): string;
     // (undocumented)
-    abstract getAllowedOrderTypeIds(): readonly OrderTypeId[];
+    abstract getAllowedOrderExtendedSideIds(): readonly OrderExtendedSideId[];
     // (undocumented)
-    abstract getAllowedSideIds(): readonly SideId[];
+    abstract getAllowedOrderTypeIds(): readonly OrderTypeId[];
     // (undocumented)
     abstract getAllowedTimeInForceIdsForOrderType(orderTypeId: OrderTypeId): readonly TimeInForceId[];
     // (undocumented)
@@ -15591,7 +15596,7 @@ export abstract class OrderRoute {
     // (undocumented)
     abstract isQuantityAllowed(value: Integer): boolean;
     // (undocumented)
-    abstract isSideAllowed(sideId: SideId): boolean;
+    abstract isSideAllowed(sideId: OrderExtendedSideId): boolean;
     // (undocumented)
     abstract isTimeInForceForOrderTypeAllowed(orderTypeId: OrderTypeId, timeInForceId: TimeInForceId): boolean;
     // (undocumented)
@@ -15804,7 +15809,7 @@ export namespace OrdersDataMessage {
         // (undocumented)
         route: OrderRoute;
         // (undocumented)
-        sideId: BidAskSideId;
+        sideId: OrderSideId;
         // (undocumented)
         status: string;
         // (undocumented)
@@ -15855,6 +15860,66 @@ export const enum OrderShortSellTypeId {
     ShortSell = 0,
     // (undocumented)
     ShortSellExempt = 1
+}
+
+// Warning: (ae-missing-release-tag) "OrderSide" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export namespace OrderSide {
+    // (undocumented)
+    export function compareId(left: Id, right: Id): Integer;
+    const // (undocumented)
+    nullId = OrderSideId.Ask;
+    const // (undocumented)
+    idCount: number;
+    // (undocumented)
+    export type Id = OrderSideId;
+    // (undocumented)
+    export function idToBaseOrderExtendedSideId(id: Id): OrderExtendedSideId;
+    // (undocumented)
+    export function idToDisplay(id: Id): string;
+    // (undocumented)
+    export function idToDisplayId(id: Id): StringId;
+    // (undocumented)
+    export function idToJson(id: Id): string;
+    // (undocumented)
+    export function idToName(id: Id): string;
+    // (undocumented)
+    export function initialise(): void;
+    // (undocumented)
+    export function tryJsonToId(json: string): Id | undefined;
+    // (undocumented)
+    export function tryNameToId(name: string): Id | undefined;
+}
+
+// Warning: (ae-missing-release-tag) "OrderSideId" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export const enum OrderSideId {
+    // (undocumented)
+    Ask = 1,
+    // (undocumented)
+    Bid = 0
+}
+
+// Warning: (ae-missing-release-tag) "OrderSideIdDayTradesGridField" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export class OrderSideIdDayTradesGridField extends DayTradesGridField {
+    constructor(getDataItemCorrectnessIdEvent: DayTradesGridField.GetDataItemCorrectnessIdEventHandler);
+    // (undocumented)
+    protected compareValue(left: DayTradesDataItem.Record, right: DayTradesDataItem.Record, ascending: boolean): ComparisonResult;
+    // (undocumented)
+    protected createRenderValue(record: DayTradesDataItem.Record): DayTradesGridField.CreateRenderValueResult;
+    // (undocumented)
+    static readonly fieldStateDefinition: DayTradesGridField.FieldStateDefinition;
+}
+
+// Warning: (ae-missing-release-tag) "OrderSideIdRenderValue" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export class OrderSideIdRenderValue extends EnumRenderValue {
+    constructor(data: OrderSideId | undefined);
 }
 
 // Warning: (ae-missing-release-tag) "OrderStatus" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -17644,8 +17709,6 @@ export namespace RenderValue {
     // (undocumented)
     export const enum TypeId {
         // (undocumented)
-        BidAskSideId = 35,
-        // (undocumented)
         CallOrPutId = 28,
         // (undocumented)
         Color = 13,
@@ -17711,6 +17774,8 @@ export namespace RenderValue {
         OrderPriceUnitTypeId = 38,
         // (undocumented)
         OrderRouteAlgorithmId = 39,
+        // (undocumented)
+        OrderSideId = 35,
         // (undocumented)
         OrderStatusAllowIdArray = 56,
         // (undocumented)
@@ -17886,7 +17951,7 @@ export class RoutedIvemId {
     // (undocumented)
     getAllowedOrderTypes(): readonly OrderTypeId[];
     // (undocumented)
-    getAllowedSideIds(): readonly SideId[];
+    getAllowedSideIds(): readonly OrderExtendedSideId[];
     // (undocumented)
     getAllowedTimeInForcesForOrderType(orderTypeId: OrderTypeId): readonly TimeInForceId[];
     // (undocumented)
@@ -17898,7 +17963,7 @@ export class RoutedIvemId {
     // (undocumented)
     isQuantityAllowed(value: Integer): boolean;
     // (undocumented)
-    isSideAllowed(sideId: SideId): boolean;
+    isSideAllowed(sideId: OrderExtendedSideId): boolean;
     // (undocumented)
     isTimeInForceForOrderTypeAllowed(orderTypeId: OrderTypeId, timeInForceId: TimeInForceId): boolean;
     // (undocumented)
@@ -18864,7 +18929,7 @@ export class ShortDepthRecord extends DepthRecord {
     // (undocumented)
     acceptedByFilter(filterXrefs: string[]): boolean;
     // (undocumented)
-    getRenderValue(id: ShortDepthSideFieldId, sideId: BidAskSideId, dataCorrectnessAttribute: RenderValue.Attribute | undefined): RenderValue;
+    getRenderValue(id: ShortDepthSideFieldId, sideId: OrderSideId, dataCorrectnessAttribute: RenderValue.Attribute | undefined): RenderValue;
     // (undocumented)
     getRenderVolume(): number | undefined;
     // (undocumented)
@@ -18934,7 +18999,7 @@ export const enum ShortDepthSideFieldId {
 //
 // @public (undocumented)
 export class ShortDepthSideGridField extends DepthSideGridField {
-    constructor(_id: ShortDepthSideFieldId, _sideId: BidAskSideId, _getDataItemCorrectnessIdEvent: ShortDepthSideGridField.GetDataItemCorrectnessIdEventHandler);
+    constructor(_id: ShortDepthSideFieldId, _sideId: OrderSideId, _getDataItemCorrectnessIdEvent: ShortDepthSideGridField.GetDataItemCorrectnessIdEventHandler);
     // (undocumented)
     compare(left: ShortDepthRecord, right: ShortDepthRecord): number;
     // (undocumented)
@@ -18946,7 +19011,7 @@ export class ShortDepthSideGridField extends DepthSideGridField {
 // @public (undocumented)
 export namespace ShortDepthSideGridField {
     // (undocumented)
-    export function createAllFieldsAndDefaults(sideId: BidAskSideId, getDataItemCorrectnessIdEventHandler: DepthSideGridField.GetDataItemCorrectnessIdEventHandler): DepthSideGridField.AllFieldsAndDefaults;
+    export function createAllFieldsAndDefaults(sideId: OrderSideId, getDataItemCorrectnessIdEventHandler: DepthSideGridField.GetDataItemCorrectnessIdEventHandler): DepthSideGridField.AllFieldsAndDefaults;
     // (undocumented)
     export type GetDataItemCorrectnessIdEventHandler = (this: void) => CorrectnessId;
 }
@@ -18986,60 +19051,6 @@ export class ShortSellTypeIdArrayMyxLitIvemAttributeCorrectnessTableGridValue ex
     constructor();
 }
 
-// Warning: (ae-missing-release-tag) "Side" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export namespace Side {
-    // (undocumented)
-    export function compareId(left: Id, right: Id): Integer;
-    const // (undocumented)
-    all: SideId[];
-    const // (undocumented)
-    idCount: number;
-    // (undocumented)
-    export type Id = SideId;
-    // (undocumented)
-    export function idIsShortSell(id: Id): boolean;
-    // (undocumented)
-    export function idToAbbreviation(id: Id): string;
-    // (undocumented)
-    export function idToAbbreviationId(id: Id): StringId;
-    // (undocumented)
-    export function idToBidAskSideId(id: Id): BidAskSideId;
-    // (undocumented)
-    export function idToDisplay(id: Id): string;
-    // (undocumented)
-    export function idToDisplayId(id: Id): StringId;
-    // (undocumented)
-    export function idToJsonValue(id: Id): string;
-    // (undocumented)
-    export function idToName(id: Id): string;
-    // (undocumented)
-    export function initialise(): void;
-    // (undocumented)
-    export function tryJsonValueToId(json: string): Id | undefined;
-    // (undocumented)
-    export function tryNameToId(name: string): Id | undefined;
-}
-
-// Warning: (ae-missing-release-tag) "SideId" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export const enum SideId {
-    // (undocumented)
-    Buy = 0,
-    // (undocumented)
-    IntraDayShortSell = 2,
-    // (undocumented)
-    ProprietaryDayTrade = 5,
-    // (undocumented)
-    ProprietaryShortSell = 4,
-    // (undocumented)
-    RegulatedShortSell = 3,
-    // (undocumented)
-    Sell = 1
-}
-
 // Warning: (ae-missing-release-tag) "SideIdCorrectnessTableGridValue" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -19051,7 +19062,7 @@ export class SideIdCorrectnessTableGridValue extends EnumCorrectnessTableGridVal
 //
 // @public (undocumented)
 export class SideIdRenderValue extends EnumRenderValue {
-    constructor(data: SideId | undefined);
+    constructor(data: OrderExtendedSideId | undefined);
 }
 
 // Warning: (ae-missing-release-tag) "SingleBrokerageAccountGroup" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -19583,10 +19594,6 @@ export const enum StringId {
     // (undocumented)
     BaseLitIvemDetailHeading_TradingMarketIds = 1375,
     // (undocumented)
-    BidAskSideDisplay_Ask = 628,
-    // (undocumented)
-    BidAskSideDisplay_Bid = 627,
-    // (undocumented)
     BidDepth = 122,
     // (undocumented)
     Blank = 41,
@@ -19907,8 +19914,6 @@ export const enum StringId {
     // (undocumented)
     DayTradesGridHeading_Attributes = 1529,
     // (undocumented)
-    DayTradesGridHeading_BidAskSideId = 1518,
-    // (undocumented)
     DayTradesGridHeading_BuyBroker = 1522,
     // (undocumented)
     DayTradesGridHeading_BuyCrossRef = 1523,
@@ -19922,6 +19927,8 @@ export const enum StringId {
     DayTradesGridHeading_Id = 1512,
     // (undocumented)
     DayTradesGridHeading_MarketId = 1527,
+    // (undocumented)
+    DayTradesGridHeading_OrderSideId = 1518,
     // (undocumented)
     DayTradesGridHeading_Price = 1513,
     // (undocumented)
@@ -21764,6 +21771,10 @@ export const enum StringId {
     OrderRouteAlgorithmDisplay_Fix = 659,
     // (undocumented)
     OrderRouteAlgorithmDisplay_Market = 657,
+    // (undocumented)
+    OrderSideDisplay_Ask = 628,
+    // (undocumented)
+    OrderSideDisplay_Bid = 627,
     // (undocumented)
     OrderStatusAllowDisplay_Amend = 737,
     // (undocumented)
@@ -25294,8 +25305,6 @@ export class TextFormatter {
     // (undocumented)
     finalise(): void;
     // (undocumented)
-    formatBidAskSideId(value: BidAskSideId): string;
-    // (undocumented)
     formatCallOrPutId(value: CallOrPutId): string;
     // (undocumented)
     formatColorSettingsItemStateId(value: ColorSettings.ItemStateId): string;
@@ -25354,9 +25363,13 @@ export class TextFormatter {
     // (undocumented)
     formatNumber(value: number): string;
     // (undocumented)
+    formatOrderExtendedSideId(value: OrderExtendedSideId): string;
+    // (undocumented)
     formatOrderPriceUnitTypeId(value: OrderPriceUnitTypeId): string;
     // (undocumented)
     formatOrderRouteAlgorithmId(value: OrderRouteAlgorithmId): string;
+    // (undocumented)
+    formatOrderSideId(value: OrderSideId): string;
     // (undocumented)
     formatOrderStatusAllowIdArrayAsCommaText(value: OrderStatus.AllowIds): string;
     // (undocumented)
@@ -25385,8 +25398,6 @@ export class TextFormatter {
     formatRoutedIvemId(value: RoutedIvemId): string;
     // (undocumented)
     formatShortSellTypeIdMyxLitIvemAttribute(value: readonly MyxLitIvemAttributes.ShortSellTypeId[]): string;
-    // (undocumented)
-    formatSideId(value: SideId): string;
     // (undocumented)
     formatSourceTzOffsetDate(value: SourceTzOffsetDate): string;
     // (undocumented)
@@ -25617,9 +25628,9 @@ export const enum TMarketSegmentId {
 // @public (undocumented)
 export interface TmcLeg {
     // (undocumented)
-    bidAskSideId: BidAskSideId;
-    // (undocumented)
     ivemId: IvemId;
+    // (undocumented)
+    orderSideId: OrderSideId;
     // (undocumented)
     ratio: Integer;
 }
@@ -26605,8 +26616,6 @@ export namespace TradesDataItem {
         // (undocumented)
         attributes: readonly string[];
         // (undocumented)
-        bidAskSideId: BidAskSideId | undefined;
-        // (undocumented)
         buyBroker: string | undefined;
         // (undocumented)
         buyCrossRef: string | undefined;
@@ -26620,6 +26629,8 @@ export namespace TradesDataItem {
         id: Integer;
         // (undocumented)
         marketId: MarketId | undefined;
+        // (undocumented)
+        orderSideId: OrderSideId | undefined;
         // (undocumented)
         price: Decimal | undefined;
         // (undocumented)
@@ -26723,7 +26734,7 @@ export namespace TradesDataMessage {
         // (undocumented)
         sellDepthOrderId: string | undefined;
         // (undocumented)
-        sideId: BidAskSideId | undefined;
+        sideId: OrderSideId | undefined;
         // (undocumented)
         time: SourceTzOffsetDateTime | undefined;
         // (undocumented)
@@ -28465,9 +28476,9 @@ export namespace ZenithConvert {
     // (undocumented)
     export namespace Side {
         // (undocumented)
-        export function fromId(value: BidAskSideId): Zenith.Side;
+        export function fromId(value: OrderSideId): Zenith.Side;
         // (undocumented)
-        export function toId(value: Zenith.Side): BidAskSideId;
+        export function toId(value: Zenith.Side): OrderSideId;
     }
     // (undocumented)
     export namespace SubscriptionData {

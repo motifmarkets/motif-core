@@ -8,10 +8,7 @@ import { Decimal } from 'decimal.js-light/decimal';
 import {
     Account,
     AdiService,
-    AmendOrderRequestDataDefinition,
-    BidAskSide,
-    BidAskSideId,
-    BrokerageAccountId,
+    AmendOrderRequestDataDefinition, BrokerageAccountId,
     BrokerageAccountIncubator,
     BrokerageAccountsDataDefinition,
     BrokerageAccountsDataItem,
@@ -26,23 +23,20 @@ import {
     MarketOrderRoute,
     MovementId,
     MoveOrderRequestDataDefinition,
-    Order,
-    OrderExtendedSide,
-    OrderId,
+    Order, OrderExtendedSide,
+    OrderExtendedSideId, OrderId,
     OrderRequestDataDefinition,
     OrderRequestType,
     OrderRequestTypeId,
-    OrderRoute, OrderTrigger,
+    OrderRoute, OrderSide,
+    OrderSideId, OrderTrigger,
     OrderTriggerType,
     OrderTriggerTypeId,
     OrderType,
     OrderTypeId,
     PlaceOrderRequestDataDefinition,
     PriceOrderTrigger,
-    RoutedIvemId,
-    Side,
-    SideId,
-    TimeInForce,
+    RoutedIvemId, TimeInForce,
     TimeInForceId
 } from '../adi/adi-internal-api';
 import { StringId, Strings } from '../res/res-internal-api';
@@ -126,9 +120,9 @@ export class OrderPad {
     private _priceStepper: SecurityPriceStepper | undefined;
     private _priceStepperIncubator: PriceStepperIncubator;
 
-    private _loadedSideId: SideId;
-    private _sideId: SideId | undefined;
-    private _allowedSideIds: readonly SideId[] = OrderPad.defaultAllowedSideIds;
+    private _loadedSideId: OrderExtendedSideId;
+    private _sideId: OrderExtendedSideId | undefined;
+    private _allowedSideIds: readonly OrderExtendedSideId[] = OrderPad.defaultAllowedSideIds;
     // private _roaNoAdvice: boolean;
     // private _roaNotes: string;
     // private _soaRequired: boolean;
@@ -236,7 +230,7 @@ export class OrderPad {
 
     // eslint-disable-next-line @typescript-eslint/member-ordering
     get sideId() { return this._sideId; }
-    set sideId(value: SideId | undefined) {
+    set sideId(value: OrderExtendedSideId | undefined) {
         if (this._readonly) {
             throw new AssertInternalError('OPSSIR834711');
         } else {
@@ -883,18 +877,18 @@ export class OrderPad {
 
                 const loadedSideIdJsonValue = element.tryGetString(OrderPad.JsonName.LoadedSideId);
                 if (loadedSideIdJsonValue !== undefined) {
-                    const loadedSideId = Side.tryJsonValueToId(loadedSideIdJsonValue);
+                    const loadedSideId = OrderExtendedSide.tryJsonValueToId(loadedSideIdJsonValue);
                     if (loadedSideId !== undefined) {
                         this._loadedSideId = loadedSideId;
                     }
                 }
 
-                let sideId: SideId | undefined;
+                let sideId: OrderExtendedSideId | undefined;
                 const sideIdJsonValue = element.tryGetString(OrderPad.JsonName.SideId);
                 if (sideIdJsonValue === undefined) {
                     sideId = undefined;
                 } else {
-                    sideId = Side.tryJsonValueToId(sideIdJsonValue);
+                    sideId = OrderExtendedSide.tryJsonValueToId(sideIdJsonValue);
                 }
                 this.internalSetSideId(sideId);
 
@@ -950,10 +944,10 @@ export class OrderPad {
         element.setDecimal(OrderPad.JsonName.LoadedLimitValue, this._loadedLimitValue);
         element.setDecimal(OrderPad.JsonName.LimitValue, this._limitValue);
         if (this._loadedSideId !== undefined) {
-            element.setString(OrderPad.JsonName.LoadedSideId, Side.idToJsonValue(this._loadedSideId));
+            element.setString(OrderPad.JsonName.LoadedSideId, OrderExtendedSide.idToJsonValue(this._loadedSideId));
         }
         if (this._sideId !== undefined) {
-            element.setString(OrderPad.JsonName.SideId, Side.idToJsonValue(this._sideId));
+            element.setString(OrderPad.JsonName.SideId, OrderExtendedSide.idToJsonValue(this._sideId));
         }
         if (this._loadedTimeInForceId !== undefined) {
             element.setString(OrderPad.JsonName.LoadedTimeInForceId, TimeInForce.idToJsonValue(this._loadedTimeInForceId));
@@ -1037,7 +1031,7 @@ export class OrderPad {
         this.beginChanges();
         try {
             this.loadPlace(accountId);
-            this.internalSetSideId(SideId.Buy);
+            this.internalSetSideId(OrderExtendedSideId.Buy);
         } finally {
             this.endChanges();
         }
@@ -1047,13 +1041,13 @@ export class OrderPad {
         this.beginChanges();
         try {
             this.loadPlace(accountId);
-            this.internalSetSideId(SideId.Sell);
+            this.internalSetSideId(OrderExtendedSideId.Sell);
         } finally {
             this.endChanges();
         }
     }
 
-    loadPlaceFromOrder(order: Order, sideId: SideId) {
+    loadPlaceFromOrder(order: Order, sideId: OrderExtendedSideId) {
         if (this._readonly) {
             throw new AssertInternalError('OPLPFO454823');
         } else {
@@ -1068,7 +1062,7 @@ export class OrderPad {
                 const routedIvemId = this.createRoutedIvemIdFromOrder(order);
                 this.internalSetRoutedIvemId(routedIvemId);
 
-                if (sideId === SideId.Sell) {
+                if (sideId === OrderExtendedSideId.Sell) {
                     this.internalSetTotalQuantity(order.quantity);
                 }
 
@@ -1080,11 +1074,11 @@ export class OrderPad {
     }
 
     loadBuyFromOrder(order: Order) {
-        this.loadPlaceFromOrder(order, SideId.Buy);
+        this.loadPlaceFromOrder(order, OrderExtendedSideId.Buy);
     }
 
     loadSellFromOrder(order: Order) {
-        this.loadPlaceFromOrder(order, SideId.Sell);
+        this.loadPlaceFromOrder(order, OrderExtendedSideId.Sell);
     }
 
     loadAmendFromOrder(order: Order) {
@@ -1097,7 +1091,7 @@ export class OrderPad {
 
                 this.loadAmendCancelMoveCommonFromOrder(order);
 
-                if (order.sideId === BidAskSideId.Ask) {
+                if (order.sideId === OrderSideId.Ask) {
                     this.internalSetTotalQuantity(order.quantity);
                 }
             } finally {
@@ -1134,7 +1128,7 @@ export class OrderPad {
         }
     }
 
-    loadFromHolding(holding: Holding, sideId?: SideId) {
+    loadFromHolding(holding: Holding, sideId?: OrderExtendedSideId) {
         if (this._readonly) {
             throw new AssertInternalError('OPLFH342834');
         } else {
@@ -1148,7 +1142,7 @@ export class OrderPad {
                 const routedIvemId = this.createRoutedIvemIdFromHolding(holding);
                 this.internalSetRoutedIvemId(routedIvemId);
 
-                if (sideId === SideId.Sell) {
+                if (sideId === OrderExtendedSideId.Sell) {
                     this.internalSetTotalQuantity(holding.totalAvailableQuantity);
                 }
 
@@ -1160,11 +1154,11 @@ export class OrderPad {
     }
 
     loadBuyFromHolding(holding: Holding) {
-        this.loadFromHolding(holding, SideId.Buy);
+        this.loadFromHolding(holding, OrderExtendedSideId.Buy);
     }
 
     loadSellFromHolding(holding: Holding) {
-        this.loadFromHolding(holding, SideId.Sell);
+        this.loadFromHolding(holding, OrderExtendedSideId.Sell);
     }
 
     resetModified() {
@@ -2299,7 +2293,7 @@ export class OrderPad {
 
     // }
 
-    private internalSetSideId(value: SideId | undefined) {
+    private internalSetSideId(value: OrderExtendedSideId | undefined) {
         if (value !== this._sideId) {
             this.beginChanges();
             try {
@@ -2697,7 +2691,7 @@ export class OrderPad {
         }
     }
 
-    private updateAllowedSideIds(value: readonly SideId[]) {
+    private updateAllowedSideIds(value: readonly OrderExtendedSideId[]) {
         if (!isArrayEqualUniquely(value, this._allowedSideIds)) {
             this._allowedSideIds = value;
             this.flagFieldChanged(OrderPad.FieldId.Side);
@@ -2946,10 +2940,10 @@ export class OrderPad {
         this.internalSetRoutedIvemId(routedIvemId.createCopy());
         this._loadedRoutedIvemId = routedIvemId;
 
-        const bidAskSideId = order.sideId;
-        const sideId = BidAskSide.idToSideId(bidAskSideId);
-        this.internalSetSideId(sideId);
-        this._loadedSideId = sideId;
+        const orderSideId = order.sideId;
+        const orderExtendedSideId = OrderSide.idToBaseOrderExtendedSideId(orderSideId);
+        this.internalSetSideId(orderExtendedSideId);
+        this._loadedSideId = orderExtendedSideId;
     }
 
     private createRoutedIvemIdFromOrder(order: Order) {
@@ -3062,7 +3056,7 @@ export namespace OrderPad {
     export const minHiddenQuantity = 500000;
     export const myxNormalBaseQuantity = 100;
     export const defaultAllowedTriggerTypeIds = [OrderTriggerTypeId.Immediate];
-    export const defaultAllowedSideIds = [SideId.Buy, SideId.Sell];
+    export const defaultAllowedSideIds = [OrderExtendedSideId.Buy, OrderExtendedSideId.Sell];
     export const defaultAllowedOrderTypeIds = OrderType.all;
 
     export const enum JsonName {

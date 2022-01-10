@@ -6,17 +6,13 @@
 
 import { Decimal } from 'decimal.js-light/decimal';
 import {
-    BidAskSideId,
     DayTradesDataItem,
     HigherLowerId,
     IvemId,
     LitIvemId,
     MarketId,
-    MovementId,
-    OrderStatus,
-    RoutedIvemId,
-    SideId,
-    TradeAffectsId,
+    MovementId, OrderExtendedSideId, OrderSideId, OrderStatus,
+    RoutedIvemId, TradeAffectsId,
     TradeFlagId
 } from "../adi/adi-internal-api";
 import { ColorSettings } from '../settings/settings-internal-api';
@@ -103,7 +99,7 @@ export namespace RenderValue {
         // eslint-disable-next-line @typescript-eslint/no-shadow
         SideId,
         // eslint-disable-next-line @typescript-eslint/no-shadow
-        BidAskSideId,
+        OrderSideId,
         EquityOrderTypeId,
         TimeInForceId,
         OrderPriceUnitTypeId,
@@ -198,7 +194,7 @@ export namespace RenderValue {
 
     // export interface DepthRecordAttribute extends Attribute {
     //     readonly id: AttributeId.DepthRecord;
-    //     bidAskSideId: BidAskSideId;
+    //     orderSideId: OrderSideId;
     //     depthRecordTypeId: DepthRecord.TypeId;
     //     ownOrder: boolean;
     // }
@@ -428,14 +424,14 @@ export class MarketIdRenderValue extends EnumRenderValue {
 }
 
 export class SideIdRenderValue extends EnumRenderValue {
-    constructor(data: SideId | undefined) {
+    constructor(data: OrderExtendedSideId | undefined) {
         super(data, RenderValue.TypeId.SideId);
     }
 }
 
-export class BidAskSideIdRenderValue extends EnumRenderValue {
-    constructor(data: BidAskSideId | undefined) {
-        super(data, RenderValue.TypeId.BidAskSideId);
+export class OrderSideIdRenderValue extends EnumRenderValue {
+    constructor(data: OrderSideId | undefined) {
+        super(data, RenderValue.TypeId.OrderSideId);
     }
 }
 

@@ -7,8 +7,6 @@
 // import { ColorSettings, CoreSettings, SettingsService, SymbolsService } from 'services-internal-api';
 import { Decimal } from 'decimal.js-light/decimal';
 import {
-    BidAskSide,
-    BidAskSideId,
     CallOrPut,
     CallOrPutId,
     Currency,
@@ -36,20 +34,17 @@ import {
     MarketInfo,
     Movement,
     MovementId,
-    MyxLitIvemAttributes,
-    OrderPriceUnitType,
+    MyxLitIvemAttributes, OrderExtendedSide,
+    OrderExtendedSideId, OrderPriceUnitType,
     OrderPriceUnitTypeId,
     OrderRouteAlgorithm,
-    OrderRouteAlgorithmId,
-    OrderStatus,
+    OrderRouteAlgorithmId, OrderSide,
+    OrderSideId, OrderStatus,
     OrderTriggerType,
     OrderTriggerTypeId,
     OrderType,
     OrderTypeId,
-    RoutedIvemId,
-    Side,
-    SideId,
-    TimeInForce,
+    RoutedIvemId, TimeInForce,
     TimeInForceId,
     TradeAffects,
     TradeAffectsId,
@@ -299,11 +294,11 @@ export class TextFormatter {
     formatCurrencyId(value: CurrencyId) {
         return Currency.idToDisplay(value);
     }
-    formatSideId(value: SideId) {
-        return Side.idToDisplay(value);
+    formatOrderExtendedSideId(value: OrderExtendedSideId) {
+        return OrderExtendedSide.idToDisplay(value);
     }
-    formatBidAskSideId(value: BidAskSideId) {
-        return BidAskSide.idToDisplay(value);
+    formatOrderSideId(value: OrderSideId) {
+        return OrderSide.idToDisplay(value);
     }
     formatOrderTypeId(value: OrderTypeId) {
         return OrderType.idToDisplay(value);
@@ -570,9 +565,9 @@ export class TextFormatter {
             case RenderValue.TypeId.CurrencyId:
                 return this.formatCurrencyId((renderValue as EnumRenderValue).definedData);
             case RenderValue.TypeId.SideId:
-                return this.formatSideId((renderValue as EnumRenderValue).definedData);
-            case RenderValue.TypeId.BidAskSideId:
-                return this.formatBidAskSideId((renderValue as EnumRenderValue).definedData);
+                return this.formatOrderExtendedSideId((renderValue as EnumRenderValue).definedData);
+            case RenderValue.TypeId.OrderSideId:
+                return this.formatOrderSideId((renderValue as EnumRenderValue).definedData);
             case RenderValue.TypeId.EquityOrderTypeId:
                 return this.formatOrderTypeId((renderValue as EnumRenderValue).definedData);
             case RenderValue.TypeId.TimeInForceId:
