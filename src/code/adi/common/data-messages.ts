@@ -39,7 +39,7 @@ import {
     OrderInstructionId,
     OrderPriceUnitTypeId,
     OrderRequestError,
-    OrderRequestResultId, OrderSideId, OrderTypeId,
+    OrderRequestResultId, OrderShortSellTypeId, OrderSideId, OrderTypeId,
     TimeInForceId,
     TradeAffectsId,
     TradeFlagId,
@@ -268,6 +268,7 @@ export namespace OrdersDataMessage {
         minimumQuantity: Integer | undefined;
         timeInForceId: TimeInForceId;
         expiryDate: SourceTzOffsetDateTime | undefined;
+        shortSellTypeId: OrderShortSellTypeId | undefined;
         // managed fund details
         unitTypeId: OrderPriceUnitTypeId;
         unitAmount: Decimal;

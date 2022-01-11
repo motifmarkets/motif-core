@@ -2021,7 +2021,7 @@ export namespace ZenithConvert {
         }
     }
 
-    export namespace Side {
+    export namespace OrderSide {
         export function toId(value: Zenith.Side): OrderSideId {
             switch (value) {
                 case Zenith.Side.Bid: return OrderSideId.Bid;
@@ -2302,6 +2302,14 @@ export namespace ZenithConvert {
                 default: throw new UnreachableCaseError('ZCSSTFI555879', value);
             }
         }
+
+        export function toId(value: Zenith.TradingController.PlaceOrder.ShortSellType): OrderShortSellTypeId {
+            switch (value) {
+                case Zenith.TradingController.PlaceOrder.ShortSellType.ShortSell: return OrderShortSellTypeId.ShortSell;
+                case Zenith.TradingController.PlaceOrder.ShortSellType.ShortSellExempt: return OrderShortSellTypeId.ShortSellExempt;
+                default: throw new UnreachableCaseError('ZCSSTTI555879', value);
+            }
+        }
     }
 
     export namespace OrderRequestError {
@@ -2481,7 +2489,7 @@ export namespace ZenithConvert {
                 time: tradeData.Time === undefined ? undefined : Date.DateTimeIso8601.toSourceTzOffsetDateTime(tradeData.Time),
                 flagIds: TradeFlag.toIdArray(tradeData.Flags),
                 trendId: tradeData.Trend === undefined ? undefined : Trend.toId(tradeData.Trend),
-                sideId: tradeData.Side === undefined ? undefined : Side.toId(tradeData.Side),
+                sideId: tradeData.Side === undefined ? undefined : OrderSide.toId(tradeData.Side),
                 affectsIds: TradeAffects.toIdArray(tradeData.Affects),
                 conditionCodes: tradeData.Codes,
                 buyBroker: tradeData.BuyBroker,
@@ -2510,7 +2518,7 @@ export namespace ZenithConvert {
                 time: tradeData.Time === undefined ? undefined : Date.DateTimeIso8601.toSourceTzOffsetDateTime(tradeData.Time),
                 flagIds: TradeFlag.toIdArray(tradeData.Flags),
                 trendId: tradeData.Trend === undefined ? undefined : Trend.toId(tradeData.Trend),
-                sideId: tradeData.Side === undefined ? undefined : Side.toId(tradeData.Side),
+                sideId: tradeData.Side === undefined ? undefined : OrderSide.toId(tradeData.Side),
                 affectsIds: TradeAffects.toIdArray(tradeData.Affects),
                 conditionCodes: tradeData.Codes,
                 buyBroker: tradeData.BuyBroker,
@@ -2893,7 +2901,7 @@ export namespace ZenithConvert {
             const result: Zenith.TradingController.PlaceOrder.MarketDetails = {
                 Exchange: EnvironmentedExchange.fromId(details.exchangeId),
                 Code: details.code,
-                Side: ZenithConvert.Side.fromId(details.sideId),
+                Side: ZenithConvert.OrderSide.fromId(details.sideId),
                 Style: Zenith.TradingController.OrderStyle.Market,
                 // BrokerageSchedule?: // not supported currently
                 Type: ZenithConvert.EquityOrderType.fromId(details.typeId),
@@ -2914,7 +2922,7 @@ export namespace ZenithConvert {
             const result: Zenith.TradingController.PlaceOrder.ManagedFundDetails = {
                 Exchange: EnvironmentedExchange.fromId(details.exchangeId),
                 Code: details.code,
-                Side: ZenithConvert.Side.fromId(details.sideId),
+                Side: ZenithConvert.OrderSide.fromId(details.sideId),
                 Style: Zenith.TradingController.OrderStyle.ManagedFund,
                 // BrokerageSchedule?: // not supported currently
                 UnitType: ZenithConvert.OrderPriceUnitType.fromId(details.unitTypeId),

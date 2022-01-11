@@ -8,12 +8,14 @@ import { Decimal } from 'decimal.js-light/decimal';
 import {
     Account,
     AdiService,
-    AmendOrderRequestDataDefinition, BrokerageAccountId,
+    AmendOrderRequestDataDefinition,
+    BrokerageAccountId,
     BrokerageAccountIncubator,
     BrokerageAccountsDataDefinition,
     BrokerageAccountsDataItem,
     CancelOrderRequestDataDefinition,
-    DataItemIncubator, ExchangeInfo,
+    DataItemIncubator,
+    ExchangeInfo,
     FeedStatusId,
     Holding,
     ImmediateOrderTrigger,
@@ -23,35 +25,45 @@ import {
     MarketOrderRoute,
     MovementId,
     MoveOrderRequestDataDefinition,
-    Order, OrderExtendedSide,
-    OrderExtendedSideId, OrderId,
+    Order,
+    OrderExtendedSide,
+    OrderExtendedSideId,
+    OrderId,
     OrderRequestDataDefinition,
     OrderRequestType,
     OrderRequestTypeId,
-    OrderRoute, OrderSide,
-    OrderSideId, OrderTrigger,
+    OrderRoute,
+    OrderSideId,
+    OrderTrigger,
     OrderTriggerType,
     OrderTriggerTypeId,
     OrderType,
     OrderTypeId,
     PlaceOrderRequestDataDefinition,
     PriceOrderTrigger,
-    RoutedIvemId, TimeInForce,
+    RoutedIvemId,
+    TimeInForce,
     TimeInForceId
-} from '../adi/adi-internal-api';
+} from "../adi/adi-internal-api";
 import { StringId, Strings } from '../res/res-internal-api';
 import { CoreSettings } from '../settings/settings-internal-api';
 import {
-    AssertInternalError, concatenateArrayUniquely, EnumInfoOutOfOrderError,
-    Integer, isArrayEqualUniquely,
-
-    isUndefinableArrayEqualUniquely, isUndefinableDecimalEqual, Json,
+    AssertInternalError,
+    concatenateArrayUniquely,
+    EnumInfoOutOfOrderError,
+    Integer,
+    isArrayEqualUniquely,
+    isUndefinableArrayEqualUniquely,
+    isUndefinableDecimalEqual,
+    Json,
     JsonElement,
     Logger,
-    MultiEvent, newUndefinableDate,
-    newUndefinableDecimal, NotImplementedError,
+    MultiEvent,
+    newUndefinableDate,
+    newUndefinableDecimal,
+    NotImplementedError,
     UnreachableCaseError
-} from '../sys/sys-internal-api';
+} from "../sys/sys-internal-api";
 import { PriceStepperIncubator } from './price-stepper-incubator';
 import { SecurityPriceStepper } from './security-price-stepper';
 import { SymbolsService } from './services-internal-api';
@@ -2940,9 +2952,8 @@ export class OrderPad {
         this.internalSetRoutedIvemId(routedIvemId.createCopy());
         this._loadedRoutedIvemId = routedIvemId;
 
-        const orderSideId = order.sideId;
-        const orderExtendedSideId = OrderSide.idToBaseOrderExtendedSideId(orderSideId);
-        this.internalSetSideId(orderExtendedSideId);
+        const orderExtendedSideId = order.extendedSideId;
+        this.internalSetSideId(order.extendedSideId);
         this._loadedSideId = orderExtendedSideId;
     }
 

@@ -2737,6 +2737,59 @@ export namespace TimeInForce {
     }
 }
 
+export namespace OrderShortSellType {
+    export type Id = OrderShortSellTypeId;
+
+    interface Info {
+        readonly id: Id;
+        readonly name: string;
+        readonly display: StringId;
+    }
+
+    type InfosObject = { [id in keyof typeof OrderShortSellTypeId]: Info };
+
+    const infosObject: InfosObject = {
+        ShortSell: {
+            id: OrderShortSellTypeId.ShortSell,
+            name: 'ShortSell',
+            display: StringId.OrderShortSellTypeDisplay_ShortSell,
+        },
+        ShortSellExempt: {
+            id: OrderShortSellTypeId.ShortSellExempt,
+            name: 'ShortSellExempt',
+            display: StringId.OrderShortSellTypeDisplay_ShortSellExempt,
+        },
+    };
+
+    export const idCount = Object.keys(infosObject).length;
+
+    const infos = Object.values(infosObject);
+
+    export function initialise() {
+        const outOfOrderIdx = infos.findIndex((info: Info, index: Integer) => info.id !== index);
+        if (outOfOrderIdx >= 0) {
+            throw new EnumInfoOutOfOrderError('ShortSellExemptType', outOfOrderIdx, infos[outOfOrderIdx].name);
+        }
+    }
+
+    export function idToDisplayId(id: Id): StringId {
+        return infos[id].display;
+    }
+
+    export function idToDisplay(id: Id): string {
+        return Strings[idToDisplayId(id)];
+    }
+
+    export function idToName(id: Id): string {
+        return infos[id].name;
+    }
+
+    export function tryNameToId(name: string): Id | undefined {
+        const index = infos.findIndex(info => info.name === name);
+        return index >= 0 ? infos[index].id : undefined;
+    }
+}
+
 export namespace OrderTriggerType {
     export type Id = OrderTriggerTypeId;
 
@@ -3198,14 +3251,14 @@ export namespace MarketInfo {
         TimeInForceId.FillAndKill,
         TimeInForceId.GoodTillDate
     ];
-    const StandardAllowedSideTypeIds = [OrderExtendedSideId.Buy, OrderExtendedSideId.Sell];
-    const MyxAllowedSideTypeIds = [
+    const StandardAllowedOrderExtendedSideIds = [OrderExtendedSideId.Buy, OrderExtendedSideId.Sell];
+    const MyxAllowedOrderExtendedSideIds = [
         OrderExtendedSideId.Buy,
         OrderExtendedSideId.Sell,
         OrderExtendedSideId.IntraDayShortSell,
-        OrderExtendedSideId.RegulatedShortSell,
+        // OrderExtendedSideId.RegulatedShortSell,
         OrderExtendedSideId.ProprietaryShortSell,
-        OrderExtendedSideId.ProprietaryDayTrade,
+        // OrderExtendedSideId.ProprietaryDayTrade,
     ];
 
     interface Info {
@@ -3225,7 +3278,7 @@ export namespace MarketInfo {
         readonly allowedTimeInForceIds: readonly TimeInForceId[];
         readonly defaultTimeInForceId: TimeInForceId | undefined;
         readonly hasPriceStepRestrictions: boolean; // Should orders to this destination be limited to valid price steps?
-        readonly allowedSideIds: readonly OrderExtendedSideId[];
+        readonly allowedOrderExtendedSideIds: readonly OrderExtendedSideId[];
         readonly allowedOrderTriggerTypeIds: readonly OrderTriggerTypeId[];
         readonly quantityMultiple: Integer;
         readonly displayPriority: number; // lower is higher priority - only relevant within exchange
@@ -3251,7 +3304,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [],
             defaultTimeInForceId: undefined,
             hasPriceStepRestrictions: false,
-            allowedSideIds: [],
+            allowedOrderExtendedSideIds: [],
             allowedOrderTriggerTypeIds: [],
             quantityMultiple: 1,
             displayPriority: 50,
@@ -3273,7 +3326,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [TimeInForceId.Day, TimeInForceId.GoodTillCancel, TimeInForceId.GoodTillDate],
             defaultTimeInForceId: TimeInForceId.GoodTillCancel,
             hasPriceStepRestrictions: true,
-            allowedSideIds: StandardAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: StandardAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 40,
@@ -3295,7 +3348,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [TimeInForceId.Day, TimeInForceId.GoodTillCancel, TimeInForceId.GoodTillDate],
             defaultTimeInForceId: TimeInForceId.GoodTillCancel,
             hasPriceStepRestrictions: true,
-            allowedSideIds: StandardAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: StandardAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 10,
@@ -3317,7 +3370,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [TimeInForceId.Day, TimeInForceId.GoodTillCancel, TimeInForceId.GoodTillDate],
             defaultTimeInForceId: TimeInForceId.GoodTillCancel,
             hasPriceStepRestrictions: false,
-            allowedSideIds: StandardAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: StandardAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 20,
@@ -3339,7 +3392,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [],
             defaultTimeInForceId: undefined,
             hasPriceStepRestrictions: false,
-            allowedSideIds: [],
+            allowedOrderExtendedSideIds: [],
             allowedOrderTriggerTypeIds: [],
             quantityMultiple: 1,
             displayPriority: 30,
@@ -3361,7 +3414,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [TimeInForceId.Day],
             defaultTimeInForceId: TimeInForceId.Day,
             hasPriceStepRestrictions: true,
-            allowedSideIds: StandardAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: StandardAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 15,
@@ -3383,7 +3436,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [TimeInForceId.Day],
             defaultTimeInForceId: TimeInForceId.Day,
             hasPriceStepRestrictions: false,
-            allowedSideIds: StandardAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: StandardAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 40,
@@ -3405,7 +3458,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [TimeInForceId.Day],
             defaultTimeInForceId: TimeInForceId.Day,
             hasPriceStepRestrictions: true,
-            allowedSideIds: StandardAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: StandardAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 30,
@@ -3427,7 +3480,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [TimeInForceId.Day],
             defaultTimeInForceId: TimeInForceId.Day,
             hasPriceStepRestrictions: false,
-            allowedSideIds: StandardAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: StandardAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 50,
@@ -3449,7 +3502,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [TimeInForceId.Day],
             defaultTimeInForceId: TimeInForceId.Day,
             hasPriceStepRestrictions: false,
-            allowedSideIds: StandardAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: StandardAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 20,
@@ -3471,7 +3524,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [TimeInForceId.Day, TimeInForceId.GoodTillCancel, TimeInForceId.GoodTillDate],
             defaultTimeInForceId: TimeInForceId.GoodTillCancel,
             hasPriceStepRestrictions: true,
-            allowedSideIds: StandardAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: StandardAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 20,
@@ -3493,7 +3546,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [TimeInForceId.Day, TimeInForceId.GoodTillCancel, TimeInForceId.GoodTillDate],
             defaultTimeInForceId: TimeInForceId.GoodTillCancel,
             hasPriceStepRestrictions: true,
-            allowedSideIds: StandardAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: StandardAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 10,
@@ -3515,7 +3568,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [TimeInForceId.Day, TimeInForceId.GoodTillCancel, TimeInForceId.GoodTillDate],
             defaultTimeInForceId: TimeInForceId.GoodTillCancel,
             hasPriceStepRestrictions: true,
-            allowedSideIds: StandardAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: StandardAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 30,
@@ -3537,7 +3590,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [],
             defaultTimeInForceId: undefined,
             hasPriceStepRestrictions: false,
-            allowedSideIds: [],
+            allowedOrderExtendedSideIds: [],
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 20,
@@ -3559,7 +3612,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [],
             defaultTimeInForceId: undefined,
             hasPriceStepRestrictions: false,
-            allowedSideIds: [],
+            allowedOrderExtendedSideIds: [],
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 20,
@@ -3581,7 +3634,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: MyxAllowedTimeInForceIds,    // See GetAllowedTimeInForceIdSet() for more.
             defaultTimeInForceId: TimeInForceId.Day,
             hasPriceStepRestrictions: true,
-            allowedSideIds: MyxAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: MyxAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate, OrderTriggerTypeId.Price],
             quantityMultiple: 100,
             displayPriority: 10,
@@ -3603,7 +3656,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: MyxAllowedTimeInForceIds,    // See GetAllowedTimeInForceIdSet() for more.
             defaultTimeInForceId: TimeInForceId.Day,
             hasPriceStepRestrictions: false,
-            allowedSideIds: MyxAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: MyxAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 100,
             displayPriority: 50,
@@ -3625,7 +3678,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [],    // See GetAllowedTimeInForceIdSet() for more.
             defaultTimeInForceId: TimeInForceId.Day,
             hasPriceStepRestrictions: false,
-            allowedSideIds: [],
+            allowedOrderExtendedSideIds: [],
             allowedOrderTriggerTypeIds: [],
             quantityMultiple: 100,
             displayPriority: 20,
@@ -3647,7 +3700,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: MyxAllowedTimeInForceIds,   // See GetAllowedTimeInForceIdSet() for more.
             defaultTimeInForceId: TimeInForceId.Day,
             hasPriceStepRestrictions: true,
-            allowedSideIds: MyxAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: MyxAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 30,
@@ -3669,7 +3722,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [TimeInForceId.FillAndKill],
             defaultTimeInForceId: TimeInForceId.FillAndKill,
             hasPriceStepRestrictions: true,
-            allowedSideIds: MyxAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: MyxAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 40,
@@ -3691,7 +3744,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [],
             defaultTimeInForceId: undefined,
             hasPriceStepRestrictions: false,
-            allowedSideIds: [],
+            allowedOrderExtendedSideIds: [],
             allowedOrderTriggerTypeIds: [],
             quantityMultiple: 1,
             displayPriority: 10,
@@ -3713,7 +3766,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [],
             defaultTimeInForceId: undefined,
             hasPriceStepRestrictions: false,
-            allowedSideIds: [],
+            allowedOrderExtendedSideIds: [],
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 10,
@@ -3735,7 +3788,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [TimeInForceId.Day, TimeInForceId.GoodTillCancel, TimeInForceId.GoodTillDate],
             defaultTimeInForceId: TimeInForceId.GoodTillCancel,
             hasPriceStepRestrictions: true,
-            allowedSideIds: StandardAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: StandardAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 10,
@@ -3757,7 +3810,7 @@ export namespace MarketInfo {
             allowedTimeInForceIds: [TimeInForceId.Day, TimeInForceId.GoodTillCancel, TimeInForceId.GoodTillDate],
             defaultTimeInForceId: TimeInForceId.GoodTillCancel,
             hasPriceStepRestrictions: true,
-            allowedSideIds: StandardAllowedSideTypeIds,
+            allowedOrderExtendedSideIds: StandardAllowedOrderExtendedSideIds,
             allowedOrderTriggerTypeIds: [OrderTriggerTypeId.Immediate],
             quantityMultiple: 1,
             displayPriority: 10,
@@ -3908,7 +3961,7 @@ export namespace MarketInfo {
     }
 
     export function GetAllowedSideIdArray(id: Id) {
-        return infos[id].allowedSideIds;
+        return infos[id].allowedOrderExtendedSideIds;
     }
 
     export function isSideAllowed(id: Id, sideId: OrderExtendedSideId) {
@@ -6067,7 +6120,7 @@ export namespace OrderExtendedSide {
         return infos[id].shortSell;
     }
 
-    export function calculateFromOrderSideIdAnd(
+    export function calculateFromSideExchangeShortSellTypeInstructions(
         orderSideId: OrderSideId,
         exchangeId: ExchangeId,
         shortSellTypeId: OrderShortSellTypeId | undefined,
@@ -7121,6 +7174,7 @@ export namespace DataTypesModule {
         OrderSide.initialise();
         OrderType.initialise();
         TimeInForce.initialise();
+        OrderShortSellType.initialise();
         OrderRequestAlgorithm.initialise();
         OrderRequestFlag.initialise();
         OrderPadStatus.initialise();

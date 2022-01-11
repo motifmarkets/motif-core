@@ -584,6 +584,8 @@ export const enum StringId {
     OrderFieldHeading_Code,
     OrderFieldDisplay_Side,
     OrderFieldHeading_Side,
+    OrderFieldDisplay_ExtendedSide,
+    OrderFieldHeading_ExtendedSide,
     OrderFieldDisplay_DetailsStyle,
     OrderFieldHeading_DetailsStyle,
     OrderFieldDisplay_BrokerageSchedule,
@@ -602,6 +604,8 @@ export const enum StringId {
     OrderFieldHeading_DetailsTimeInForce,
     OrderFieldDisplay_DetailsExpiryDate,
     OrderFieldHeading_DetailsExpiryDate,
+    OrderFieldDisplay_DetailsShortSellType,
+    OrderFieldHeading_DetailsShortSellType,
     OrderFieldDisplay_DetailsUnitType,
     OrderFieldHeading_DetailsUnitType,
     OrderFieldDisplay_DetailsUnitAmount,
@@ -662,6 +666,8 @@ export const enum StringId {
     TimeInForceDisplay_GoodTillCrossing,
     TimeInForceDisplay_GoodTillDate,
     TimeInForceDisplay_AtTheClose,
+    OrderShortSellTypeDisplay_ShortSell,
+    OrderShortSellTypeDisplay_ShortSellExempt,
     OrderPriceUnitTypeDisplay_Currency,
     OrderPriceUnitTypeDisplay_Units,
     OrderRouteAlgorithmDisplay_Market,
@@ -4674,6 +4680,16 @@ export namespace I18nStrings {
                 en: 'Side',
             }
         },
+        OrderFieldDisplay_ExtendedSide: {
+            id: StringId.OrderFieldDisplay_ExtendedSide, translations: {
+                en: 'Extended Side',
+            }
+        },
+        OrderFieldHeading_ExtendedSide: {
+            id: StringId.OrderFieldHeading_ExtendedSide, translations: {
+                en: 'Xtd Side',
+            }
+        },
         OrderFieldDisplay_DetailsStyle: {
             id: StringId.OrderFieldDisplay_DetailsStyle, translations: {
                 en: 'Style',
@@ -4762,6 +4778,16 @@ export namespace I18nStrings {
         OrderFieldHeading_DetailsExpiryDate: {
             id: StringId.OrderFieldHeading_DetailsExpiryDate, translations: {
                 en: 'Expiry',
+            }
+        },
+        OrderFieldDisplay_DetailsShortSellType: {
+            id: StringId.OrderFieldDisplay_DetailsShortSellType, translations: {
+                en: 'Short Sell Type',
+            }
+        },
+        OrderFieldHeading_DetailsShortSellType: {
+            id: StringId.OrderFieldHeading_DetailsShortSellType, translations: {
+                en: 'Short',
             }
         },
         OrderFieldDisplay_DetailsUnitType: {
@@ -5062,6 +5088,16 @@ export namespace I18nStrings {
         TimeInForceDisplay_AtTheClose: {
             id: StringId.TimeInForceDisplay_AtTheClose, translations: {
                 en: 'At the Close',
+            }
+        },
+        OrderShortSellTypeDisplay_ShortSell: {
+            id: StringId.OrderShortSellTypeDisplay_ShortSell, translations: {
+                en: 'Short',
+            }
+        },
+        OrderShortSellTypeDisplay_ShortSellExempt: {
+            id: StringId.OrderShortSellTypeDisplay_ShortSellExempt, translations: {
+                en: 'Short Exempt',
             }
         },
         OrderPriceUnitTypeDisplay_Currency: {
@@ -7762,12 +7798,12 @@ export namespace I18nStrings {
         },
         OrderPadSideTitle: {
             id: StringId.OrderPadSideTitle, translations: {
-                en: 'Select side',
+                en: 'Select (extended) side',
             }
         },
         OrderPadSideCaption: {
             id: StringId.OrderPadSideCaption, translations: {
-                en: 'Side',
+                en: 'Xtd Side',
             }
         },
         OrderPadSymbolTitle: {

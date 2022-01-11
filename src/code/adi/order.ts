@@ -23,9 +23,9 @@ import {
     ExchangeInfo,
     FieldDataTypeId, ImmediateOrderTrigger, IvemClassId, IvemId, LitIvemId, MarketBoardId,
     MarketId,
-    MarketInfo, MarketOrderRoute, OrderId,
+    MarketInfo, MarketOrderRoute, OrderExtendedSide, OrderExtendedSideId, OrderId,
     OrderPriceUnitType,
-    OrderPriceUnitTypeId, OrderRoute, OrdersDataMessage, OrderSide,
+    OrderPriceUnitTypeId, OrderRoute, OrdersDataMessage, OrderShortSellTypeId, OrderSide,
     OrderSideId, OrderStatus, OrderStatuses, OrderTrigger, OrderTypeId,
     TimeInForce,
     TimeInForceId
@@ -55,6 +55,7 @@ export class Order implements BrokerageAccountDataRecord {
     private _environmentId: ExchangeEnvironmentId;
     private _code: string;
     private _sideId: OrderSideId;
+    private _extendedSideId: OrderExtendedSideId;
     private _brokerageSchedule: string | undefined;
     // equity details
     private _equityOrderTypeId: OrderTypeId;
@@ -64,6 +65,7 @@ export class Order implements BrokerageAccountDataRecord {
     private _minimumQuantity: Integer | undefined;
     private _timeInForceId: TimeInForceId;
     private _expiryDate: SourceTzOffsetDateTime | undefined;
+    private _shortSellTypeId: OrderShortSellTypeId | undefined;
     // managed fund details
     private _unitTypeId: OrderPriceUnitTypeId;
     private _unitAmount: Decimal;
@@ -112,6 +114,7 @@ export class Order implements BrokerageAccountDataRecord {
         this._environmentId = change.environmentId;
         this._code = change.code;
         this._sideId = change.sideId;
+        this._extendedSideId = this.calculateExtendedSideId(change);
         this._brokerageSchedule = change.brokerageSchedule;
         this._equityOrderTypeId = change.equityOrderTypeId;
         this._limitPrice = change.limitPrice;
@@ -120,6 +123,7 @@ export class Order implements BrokerageAccountDataRecord {
         this._minimumQuantity = change.minimumQuantity;
         this._timeInForceId = change.timeInForceId;
         this._expiryDate = change.expiryDate;
+        this._shortSellTypeId = change.shortSellTypeId;
         this._unitTypeId = change.unitTypeId;
         this._unitAmount = change.unitAmount;
         this._managedFundCurrency = change.managedFundCurrency;
@@ -154,6 +158,7 @@ export class Order implements BrokerageAccountDataRecord {
     get environmentId() { return this._environmentId; }
     get code() { return this._code; }
     get sideId() { return this._sideId; }
+    get extendedSideId() { return this._extendedSideId; }
     get brokerageSchedule() { return this._brokerageSchedule; }
     get equityOrderTypeId() { return this._equityOrderTypeId; }
     get limitPrice() { return this._limitPrice; }
@@ -162,6 +167,7 @@ export class Order implements BrokerageAccountDataRecord {
     get minimumQuantity() { return this._minimumQuantity; }
     get timeInForceId() { return this._timeInForceId; }
     get expiryDate() { return this._expiryDate; }
+    get shortSellTypeId() { return this._shortSellTypeId; }
     get unitTypeId() { return this._unitTypeId; }
     get unitAmount() { return this._unitAmount; }
     get managedFundCurrency() { return this._managedFundCurrency; }
@@ -400,6 +406,13 @@ export class Order implements BrokerageAccountDataRecord {
             valueChanges[changedIdx++] = { fieldId: Order.FieldId.SideId, recentChangeTypeId: ValueRecentChangeTypeId.Update };
         }
 
+        const newExtendedSideId = this.calculateExtendedSideId(change);
+
+        if (newExtendedSideId !== this._extendedSideId) {
+            this._extendedSideId = newExtendedSideId;
+            valueChanges[changedIdx++] = { fieldId: Order.FieldId.ExtendedSideId, recentChangeTypeId: ValueRecentChangeTypeId.Update };
+        }
+
         if (change.brokerageSchedule !== this._brokerageSchedule) {
             this._brokerageSchedule = change.brokerageSchedule;
             valueChanges[changedIdx++] = {
@@ -466,6 +479,11 @@ export class Order implements BrokerageAccountDataRecord {
         if (!SourceTzOffsetDateTime.isUndefinableEqual(change.expiryDate, this._expiryDate)) {
             this._expiryDate = change.expiryDate;
             valueChanges[changedIdx++] = { fieldId: Order.FieldId.ExpiryDate, recentChangeTypeId: ValueRecentChangeTypeId.Update };
+        }
+
+        if (change.shortSellTypeId !== this._shortSellTypeId) {
+            this._shortSellTypeId = change.shortSellTypeId;
+            valueChanges[changedIdx++] = { fieldId: Order.FieldId.ShortSellTypeId, recentChangeTypeId: ValueRecentChangeTypeId.Update };
         }
 
         if (change.unitTypeId !== this._unitTypeId) {
@@ -598,6 +616,15 @@ export class Order implements BrokerageAccountDataRecord {
         }
     }
 
+    private calculateExtendedSideId(change: OrdersDataMessage.AddUpdateChange) {
+        return OrderExtendedSide.calculateFromSideExchangeShortSellTypeInstructions(
+            change.sideId,
+            change.exchangeId,
+            change.shortSellTypeId,
+            change.instructionIds
+        );
+    }
+
     private updateStatusAllowReasonIds() {
         let statusAllowIds: OrderStatus.AllowIds;
         let statusReasonIds: OrderStatus.ReasonIds;
@@ -665,6 +692,7 @@ export namespace Order {
         EnvironmentId,
         Code,
         SideId,
+        ExtendedSideId,
         BrokerageSchedule,
         EquityOrderTypeId,
         LimitPrice,
@@ -674,6 +702,7 @@ export namespace Order {
         // eslint-disable-next-line @typescript-eslint/no-shadow
         TimeInForceId,
         ExpiryDate,
+        ShortSellTypeId,
         UnitTypeId,
         UnitAmount,
         ManagedFundCurrency,
@@ -874,6 +903,13 @@ export namespace Order {
                 displayId: StringId.OrderFieldDisplay_Side,
                 headingId: StringId.OrderFieldHeading_Side,
             },
+            ExtendedSideId: {
+                id: FieldId.ExtendedSideId,
+                name: 'DetailsExtendedSide',
+                dataTypeId: FieldDataTypeId.Enumeration,
+                displayId: StringId.OrderFieldDisplay_ExtendedSide,
+                headingId: StringId.OrderFieldHeading_ExtendedSide,
+            },
             BrokerageSchedule: {
                 id: FieldId.BrokerageSchedule,
                 name: 'DetailsBrokerageSchedule',
@@ -929,6 +965,13 @@ export namespace Order {
                 dataTypeId: FieldDataTypeId.Date,
                 displayId: StringId.OrderFieldDisplay_DetailsExpiryDate,
                 headingId: StringId.OrderFieldHeading_DetailsExpiryDate,
+            },
+            ShortSellTypeId: {
+                id: FieldId.ShortSellTypeId,
+                name: 'DetailsShortSellType',
+                dataTypeId: FieldDataTypeId.Enumeration,
+                displayId: StringId.OrderFieldDisplay_DetailsShortSellType,
+                headingId: StringId.OrderFieldHeading_DetailsShortSellType,
             },
             UnitTypeId: {
                 id: FieldId.UnitTypeId,
@@ -1118,6 +1161,7 @@ export namespace Order {
             minimumQuantity: undefined,
             timeInForceId: TimeInForce.nullId,
             expiryDate: undefined,
+            shortSellTypeId: undefined,
             unitTypeId: OrderPriceUnitType.nullId,
             unitAmount: new Decimal(0),
             managedFundCurrency: undefined,

@@ -97,11 +97,12 @@ export namespace RenderValue {
         FeedClassId,
         CurrencyId,
         // eslint-disable-next-line @typescript-eslint/no-shadow
-        SideId,
+        OrderExtendedSideId,
         // eslint-disable-next-line @typescript-eslint/no-shadow
         OrderSideId,
         EquityOrderTypeId,
         TimeInForceId,
+        OrderShortSellTypeId,
         OrderPriceUnitTypeId,
         OrderRouteAlgorithmId,
         OrderTriggerTypeId,
@@ -423,15 +424,15 @@ export class MarketIdRenderValue extends EnumRenderValue {
     }
 }
 
-export class SideIdRenderValue extends EnumRenderValue {
-    constructor(data: OrderExtendedSideId | undefined) {
-        super(data, RenderValue.TypeId.SideId);
-    }
-}
-
 export class OrderSideIdRenderValue extends EnumRenderValue {
     constructor(data: OrderSideId | undefined) {
         super(data, RenderValue.TypeId.OrderSideId);
+    }
+}
+
+export class OrderExtendedSideIdRenderValue extends EnumRenderValue {
+    constructor(data: OrderExtendedSideId | undefined) {
+        super(data, RenderValue.TypeId.OrderExtendedSideId);
     }
 }
 

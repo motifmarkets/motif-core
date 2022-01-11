@@ -34,17 +34,24 @@ import {
     MarketInfo,
     Movement,
     MovementId,
-    MyxLitIvemAttributes, OrderExtendedSide,
-    OrderExtendedSideId, OrderPriceUnitType,
+    MyxLitIvemAttributes,
+    OrderExtendedSide,
+    OrderExtendedSideId,
+    OrderPriceUnitType,
     OrderPriceUnitTypeId,
     OrderRouteAlgorithm,
-    OrderRouteAlgorithmId, OrderSide,
-    OrderSideId, OrderStatus,
+    OrderRouteAlgorithmId,
+    OrderShortSellType,
+    OrderShortSellTypeId,
+    OrderSide,
+    OrderSideId,
+    OrderStatus,
     OrderTriggerType,
     OrderTriggerTypeId,
     OrderType,
     OrderTypeId,
-    RoutedIvemId, TimeInForce,
+    RoutedIvemId,
+    TimeInForce,
     TimeInForceId,
     TradeAffects,
     TradeAffectsId,
@@ -55,7 +62,7 @@ import {
     TrailingStopLossOrderConditionTypeId,
     ZenithSubscriptionData,
     ZenithSubscriptionDataId
-} from '../adi/adi-internal-api';
+} from "../adi/adi-internal-api";
 import { StringId, Strings } from '../res/res-internal-api';
 import { ColorSettings, CoreSettings, SettingsService } from '../settings/settings-internal-api';
 import {
@@ -294,17 +301,20 @@ export class TextFormatter {
     formatCurrencyId(value: CurrencyId) {
         return Currency.idToDisplay(value);
     }
-    formatOrderExtendedSideId(value: OrderExtendedSideId) {
-        return OrderExtendedSide.idToDisplay(value);
-    }
     formatOrderSideId(value: OrderSideId) {
         return OrderSide.idToDisplay(value);
+    }
+    formatOrderExtendedSideId(value: OrderExtendedSideId) {
+        return OrderExtendedSide.idToDisplay(value);
     }
     formatOrderTypeId(value: OrderTypeId) {
         return OrderType.idToDisplay(value);
     }
     formatTimeInForceId(value: TimeInForceId) {
         return TimeInForce.idToDisplay(value);
+    }
+    formatOrderShortSellTypeId(value: OrderShortSellTypeId) {
+        return OrderShortSellType.idToDisplay(value);
     }
     formatOrderTriggerTypeId(value: OrderTriggerTypeId) {
         return OrderTriggerType.idToDisplay(value);
@@ -564,7 +574,7 @@ export class TextFormatter {
                 return this.formatMarketBoardId((renderValue as EnumRenderValue).definedData);
             case RenderValue.TypeId.CurrencyId:
                 return this.formatCurrencyId((renderValue as EnumRenderValue).definedData);
-            case RenderValue.TypeId.SideId:
+            case RenderValue.TypeId.OrderExtendedSideId:
                 return this.formatOrderExtendedSideId((renderValue as EnumRenderValue).definedData);
             case RenderValue.TypeId.OrderSideId:
                 return this.formatOrderSideId((renderValue as EnumRenderValue).definedData);
@@ -572,6 +582,8 @@ export class TextFormatter {
                 return this.formatOrderTypeId((renderValue as EnumRenderValue).definedData);
             case RenderValue.TypeId.TimeInForceId:
                 return this.formatTimeInForceId((renderValue as EnumRenderValue).definedData);
+            case RenderValue.TypeId.OrderShortSellTypeId:
+                return this.formatOrderShortSellTypeId((renderValue as EnumRenderValue).definedData);
             case RenderValue.TypeId.OrderPriceUnitTypeId:
                 return this.formatOrderPriceUnitTypeId((renderValue as EnumRenderValue).definedData);
             case RenderValue.TypeId.OrderRouteAlgorithmId:
