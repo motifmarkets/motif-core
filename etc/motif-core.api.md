@@ -28438,9 +28438,9 @@ export namespace ZenithConvert {
     // (undocumented)
     export namespace OrderInstruction {
         // (undocumented)
-        export function fromIdArray(value: OrderInstructionId[]): Zenith.OrderInstruction[];
+        export function fromIdArray(value: readonly OrderInstructionId[]): Zenith.OrderInstruction[];
         // (undocumented)
-        export function toIdArray(value: Zenith.OrderInstruction[] | undefined): OrderInstructionId[];
+        export function toIdArray(value: readonly Zenith.OrderInstruction[] | undefined): OrderInstructionId[];
     }
     // (undocumented)
     export namespace OrderPriceUnitType {

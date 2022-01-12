@@ -2042,7 +2042,7 @@ export namespace ZenithConvert {
     }
 
     export namespace OrderInstruction {
-        export function toIdArray(value: Zenith.OrderInstruction[] | undefined): OrderInstructionId[] {
+        export function toIdArray(value: readonly Zenith.OrderInstruction[] | undefined): OrderInstructionId[] {
             if (value === undefined) {
                 return [];
             } else {
@@ -2056,7 +2056,7 @@ export namespace ZenithConvert {
             }
         }
 
-        export function fromIdArray(value: OrderInstructionId[]): Zenith.OrderInstruction[] {
+        export function fromIdArray(value: readonly OrderInstructionId[]): Zenith.OrderInstruction[] {
             const count = value.length;
             const result = new Array<Zenith.OrderInstruction>(count);
             for (let i = 0; i < count; i++) {
@@ -2904,6 +2904,7 @@ export namespace ZenithConvert {
                 Side: ZenithConvert.OrderSide.fromId(details.sideId),
                 Style: Zenith.TradingController.OrderStyle.Market,
                 // BrokerageSchedule?: // not supported currently
+                Instructions: ZenithConvert.OrderInstruction.fromIdArray(details.instructionIds),
                 Type: ZenithConvert.EquityOrderType.fromId(details.typeId),
                 LimitPrice: details.limitPrice === undefined ? undefined : details.limitPrice.toNumber(),
                 Quantity: details.quantity,
@@ -2925,6 +2926,7 @@ export namespace ZenithConvert {
                 Side: ZenithConvert.OrderSide.fromId(details.sideId),
                 Style: Zenith.TradingController.OrderStyle.ManagedFund,
                 // BrokerageSchedule?: // not supported currently
+                Instructions: ZenithConvert.OrderInstruction.fromIdArray(details.instructionIds),
                 UnitType: ZenithConvert.OrderPriceUnitType.fromId(details.unitTypeId),
                 UnitAmount: details.unitAmount,
                 Currency: details.currency,
