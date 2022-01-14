@@ -37,14 +37,10 @@ export class ZenithConnectionStateEngine {
     private _pendingConnectActive = false;
     private _activeWaitId: Integer = ZenithConnectionStateEngine._waitId_Null;
 
-    private _pendingZenithEndpoint: string;
-    private _pendingAuthenticationTypeId: ZenithConnectionStateEngine.AuthenticationTypeId;
+    private _pendingZenithEndpoints: string[];
+    private _zenithEndpoints: string[];
+    private _activeZenithEndpoint: string;
 
-    private _zenithEndpoint: string;
-    private _authenticationTypeId: ZenithConnectionStateEngine.AuthenticationTypeId;
-
-    private _ownerCredentials: ZenithConnectionStateEngine.OwnerCredentials;
-    private _provider: string;
     private _accessToken: string;
     private _accessTokenExpiryTime: SysTick.Time;
 
@@ -65,10 +61,6 @@ export class ZenithConnectionStateEngine {
     get finalising() { return this._finalising; }
 
     get activeWaitId() { return this._activeWaitId; }
-    get zenithEndpoint() { return this._zenithEndpoint; }
-    get authenticationTypeId() { return this._authenticationTypeId; }
-    get ownerCredentials() { return this._ownerCredentials; }
-    get provider() { return this._provider; }
     get accessToken() { return this._accessToken; }
     get accessTokenExpiryTime() { return this._accessTokenExpiryTime; }
 
@@ -82,10 +74,8 @@ export class ZenithConnectionStateEngine {
     get timeoutCount() { return this._timeoutCount; }
     get lastTimeoutStateId() { return this._lastTimeoutStateId; }
 
-    adviseConnectionSubscription(zenithEndpoint: string,
-        authenticationTypeId: ZenithConnectionStateEngine.AuthenticationTypeId) {
-        this._pendingZenithEndpoint = zenithEndpoint;
-        this._pendingAuthenticationTypeId = authenticationTypeId;
+    adviseConnectionSubscription(zenithEndpoints: string[]) {
+        this._pendingZenithEndpoints = zenithEndpoints;
         this._pendingConnectActive = true;
 
         switch (this.stateId) {
@@ -100,17 +90,10 @@ export class ZenithConnectionStateEngine {
 
     connectPending() {
         if (this.stateId === ZenithPublisherStateId.ConnectPending) {
-            this._zenithEndpoint = this._pendingZenithEndpoint;
-            this._authenticationTypeId = this._pendingAuthenticationTypeId;
+            this._zenithEndpoints = this._pendingZenithEndpoints;
             this._pendingConnectActive = false;
 
             this._finalising = false;
-            this._ownerCredentials = {
-                clientId: '',
-                username: '',
-                password: '',
-            };
-            this._provider = '';
             this._accessToken = '';
             this._accessTokenExpiryTime = 0;
 
@@ -131,18 +114,15 @@ export class ZenithConnectionStateEngine {
         }
     }
 
+    selectActiveZenithEndpoint() {
+        const randIndex = Math.floor(Math.random() * this._zenithEndpoints.length);
+        this._activeZenithEndpoint = this._zenithEndpoints[randIndex];
+        return this._activeZenithEndpoint;
+    }
+
     connect() {
         if (this.stateId === ZenithPublisherStateId.Connect) {
-            switch (this.authenticationTypeId) {
-                case ZenithConnectionStateEngine.AuthenticationTypeId.AuthToken:
-                    this.action(ZenithConnectionStateEngine.ActionId.AuthTokenFetch);
-                    break;
-                case ZenithConnectionStateEngine.AuthenticationTypeId.AuthOwner:
-                    this.action(ZenithConnectionStateEngine.ActionId.AuthOwnerFetch);
-                    break;
-                default:
-                    throw new UnreachableCaseError('ZCSEC121209', this.authenticationTypeId);
-            }
+            this.action(ZenithConnectionStateEngine.ActionId.AuthTokenFetch);
         } else {
             this.logWarning(`Unexpected state in ZenithConnectionStateEngine: ${this.stateId}`);
         }
@@ -155,28 +135,10 @@ export class ZenithConnectionStateEngine {
         }
     }
 
-    adviseAuthOwnerFetchSuccess(provider: string, credentials: ZenithConnectionStateEngine.OwnerCredentials) {
-        if (this.stateId === ZenithPublisherStateId.AuthFetch) {
-            this._provider = provider;
-            this._ownerCredentials = credentials;
-            this._authFetchSuccessiveFailureCount = 0;
-            this.action(ZenithConnectionStateEngine.ActionId.SocketOpen);
-        }
-    }
-
     adviseAuthFetchFailure() {
         if (this.stateId === ZenithPublisherStateId.AuthFetch) {
             this._authFetchSuccessiveFailureCount++;
-            switch (this.authenticationTypeId) {
-                case ZenithConnectionStateEngine.AuthenticationTypeId.AuthToken:
-                    this.reconnect(ZenithPublisherReconnectReasonId.PassportTokenFailure);
-                    break;
-                case ZenithConnectionStateEngine.AuthenticationTypeId.AuthOwner:
-                    this.finalise(false);
-                    break;
-                default:
-                    throw new UnreachableCaseError('ZCSEAFATFD55872', this.authenticationTypeId);
-            }
+            this.reconnect(ZenithPublisherReconnectReasonId.PassportTokenFailure);
         }
     }
 
@@ -230,11 +192,7 @@ export class ZenithConnectionStateEngine {
             this._accessToken = accessToken;
             this._accessTokenExpiryTime = expiryTime;
             this._zenithTokenRefreshSuccessiveFailureCount = 0;
-            if (this._authenticationTypeId === ZenithConnectionStateEngine.AuthenticationTypeId.AuthOwner) {
-                this.action(ZenithConnectionStateEngine.ActionId.ZenithTokenInterval);
-            } else {
-                this.noAction(ZenithPublisherStateId.ZenithTokenActive);
-            }
+            this.noAction(ZenithPublisherStateId.ZenithTokenActive);
         }
     }
 
@@ -431,18 +389,12 @@ export namespace ZenithConnectionStateEngine {
         ReconnectDelay,
         ConnectPending,
         Connect,
-        AuthOwnerFetch,
         AuthTokenFetch,
         SocketOpen,
         ZenithTokenFetch,
         ZenithTokenInterval,
         ZenithTokenRefresh,
         SocketClose,
-    }
-
-    export const enum AuthenticationTypeId {
-        AuthOwner,
-        AuthToken,
     }
 
     export const AccessTokenReusableExpiryTimeSpan = 1 * mSecsPerMin; // an access token will not be reused if less than this time is left
@@ -456,12 +408,6 @@ export namespace ZenithConnectionStateEngine {
     export type StateChangeEvent = (this: void, id: ZenithPublisherStateId, waitId: Integer) => void;
     export type ReconnectEvent = (this: void, id: ZenithPublisherReconnectReasonId) => void;
     export type LogEvent = (this: void, logLevel: Logger.LevelId, text: string) => void;
-
-    export interface OwnerCredentials {
-        clientId: string;
-        username: string;
-        password: string;
-    }
 
     export namespace Action {
         export type Id = ActionId;
@@ -491,11 +437,6 @@ export namespace ZenithConnectionStateEngine {
                 id: ActionId.Connect,
                 stateId: ZenithPublisherStateId.Connect,
                 timeout: ZenithConnectionStateEngine.timeout_None,
-            },
-            AuthOwnerFetch: {
-                id: ActionId.AuthOwnerFetch,
-                stateId: ZenithPublisherStateId.AuthFetch,
-                timeout: ZenithConnectionStateEngine.timeout_Never, // username and password dialog
             },
             AuthTokenFetch: {
                 id: ActionId.AuthTokenFetch,

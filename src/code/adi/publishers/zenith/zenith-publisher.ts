@@ -6,7 +6,6 @@
 
 import {
     AssertInternalError,
-    assigned,
     Integer,
     Logger,
     mSecsPerHour,
@@ -126,13 +125,7 @@ export class ZenithPublisher extends Publisher {
             this._dataMessages.clear();
 
             this._authAccessToken = dataDefinition.initialAuthAccessToken;
-            let authTypeId: ZenithConnectionStateEngine.AuthenticationTypeId;
-            if (dataDefinition.useAuthOwnerZenithAuthentication) {
-                authTypeId = ZenithConnectionStateEngine.AuthenticationTypeId.AuthOwner;
-            } else {
-                authTypeId = ZenithConnectionStateEngine.AuthenticationTypeId.AuthToken;
-            }
-            this._stateEngine.adviseConnectionSubscription(dataDefinition.zenithWebsocketEndpoint, authTypeId);
+            this._stateEngine.adviseConnectionSubscription(dataDefinition.zenithWebsocketEndpoints);
 
             const stateChangeDataMessage = this.createStateChangeDataMessage(this._stateEngine.stateId, this._stateEngine.activeWaitId);
             this._dataMessages.add(stateChangeDataMessage);
@@ -217,9 +210,6 @@ export class ZenithPublisher extends Publisher {
                 break;
             case ZenithConnectionStateEngine.ActionId.AuthTokenFetch:
                 this.fetchAuthToken(waitId);
-                break;
-            case ZenithConnectionStateEngine.ActionId.AuthOwnerFetch:
-                this.fetchAuthOwner(waitId);
                 break;
             case ZenithConnectionStateEngine.ActionId.SocketOpen:
                 this.openSocket(waitId);
@@ -437,71 +427,19 @@ export class ZenithPublisher extends Publisher {
         }
     }
 
-    private fetchAuthOwner(waitId: Integer) {
-        const username = localStorage.getItem('username');
-        const password = localStorage.getItem('password');
-        const clientId = localStorage.getItem('clientId');
-
-        if (!assigned(clientId)) {
-            this.logError('Local storage client Id is not assigned');
-            this._stateEngine.adviseAuthFetchFailure();
-        } else {
-            if (!assigned(username)) {
-                this.logError('Local storage username is not assigned');
-                this._stateEngine.adviseAuthFetchFailure();
-            } else {
-                if (!assigned(password)) {
-                    this.logError('Local storage password is not assigned');
-                    this._stateEngine.adviseAuthFetchFailure();
-                } else {
-                    const credentials: ZenithConnectionStateEngine.OwnerCredentials = {
-                        clientId,
-                        password,
-                        username,
-                    };
-                    this._stateEngine.adviseAuthOwnerFetchSuccess(Zenith.AuthController.Provider.BasicAuth, credentials);
-                }
-            }
-        }
-    }
-
     private openSocket(waitId: Integer) {
-        this.logInfo('Opening WebSocket: ' + this._stateEngine.zenithEndpoint);
-        this._websocket.open(this._stateEngine.zenithEndpoint, waitId);
+        const zenithEndPoint = this._stateEngine.selectActiveZenithEndpoint();
+        this.logInfo('Opening WebSocket: ' + zenithEndPoint);
+        this._websocket.open(zenithEndPoint, waitId);
     }
 
     private fetchZenithToken(waitId: Integer) {
-        switch (this._stateEngine.authenticationTypeId) {
-            case ZenithConnectionStateEngine.AuthenticationTypeId.AuthToken:
-                this.fetchZenithTokenUsingAuthToken(waitId);
-                break;
-            case ZenithConnectionStateEngine.AuthenticationTypeId.AuthOwner:
-                this.fetchZenithTokenUsingAuthOwner(waitId);
-                break;
-            default:
-                throw new UnreachableCaseError('ZFSFZT125598', this._stateEngine.authenticationTypeId);
-        }
-    }
-
-    private fetchZenithTokenUsingAuthToken(waitId: Integer) {
         const transactionId = this._requestEngine.getNextTransactionId();
         const provider = Zenith.AuthController.Provider.Bearer;
         const accessToken = this._authAccessToken;
         const msgContainer = AuthTokenMessageConvert.createMessage(transactionId, provider, accessToken);
         const msg = JSON.stringify(msgContainer);
         this.logInfo('Fetching Zenith Token using AuthToken');
-        this._websocket.sendAuth(msg, transactionId, waitId);
-    }
-
-    private fetchZenithTokenUsingAuthOwner(waitId: Integer) {
-        const transactionId = this._requestEngine.getNextTransactionId();
-        const provider = this._stateEngine.provider;
-        const credentials = this._stateEngine.ownerCredentials;
-        const msgContainer = AuthOwnerMessageConvert.createMessage(transactionId, provider,
-            credentials.username, credentials.password, credentials.clientId);
-        // const topic: Zenith.AuthController.TopicName = msgContainer.Topic as Zenith.AuthController.TopicName;
-        const msg = JSON.stringify(msgContainer);
-        this.logInfo(`Fetching Zenith Token using AuthOwner. Username: ${credentials.username}`);
         this._websocket.sendAuth(msg, transactionId, waitId);
     }
 
@@ -664,14 +602,7 @@ export class ZenithPublisher extends Publisher {
     }
 
     private refreshZenithToken(waitId: Integer) {
-        switch (this._stateEngine.authenticationTypeId) {
-            case ZenithConnectionStateEngine.AuthenticationTypeId.AuthToken:
-                this.sendAuthTokenMessage(waitId, Zenith.AuthController.Provider.Bearer, this._authAccessToken);
-                break;
-            case ZenithConnectionStateEngine.AuthenticationTypeId.AuthOwner:
-                this.sendAuthTokenMessage(waitId, this._stateEngine.provider, this._stateEngine.accessToken);
-                break;
-        }
+        this.sendAuthTokenMessage(waitId, Zenith.AuthController.Provider.Bearer, this._authAccessToken);
     }
 
     private sendAuthTokenMessage(waitId: Integer, provider: string, accessToken: string) {
