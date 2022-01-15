@@ -1157,7 +1157,7 @@ export class MoveOrderRequestDataDefinition extends OrderRequestDataDefinition {
 }
 
 export class ZenithExtConnectionDataDefinition extends DataDefinition {
-    private _zenithWebsocketEndpoints: string[];
+    private _zenithWebsocketEndpoints: readonly string[];
     private _zenithWebsocketEndpointCommaText: string;
 
     initialAuthAccessToken: string;
@@ -1168,8 +1168,8 @@ export class ZenithExtConnectionDataDefinition extends DataDefinition {
 
     get referencable() { return true; }
 
-    get zenithWebsocketEndpoints(): string[] { return this._zenithWebsocketEndpoints; }
-    set zenithWebsocketEndpoints(value: string[]) {
+    get zenithWebsocketEndpoints(): readonly string[] { return this._zenithWebsocketEndpoints; }
+    set zenithWebsocketEndpoints(value: readonly string[]) {
         this._zenithWebsocketEndpoints = value;
         this._zenithWebsocketEndpointCommaText = CommaText.fromStringArray(value);
     }

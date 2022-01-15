@@ -5282,13 +5282,13 @@ export namespace DataMessageType {
 // @public (undocumented)
 export const enum DataMessageTypeId {
     // (undocumented)
-    AmendOrderResponse = 31,
+    AmendOrderResponse = 32,
     // (undocumented)
     Balances = 14,
     // (undocumented)
     BrokerageAccounts = 16,
     // (undocumented)
-    CancelOrderResponse = 32,
+    CancelOrderResponse = 33,
     // (undocumented)
     ChartHistory = 22,
     // (undocumented)
@@ -5302,13 +5302,13 @@ export const enum DataMessageTypeId {
     // (undocumented)
     Markets = 6,
     // (undocumented)
-    MoveOrderResponse = 33,
+    MoveOrderResponse = 34,
     // (undocumented)
     Orders = 17,
     // (undocumented)
     OrderStatuses = 19,
     // (undocumented)
-    PlaceOrderResponse = 30,
+    PlaceOrderResponse = 31,
     // (undocumented)
     PublisherSubscription_Error = 3,
     // (undocumented)
@@ -5334,21 +5334,23 @@ export const enum DataMessageTypeId {
     // (undocumented)
     Transactions = 18,
     // (undocumented)
-    ZenithCounter = 26,
+    ZenithCounter = 27,
     // (undocumented)
-    ZenithLog = 27,
+    ZenithEndpointSelected = 26,
+    // (undocumented)
+    ZenithLog = 28,
     // (undocumented)
     ZenithPublisherOnlineChange = 25,
     // (undocumented)
     ZenithPublisherStateChange = 23,
     // (undocumented)
-    ZenithQueryConfigure = 29,
+    ZenithQueryConfigure = 30,
     // (undocumented)
     ZenithReconnect = 24,
     // (undocumented)
     ZenithServerInfo = 20,
     // (undocumented)
-    ZenithSessionKickedOff = 28
+    ZenithSessionKickedOff = 29
 }
 
 // Warning: (ae-missing-release-tag) "DataMgr" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -18744,8 +18746,8 @@ export class SessionInfoService {
     get username(): string;
     set username(value: string);
     // (undocumented)
-    get zenithEndpoint(): string;
-    set zenithEndpoint(value: string);
+    get zenithEndpoints(): readonly string[];
+    set zenithEndpoints(value: readonly string[]);
 }
 
 // @public (undocumented)
@@ -22806,43 +22808,43 @@ export const enum StringId {
     // (undocumented)
     ZenithDataStateExternalError = 18,
     // (undocumented)
-    ZenithPublisherReconnectReasonDisplay_ConnectionSubscription = 947,
+    ZenithPublisherReconnectReasonDisplay_AuthExpired = 950,
     // (undocumented)
-    ZenithPublisherReconnectReasonDisplay_PassportTokenFailure = 948,
+    ZenithPublisherReconnectReasonDisplay_AuthRejected = 949,
+    // (undocumented)
+    ZenithPublisherReconnectReasonDisplay_NewEndpoints = 946,
+    // (undocumented)
+    ZenithPublisherReconnectReasonDisplay_PassportTokenFailure = 947,
     // (undocumented)
     ZenithPublisherReconnectReasonDisplay_SocketClose = 952,
     // (undocumented)
-    ZenithPublisherReconnectReasonDisplay_SocketOpenFailure = 949,
+    ZenithPublisherReconnectReasonDisplay_SocketOpenFailure = 948,
     // (undocumented)
     ZenithPublisherReconnectReasonDisplay_Timeout = 953,
     // (undocumented)
     ZenithPublisherReconnectReasonDisplay_UnexpectedSocketClose = 951,
     // (undocumented)
-    ZenithPublisherReconnectReasonDisplay_ZenithTokenFetchFailure = 950,
+    ZenithPublisherStateDisplay_AccessTokenWaiting = 939,
     // (undocumented)
-    ZenithPublisherStateDisplay_AuthFetch = 939,
+    ZenithPublisherStateDisplay_AuthActive = 942,
+    // (undocumented)
+    ZenithPublisherStateDisplay_AuthFetch = 941,
+    // (undocumented)
+    ZenithPublisherStateDisplay_AuthUpdate = 943,
     // (undocumented)
     ZenithPublisherStateDisplay_Connect = 938,
     // (undocumented)
     ZenithPublisherStateDisplay_ConnectionSubscription = 935,
     // (undocumented)
-    ZenithPublisherStateDisplay_ConnectPending = 937,
+    ZenithPublisherStateDisplay_Finalised = 945,
     // (undocumented)
-    ZenithPublisherStateDisplay_Finalised = 946,
+    ZenithPublisherStateDisplay_NewConnectParameters = 937,
     // (undocumented)
     ZenithPublisherStateDisplay_ReconnectDelay = 936,
     // (undocumented)
-    ZenithPublisherStateDisplay_SocketClose = 945,
+    ZenithPublisherStateDisplay_SocketClose = 944,
     // (undocumented)
     ZenithPublisherStateDisplay_SocketOpen = 940,
-    // (undocumented)
-    ZenithPublisherStateDisplay_ZenithTokenActive = 942,
-    // (undocumented)
-    ZenithPublisherStateDisplay_ZenithTokenFetch = 941,
-    // (undocumented)
-    ZenithPublisherStateDisplay_ZenithTokenInterval = 943,
-    // (undocumented)
-    ZenithPublisherStateDisplay_ZenithTokenRefresh = 944,
     // (undocumented)
     ZenithSubscriptionDataDisplay_Asset = 496,
     // (undocumented)
@@ -28007,25 +28009,19 @@ export namespace WebsocketCloseCodeModule {
 // @public (undocumented)
 export class ZenithConnectionStateEngine {
     // (undocumented)
-    get accessToken(): string;
-    // (undocumented)
-    get accessTokenExpiryTime(): number;
+    get accessTokenUpdated(): boolean;
     // (undocumented)
     actionEvent: ZenithConnectionStateEngine.ActionEvent;
     // (undocumented)
     get activeWaitId(): number;
     // (undocumented)
-    adviseAuthFetchFailure(): void;
+    adviseAuthFetchFailure(rejected: boolean): void;
     // (undocumented)
-    adviseAuthOwnerFetchSuccess(provider: string, credentials: ZenithConnectionStateEngine.OwnerCredentials): void;
-    // (undocumented)
-    adviseAuthTokenFetchSuccess(): void;
-    // (undocumented)
-    adviseConnectionSubscription(zenithEndpoint: string, authenticationTypeId: ZenithConnectionStateEngine.AuthenticationTypeId): void;
+    adviseAuthFetchSuccess(expiryTime: SysTick.Time): void;
     // (undocumented)
     adviseReconnectDelayCompleted(): void;
     // (undocumented)
-    adviseSocketClose(code: number, reason: string, wasClean: boolean): void;
+    adviseSocketClose(reconnectReasonId: ZenithPublisherReconnectReasonId, code: number, reason: string, wasClean: boolean): void;
     // (undocumented)
     adviseSocketCloseFailure(): void;
     // (undocumented)
@@ -28033,41 +28029,27 @@ export class ZenithConnectionStateEngine {
     // (undocumented)
     adviseSocketOpenSuccess(): void;
     // (undocumented)
-    adviseZenithTokenFetchFailure(finalise: boolean): void;
-    // (undocumented)
-    adviseZenithTokenFetchSuccess(accessToken: string, expiryTime: SysTick.Time, refreshRequired: boolean): void;
-    // (undocumented)
-    adviseZenithTokenRefreshFailure(): void;
-    // (undocumented)
-    adviseZenithTokenRefreshRequired(): void;
-    // (undocumented)
-    adviseZenithTokenRefreshSuccess(accessToken: string, expiryTime: SysTick.Time): void;
-    // (undocumented)
-    get authenticationTypeId(): ZenithConnectionStateEngine.AuthenticationTypeId;
+    get authExpiryTime(): number;
     // (undocumented)
     get authFetchSuccessiveFailureCount(): number;
     // (undocumented)
     cameOnlineEvent: ZenithConnectionStateEngine.CameOnlineEvent;
     // (undocumented)
-    connect(): void;
-    // (undocumented)
-    connectPending(): void;
-    // (undocumented)
     finalise(socketWasClosed: boolean): void;
     // (undocumented)
     get finalising(): boolean;
+    // (undocumented)
+    getUpdatedAccessToken(): string;
     // (undocumented)
     get lastTimeoutStateId(): ZenithPublisherStateId | undefined;
     // (undocumented)
     logEvent: ZenithConnectionStateEngine.LogEvent;
     // (undocumented)
-    get ownerCredentials(): ZenithConnectionStateEngine.OwnerCredentials;
-    // (undocumented)
-    get provider(): string;
-    // (undocumented)
     reconnectEvent: ZenithConnectionStateEngine.ReconnectEvent;
     // (undocumented)
     get reconnectReasonId(): ZenithPublisherReconnectReasonId | undefined;
+    // (undocumented)
+    selectActiveZenithEndpoint(): string;
     // (undocumented)
     get socketCloseSuccessiveFailureCount(): number;
     // (undocumented)
@@ -28085,9 +28067,11 @@ export class ZenithConnectionStateEngine {
     // (undocumented)
     get unexpectedSocketCloseCount(): number;
     // (undocumented)
-    wentOfflineEvent: ZenithConnectionStateEngine.WentOfflineEvent;
+    updateAccessToken(value: string): void;
     // (undocumented)
-    get zenithEndpoint(): string;
+    updateEndpoints(zenithEndpoints: readonly string[]): void;
+    // (undocumented)
+    wentOfflineEvent: ZenithConnectionStateEngine.WentOfflineEvent;
     // (undocumented)
     get zenithTokenFetchSuccessiveFailureCount(): number;
     // (undocumented)
@@ -28109,43 +28093,26 @@ export namespace ZenithConnectionStateEngine {
         // (undocumented)
         export function initialiseStatic(): void;
     }
-    // (undocumented)
-    export type ActionEvent = (this: void, actionId: ActionId, waitId: Integer) => void;
     const // (undocumented)
-    AccessTokenReusableExpiryTimeSpan: number;
+    invalidAccessToken = "";
     const // (undocumented)
     nullSocketCloseReason = "";
     const // (undocumented)
     nullSocketCloseWasClean = true;
     // (undocumented)
+    export type ActionEvent = (this: void, actionId: ActionId, waitId: Integer) => void;
+    // (undocumented)
     export const enum ActionId {
         // (undocumented)
-        AuthOwnerFetch = 3,
+        CloseSocket = 4,
         // (undocumented)
-        AuthTokenFetch = 4,
+        FetchAuth = 2,
         // (undocumented)
-        Connect = 2,
-        // (undocumented)
-        ConnectPending = 1,
+        OpenSocket = 1,
         // (undocumented)
         ReconnectDelay = 0,
         // (undocumented)
-        SocketClose = 9,
-        // (undocumented)
-        SocketOpen = 5,
-        // (undocumented)
-        ZenithTokenFetch = 6,
-        // (undocumented)
-        ZenithTokenInterval = 7,
-        // (undocumented)
-        ZenithTokenRefresh = 8
-    }
-    // (undocumented)
-    export const enum AuthenticationTypeId {
-        // (undocumented)
-        AuthOwner = 0,
-        // (undocumented)
-        AuthToken = 1
+        UpdateAuth = 3
     }
     // (undocumented)
     export type CameOnlineEvent = (this: void) => void;
@@ -28153,15 +28120,6 @@ export namespace ZenithConnectionStateEngine {
     export function initialiseStatic(): void;
     // (undocumented)
     export type LogEvent = (this: void, logLevel: Logger.LevelId, text: string) => void;
-    // (undocumented)
-    export interface OwnerCredentials {
-        // (undocumented)
-        clientId: string;
-        // (undocumented)
-        password: string;
-        // (undocumented)
-        username: string;
-    }
     // (undocumented)
     export type ReconnectEvent = (this: void, id: ZenithPublisherReconnectReasonId) => void;
     // (undocumented)
@@ -28617,7 +28575,7 @@ export namespace ZenithConvertModule {
 export class ZenithCounterDataMessage extends DataMessage {
     constructor();
     // (undocumented)
-    accessTokenExpiryTime: SysTick.Time;
+    authExpiryTime: SysTick.Time;
     // (undocumented)
     authFetchSuccessiveFailureCount: Integer;
     // (undocumented)
@@ -28668,6 +28626,17 @@ export class ZenithDataStateError extends BaseZenithDataError {
     constructor(code: ExternalError.Code, message: string);
 }
 
+// Warning: (ae-missing-release-tag) "ZenithEndpointSelectedDataMessage" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export class ZenithEndpointSelectedDataMessage extends DataMessage {
+    constructor();
+    // (undocumented)
+    endpoint: string;
+    // (undocumented)
+    static readonly typeId = DataMessageTypeId.ZenithEndpointSelected;
+}
+
 // Warning: (ae-missing-release-tag) "ZenithExtConnectionDataDefinition" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -28680,9 +28649,8 @@ export class ZenithExtConnectionDataDefinition extends DataDefinition {
     // (undocumented)
     get referencable(): boolean;
     // (undocumented)
-    useAuthOwnerZenithAuthentication: boolean;
-    // (undocumented)
-    zenithWebsocketEndpoint: string;
+    get zenithWebsocketEndpoints(): readonly string[];
+    set zenithWebsocketEndpoints(value: readonly string[]);
 }
 
 // Warning: (ae-missing-release-tag) "ZenithExtConnectionDataItem" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -28692,7 +28660,7 @@ export class ZenithExtConnectionDataDefinition extends DataDefinition {
 export class ZenithExtConnectionDataItem extends ExtConnectionDataItem {
     constructor(MyDataDefinition: DataDefinition);
     // (undocumented)
-    get accessTokenExpiryTime(): number;
+    get authExpiryTime(): number;
     // (undocumented)
     get authFetchSuccessiveFailureCount(): number;
     // (undocumented)
@@ -28713,6 +28681,8 @@ export class ZenithExtConnectionDataItem extends ExtConnectionDataItem {
     get offlinedSubscriptionErrorCount(): number;
     // (undocumented)
     processCounter(msg: ZenithCounterDataMessage): void;
+    // (undocumented)
+    processEndpointSelected(msg: ZenithEndpointSelectedDataMessage): void;
     // (undocumented)
     processLog(msg: ZenithLogDataMessage): void;
     // (undocumented)
@@ -28737,6 +28707,8 @@ export class ZenithExtConnectionDataItem extends ExtConnectionDataItem {
     get receivePacketCount(): number;
     // (undocumented)
     get requestTimeoutSubscriptionErrorCount(): number;
+    // (undocumented)
+    get selectedEndpoint(): string;
     // (undocumented)
     get sendPacketCount(): number;
     // (undocumented)
@@ -28764,6 +28736,8 @@ export class ZenithExtConnectionDataItem extends ExtConnectionDataItem {
     // (undocumented)
     subscribeZenithReconnectEvent(handler: ZenithExtConnectionDataItem.ReconnectEventHandler): number;
     // (undocumented)
+    subscribeZenithSelectedEndpointChangedEvent(handler: ZenithExtConnectionDataItem.SelectedEndpointChangedEventHandler): number;
+    // (undocumented)
     subscribeZenithSessionKickedOffEvent(handler: ZenithExtConnectionDataItem.SessionKickedOffEventHandler): number;
     // (undocumented)
     get timeoutCount(): number;
@@ -28779,6 +28753,8 @@ export class ZenithExtConnectionDataItem extends ExtConnectionDataItem {
     unsubscribeZenithLogEvent(subscriptionId: MultiEvent.SubscriptionId): void;
     // (undocumented)
     unsubscribeZenithReconnectEvent(subscriptionId: MultiEvent.SubscriptionId): void;
+    // (undocumented)
+    unsubscribeZenithSelectedEndpointChangedEvent(subscriptionId: MultiEvent.SubscriptionId): void;
     // (undocumented)
     unsubscribeZenithSessionKickedOffEvent(subscriptionId: MultiEvent.SubscriptionId): void;
     // (undocumented)
@@ -28818,6 +28794,8 @@ export namespace ZenithExtConnectionDataItem {
     export type PublisherStateChangeEventHandler = (this: void, stateId: ZenithPublisherStateId, waitId: Integer) => void;
     // (undocumented)
     export type ReconnectEventHandler = (this: void, reconnectReasonId: ZenithPublisherReconnectReasonId) => void;
+    // (undocumented)
+    export type SelectedEndpointChangedEventHandler = (this: void, newEndpoint: string) => void;
     // (undocumented)
     export type SessionKickedOffEventHandler = (this: void) => void;
 }
@@ -28860,7 +28838,7 @@ export class ZenithPublisher extends Publisher {
     // (undocumented)
     unsubscribeDataItemId(dataItemId: DataItemId): void;
     // (undocumented)
-    updateAuthAccessToken(value: string): void;
+    updateAccessToken(value: string): void;
 }
 
 // @public (undocumented)
@@ -28915,19 +28893,21 @@ export namespace ZenithPublisherReconnectReason {
 // @public (undocumented)
 export const enum ZenithPublisherReconnectReasonId {
     // (undocumented)
-    ConnectionSubscription = 0,
+    AuthExpired = 4,
+    // (undocumented)
+    AuthRejected = 3,
+    // (undocumented)
+    NewEndpoints = 0,
     // (undocumented)
     PassportTokenFailure = 1,
     // (undocumented)
-    SocketClose = 5,
+    SocketClose = 6,
     // (undocumented)
     SocketOpenFailure = 2,
     // (undocumented)
-    Timeout = 6,
+    Timeout = 7,
     // (undocumented)
-    UnexpectedSocketClose = 4,
-    // (undocumented)
-    ZenithTokenFetchFailure = 3
+    UnexpectedSocketClose = 5
 }
 
 // Warning: (ae-missing-release-tag) "ZenithPublisherState" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -28964,29 +28944,23 @@ export class ZenithPublisherStateChangeDataMessage extends DataMessage {
 // @public (undocumented)
 export const enum ZenithPublisherStateId {
     // (undocumented)
+    AccessTokenWaiting = 2,
+    // (undocumented)
+    AuthActive = 5,
+    // (undocumented)
     AuthFetch = 4,
     // (undocumented)
-    Connect = 3,
+    AuthUpdate = 6,
     // (undocumented)
-    ConnectionSubscription = 0,
+    Connect = 0,
     // (undocumented)
-    ConnectPending = 2,
-    // (undocumented)
-    Finalised = 11,
+    Finalised = 8,
     // (undocumented)
     ReconnectDelay = 1,
     // (undocumented)
-    SocketClose = 10,
+    SocketClose = 7,
     // (undocumented)
-    SocketOpen = 5,
-    // (undocumented)
-    ZenithTokenActive = 7,
-    // (undocumented)
-    ZenithTokenFetch = 6,
-    // (undocumented)
-    ZenithTokenInterval = 8,
-    // (undocumented)
-    ZenithTokenRefresh = 9
+    SocketOpen = 3
 }
 
 // Warning: (ae-missing-release-tag) "ZenithPublisherSubscriptionManager" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)

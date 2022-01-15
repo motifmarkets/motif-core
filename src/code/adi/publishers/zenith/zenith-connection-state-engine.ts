@@ -8,7 +8,6 @@ import {
     EnumInfoOutOfOrderError,
     Integer,
     Logger,
-    mSecsPerMin,
     SysTick,
     UnreachableCaseError,
     WebsocketCloseCode
@@ -31,22 +30,23 @@ export class ZenithConnectionStateEngine {
     reconnectEvent: ZenithConnectionStateEngine.ReconnectEvent;
     logEvent: ZenithConnectionStateEngine.LogEvent;
 
-    private _stateId = ZenithPublisherStateId.ConnectionSubscription;
+    private _stateId = ZenithPublisherStateId.Connect;
 
     private _finalising = false;
-    private _pendingConnectActive = false;
     private _activeWaitId: Integer = ZenithConnectionStateEngine._waitId_Null;
 
-    private _pendingZenithEndpoints: string[];
-    private _zenithEndpoints: string[];
+    private _zenithEndpoints: readonly string[];
+    private _zenithEndpointsUpdated = false;
     private _activeZenithEndpoint: string;
 
-    private _accessToken: string;
-    private _accessTokenExpiryTime: SysTick.Time;
+    private _accessToken = ZenithConnectionStateEngine.invalidAccessToken;
+    private _accessTokenUpdated = false;
+
+    private _authExpiryTime: SysTick.Time;
 
     private _authFetchSuccessiveFailureCount = 0;
     private _socketOpenSuccessiveFailureCount = 0;
-    private _zenithTokenFetchSuccessiveFailureCount = 0;
+    private _zenithAuthFetchSuccessiveFailureCount = 0;
     private _zenithTokenRefreshSuccessiveFailureCount = 0;
     private _socketCloseSuccessiveFailureCount = 0;
     private _unexpectedSocketCloseCount = 0;
@@ -61,12 +61,12 @@ export class ZenithConnectionStateEngine {
     get finalising() { return this._finalising; }
 
     get activeWaitId() { return this._activeWaitId; }
-    get accessToken() { return this._accessToken; }
-    get accessTokenExpiryTime() { return this._accessTokenExpiryTime; }
+    get accessTokenUpdated() { return this._accessTokenUpdated; }
+    get authExpiryTime() { return this._authExpiryTime; }
 
     get authFetchSuccessiveFailureCount() { return this._authFetchSuccessiveFailureCount; }
     get socketOpenSuccessiveFailureCount() { return this._socketOpenSuccessiveFailureCount; }
-    get zenithTokenFetchSuccessiveFailureCount() { return this._zenithTokenFetchSuccessiveFailureCount; }
+    get zenithTokenFetchSuccessiveFailureCount() { return this._zenithAuthFetchSuccessiveFailureCount; }
     get zenithTokenRefreshSuccessiveFailureCount() { return this._zenithTokenRefreshSuccessiveFailureCount; }
     get socketCloseSuccessiveFailureCount() { return this._socketCloseSuccessiveFailureCount; }
     get unexpectedSocketCloseCount() { return this._unexpectedSocketCloseCount; }
@@ -74,78 +74,36 @@ export class ZenithConnectionStateEngine {
     get timeoutCount() { return this._timeoutCount; }
     get lastTimeoutStateId() { return this._lastTimeoutStateId; }
 
-    adviseConnectionSubscription(zenithEndpoints: string[]) {
-        this._pendingZenithEndpoints = zenithEndpoints;
-        this._pendingConnectActive = true;
+    updateEndpoints(zenithEndpoints: readonly string[]) {
+        this._zenithEndpoints = zenithEndpoints;
+        this._zenithEndpointsUpdated = true;
 
         switch (this.stateId) {
-            case ZenithPublisherStateId.ConnectionSubscription:
+            case ZenithPublisherStateId.Connect:
             case ZenithPublisherStateId.ReconnectDelay:
-                this.action(ZenithConnectionStateEngine.ActionId.ConnectPending);
+                this.connect();
                 break;
             default:
-                this.reconnect(ZenithPublisherReconnectReasonId.ConnectionSubscription);
-        }
-    }
-
-    connectPending() {
-        if (this.stateId === ZenithPublisherStateId.ConnectPending) {
-            this._zenithEndpoints = this._pendingZenithEndpoints;
-            this._pendingConnectActive = false;
-
-            this._finalising = false;
-            this._accessToken = '';
-            this._accessTokenExpiryTime = 0;
-
-            this._authFetchSuccessiveFailureCount = 0;
-            this._socketOpenSuccessiveFailureCount = 0;
-            this._zenithTokenFetchSuccessiveFailureCount = 0;
-            this._zenithTokenRefreshSuccessiveFailureCount = 0;
-            this._socketCloseSuccessiveFailureCount = 0;
-            this._unexpectedSocketCloseCount = 0;
-
-            this._reconnectReasonId = undefined;
-            this._timeoutCount = 0;
-            this._lastTimeoutStateId = undefined;
-
-            this.action(ZenithConnectionStateEngine.ActionId.Connect);
-        } else {
-            this.logWarning(`Unexpected state in ZenithConnectionStateEngine.connectPending: ${this.stateId}`);
+                this.reconnect(ZenithPublisherReconnectReasonId.NewEndpoints);
         }
     }
 
     selectActiveZenithEndpoint() {
+        this._zenithEndpointsUpdated = false;
         const randIndex = Math.floor(Math.random() * this._zenithEndpoints.length);
         this._activeZenithEndpoint = this._zenithEndpoints[randIndex];
         return this._activeZenithEndpoint;
     }
 
-    connect() {
-        if (this.stateId === ZenithPublisherStateId.Connect) {
-            this.action(ZenithConnectionStateEngine.ActionId.AuthTokenFetch);
-        } else {
-            this.logWarning(`Unexpected state in ZenithConnectionStateEngine: ${this.stateId}`);
-        }
-    }
-
-    adviseAuthTokenFetchSuccess() {
-        if (this.stateId === ZenithPublisherStateId.AuthFetch) {
-            this._authFetchSuccessiveFailureCount = 0;
-            this.action(ZenithConnectionStateEngine.ActionId.SocketOpen);
-        }
-    }
-
-    adviseAuthFetchFailure() {
-        if (this.stateId === ZenithPublisherStateId.AuthFetch) {
-            this._authFetchSuccessiveFailureCount++;
-            this.reconnect(ZenithPublisherReconnectReasonId.PassportTokenFailure);
-        }
+    getUpdatedAccessToken() {
+        this._accessTokenUpdated = false;
+        return this._accessToken;
     }
 
     adviseSocketOpenSuccess() {
         if (this.stateId === ZenithPublisherStateId.SocketOpen) {
             this._socketOpenSuccessiveFailureCount = 0;
-            this.action(ZenithConnectionStateEngine.ActionId.ZenithTokenFetch);
+            this.action(ZenithConnectionStateEngine.ActionId.FetchAuth);
         }
     }
 
@@ -156,61 +114,70 @@ export class ZenithConnectionStateEngine {
         }
     }
 
-    adviseZenithTokenFetchSuccess(accessToken: string, expiryTime: SysTick.Time, refreshRequired: boolean) {
-        if (this.stateId === ZenithPublisherStateId.ZenithTokenFetch) {
-            this._accessToken = accessToken;
-            this._accessTokenExpiryTime = expiryTime;
-            this._zenithTokenFetchSuccessiveFailureCount = 0;
-            if (refreshRequired) {
-                this.action(ZenithConnectionStateEngine.ActionId.ZenithTokenInterval);
-            } else {
-                this.noAction(ZenithPublisherStateId.ZenithTokenActive);
+    adviseAuthFetchSuccess(expiryTime: SysTick.Time) {
+        const wasAuthFetchState = this.stateId === ZenithPublisherStateId.AuthFetch;
+        if (wasAuthFetchState || this.stateId === ZenithPublisherStateId.AuthUpdate) {
+            this._authExpiryTime = expiryTime;
+            this._zenithAuthFetchSuccessiveFailureCount = 0;
+            this.noAction(ZenithPublisherStateId.AuthActive);
+            if (wasAuthFetchState) {
+                this.cameOnlineEvent();
             }
-            this.cameOnlineEvent();
         }
     }
 
-    adviseZenithTokenFetchFailure(finalise: boolean) {
-        if (this.stateId === ZenithPublisherStateId.ZenithTokenFetch) {
-            this._zenithTokenFetchSuccessiveFailureCount++;
-            if (finalise) {
+    adviseAuthFetchFailure(rejected: boolean) {
+        if (this.stateId === ZenithPublisherStateId.AuthFetch) {
+            this._zenithAuthFetchSuccessiveFailureCount++;
+            if (rejected) {
+                this.reconnect(ZenithPublisherReconnectReasonId.AuthRejected);
+            } else {
                 this.finalise(false);
-            } else {
-                this.reconnect(ZenithPublisherReconnectReasonId.ZenithTokenFetchFailure);
             }
         }
     }
 
-    adviseZenithTokenRefreshRequired() {
-        if (this.stateId === ZenithPublisherStateId.ZenithTokenActive || this.stateId === ZenithPublisherStateId.ZenithTokenInterval) {
-            this.action(ZenithConnectionStateEngine.ActionId.ZenithTokenRefresh);
+    updateAccessToken(value: string) {
+        if (value !== this._accessToken) {
+            this._accessToken = value;
+            this._accessTokenUpdated = true;
+
+            if (this._accessToken !== ZenithConnectionStateEngine.invalidAccessToken) {
+                switch (this.stateId) {
+                    case ZenithPublisherStateId.Connect:
+                        break; // ignore
+                    case ZenithPublisherStateId.ReconnectDelay:
+                        this.connect();
+                        break;
+                    case ZenithPublisherStateId.AccessTokenWaiting:
+                        this.action(ZenithConnectionStateEngine.ActionId.OpenSocket);
+                        break;
+                    case ZenithPublisherStateId.SocketOpen:
+                        break; // will handle after socket is opened
+                    case ZenithPublisherStateId.AuthFetch:
+                    case ZenithPublisherStateId.AuthUpdate:
+                        break; // will handle after when AuthTokenFetch response is received
+                    case ZenithPublisherStateId.AuthActive:
+                        this.action(ZenithConnectionStateEngine.ActionId.UpdateAuth);
+                        break;
+                    case ZenithPublisherStateId.SocketClose:
+                        break; // will be handled when socket is again opened
+                    case ZenithPublisherStateId.Finalised:
+                        break; // ignore
+                    default:
+                        throw new UnreachableCaseError('ZPUATU86637', this.stateId);
+                }
+            }
         }
     }
 
-    adviseZenithTokenRefreshSuccess(accessToken: string, expiryTime: SysTick.Time) {
-        if (this.stateId === ZenithPublisherStateId.ZenithTokenRefresh) {
-            this._accessToken = accessToken;
-            this._accessTokenExpiryTime = expiryTime;
-            this._zenithTokenRefreshSuccessiveFailureCount = 0;
-            this.noAction(ZenithPublisherStateId.ZenithTokenActive);
-        }
-    }
-
-    adviseZenithTokenRefreshFailure() {
-        if (this.stateId === ZenithPublisherStateId.ZenithTokenRefresh) {
-            this._zenithTokenRefreshSuccessiveFailureCount++;
-            this._accessTokenExpiryTime = 0; // force getting a new one from auth
-            this.action(ZenithConnectionStateEngine.ActionId.ZenithTokenInterval);
-        }
-    }
-
-    adviseSocketClose(code: number, reason: string, wasClean: boolean) {
+    adviseSocketClose(reconnectReasonId: ZenithPublisherReconnectReasonId, code: number, reason: string, wasClean: boolean) {
         if (this.stateId === ZenithPublisherStateId.SocketClose) {
             this._socketCloseSuccessiveFailureCount = 0;
             this.disconnect(true, code, reason, wasClean); // we were expecting so reconnect was already called
         } else {
             this._unexpectedSocketCloseCount++;
-            this.reconnect(ZenithPublisherReconnectReasonId.UnexpectedSocketClose, true, code, reason, wasClean);
+            this.reconnect(reconnectReasonId, true, code, reason, wasClean);
         }
     }
 
@@ -227,13 +194,13 @@ export class ZenithConnectionStateEngine {
 
     adviseReconnectDelayCompleted() {
         if (this.stateId === ZenithPublisherStateId.ReconnectDelay) {
-            if (this._pendingConnectActive) {
-                this.action(ZenithConnectionStateEngine.ActionId.ConnectPending);
+            if (this._zenithEndpointsUpdated) {
+                this.connect();
             } else {
-                if (this.isAccessTokenReusable()) {
-                    this.action(ZenithConnectionStateEngine.ActionId.SocketOpen);
+                if (this._accessToken !== ZenithConnectionStateEngine.invalidAccessToken) {
+                    this.action(ZenithConnectionStateEngine.ActionId.OpenSocket);
                 } else {
-                    this.action(ZenithConnectionStateEngine.ActionId.Connect);
+                    this.connect();
                 }
             }
         }
@@ -263,10 +230,6 @@ export class ZenithConnectionStateEngine {
 
     private getNextWaitId() {
         return ZenithConnectionStateEngine._nextWaitId++;
-    }
-
-    private isAccessTokenReusable() {
-        return this._accessTokenExpiryTime >= SysTick.now() - ZenithConnectionStateEngine.AccessTokenReusableExpiryTimeSpan;
     }
 
     private setState(stateId: ZenithPublisherStateId) {
@@ -310,8 +273,8 @@ export class ZenithConnectionStateEngine {
 
     private processTimeout() {
         switch (this.stateId) {
+            case ZenithPublisherStateId.Connect:
             case ZenithPublisherStateId.ReconnectDelay:
-            case ZenithPublisherStateId.ConnectionSubscription:
                 this.logWarning(`Unexpected timeout for ZenithConnectionStateEngine: ${this.stateId}`);
                 break;
             default:
@@ -322,8 +285,35 @@ export class ZenithConnectionStateEngine {
         }
     }
 
+    private connect() {
+        if (this.stateId === ZenithPublisherStateId.Connect) {
+            this._finalising = false;
+            this._zenithEndpointsUpdated = false;
+            this._authExpiryTime = 0;
+
+            this._authFetchSuccessiveFailureCount = 0;
+            this._socketOpenSuccessiveFailureCount = 0;
+            this._zenithAuthFetchSuccessiveFailureCount = 0;
+            this._zenithTokenRefreshSuccessiveFailureCount = 0;
+            this._socketCloseSuccessiveFailureCount = 0;
+            this._unexpectedSocketCloseCount = 0;
+
+            this._reconnectReasonId = undefined;
+            this._timeoutCount = 0;
+            this._lastTimeoutStateId = undefined;
+
+            if (this._accessToken === ZenithConnectionStateEngine.invalidAccessToken) {
+                this.noAction(ZenithPublisherStateId.AccessTokenWaiting);
+            } else {
+                this.action(ZenithConnectionStateEngine.ActionId.OpenSocket);
+            }
+        } else {
+            this.logWarning(`Unexpected state in ZenithConnectionStateEngine: ${this.stateId}`);
+        }
+    }
+
     private reconnect(reasonId: ZenithPublisherReconnectReasonId,
-        socketWasClosed = false,
+        socketIsClosed = false,
         socketCloseCode: number = WebsocketCloseCode.nullCode,
         socketCloseReason: string = ZenithConnectionStateEngine.nullSocketCloseReason,
         socketCloseWasClean: boolean = ZenithConnectionStateEngine.nullSocketCloseWasClean
@@ -331,48 +321,44 @@ export class ZenithConnectionStateEngine {
         this._reconnectReasonId = reasonId;
         this.reconnectEvent(reasonId);
 
-        this.disconnect(socketWasClosed, socketCloseCode, socketCloseReason, socketCloseWasClean);
+        this.disconnect(socketIsClosed, socketCloseCode, socketCloseReason, socketCloseWasClean);
     }
 
-    private disconnect(socketWasClosed: boolean, socketCloseCode: number = WebsocketCloseCode.nullCode,
+    private disconnect(socketIsClosed: boolean, socketCloseCode: number = WebsocketCloseCode.nullCode,
         socketCloseReason: string = ZenithConnectionStateEngine.nullSocketCloseReason,
         socketCloseWasClean: boolean = ZenithConnectionStateEngine.nullSocketCloseWasClean
     ) {
-            switch (this.stateId) {
-                case ZenithPublisherStateId.ZenithTokenFetch:
-                case ZenithPublisherStateId.ZenithTokenActive:
-                case ZenithPublisherStateId.ZenithTokenInterval:
-                case ZenithPublisherStateId.ZenithTokenRefresh:
-                    if (this.stateId !== ZenithPublisherStateId.ZenithTokenFetch) {
-                        this.wentOfflineEvent(socketCloseCode, socketCloseReason, socketCloseWasClean);
-                    }
-                    if (!socketWasClosed) {
-                        this.action(ZenithConnectionStateEngine.ActionId.SocketClose);
-                    } else {
-                        this.disconnectSocketClosed();
-                    }
-                    break;
-
-                case ZenithPublisherStateId.SocketOpen:
-                    this.action(ZenithConnectionStateEngine.ActionId.SocketClose);
-                    break;
-
-                case ZenithPublisherStateId.SocketClose:
-                case ZenithPublisherStateId.AuthFetch:
-                case ZenithPublisherStateId.ConnectPending:
-                case ZenithPublisherStateId.Connect:
-                case ZenithPublisherStateId.ConnectionSubscription:
-                case ZenithPublisherStateId.ReconnectDelay:
+        switch (this.stateId) {
+            case ZenithPublisherStateId.AuthActive:
+            case ZenithPublisherStateId.AuthUpdate:
+            case ZenithPublisherStateId.AuthFetch:
+                if (this.stateId !== ZenithPublisherStateId.AuthFetch) {
+                    this.wentOfflineEvent(socketCloseCode, socketCloseReason, socketCloseWasClean);
+                }
+                if (!socketIsClosed) {
+                    this.action(ZenithConnectionStateEngine.ActionId.CloseSocket);
+                } else {
                     this.disconnectSocketClosed();
-                    break;
+                }
+                break;
 
-                case ZenithPublisherStateId.Finalised:
-                    break;
+            case ZenithPublisherStateId.SocketOpen:
+                this.action(ZenithConnectionStateEngine.ActionId.CloseSocket);
+                break;
 
-                default:
-                    throw new UnreachableCaseError('ZCSED29981', this.stateId);
-            }
-        // }
+            case ZenithPublisherStateId.SocketClose:
+            case ZenithPublisherStateId.AccessTokenWaiting:
+            case ZenithPublisherStateId.Connect:
+            case ZenithPublisherStateId.ReconnectDelay:
+                this.disconnectSocketClosed();
+                break;
+
+            case ZenithPublisherStateId.Finalised:
+                break;
+
+            default:
+                throw new UnreachableCaseError('ZCSED29981', this.stateId);
+        }
     }
 
     private disconnectSocketClosed() {
@@ -387,17 +373,13 @@ export class ZenithConnectionStateEngine {
 export namespace ZenithConnectionStateEngine {
     export const enum ActionId {
         ReconnectDelay,
-        ConnectPending,
-        Connect,
-        AuthTokenFetch,
-        SocketOpen,
-        ZenithTokenFetch,
-        ZenithTokenInterval,
-        ZenithTokenRefresh,
-        SocketClose,
+        OpenSocket,
+        FetchAuth,
+        UpdateAuth,
+        CloseSocket,
     }
 
-    export const AccessTokenReusableExpiryTimeSpan = 1 * mSecsPerMin; // an access token will not be reused if less than this time is left
+    export const invalidAccessToken = '';
 
     export const nullSocketCloseReason = '';
     export const nullSocketCloseWasClean = true;
@@ -428,43 +410,23 @@ export namespace ZenithConnectionStateEngine {
                 stateId: ZenithPublisherStateId.ReconnectDelay,
                 timeout: ZenithConnectionStateEngine.timeout_Never,
             },
-            ConnectPending: {
-                id: ActionId.ConnectPending,
-                stateId: ZenithPublisherStateId.ConnectPending,
-                timeout: ZenithConnectionStateEngine.timeout_None,
-            },
-            Connect: {
-                id: ActionId.Connect,
-                stateId: ZenithPublisherStateId.Connect,
-                timeout: ZenithConnectionStateEngine.timeout_None,
-            },
-            AuthTokenFetch: {
-                id: ActionId.AuthTokenFetch,
-                stateId: ZenithPublisherStateId.AuthFetch,
-                timeout: 20000,
-            },
-            SocketOpen: {
-                id: ActionId.SocketOpen,
+            OpenSocket: {
+                id: ActionId.OpenSocket,
                 stateId: ZenithPublisherStateId.SocketOpen,
                 timeout: 40000,
             },
-            ZenithTokenFetch: {
-                id: ActionId.ZenithTokenFetch,
-                stateId: ZenithPublisherStateId.ZenithTokenFetch,
+            FetchAuth: {
+                id: ActionId.FetchAuth,
+                stateId: ZenithPublisherStateId.AuthFetch,
                 timeout: 40000,
             },
-            ZenithTokenInterval: {
-                id: ActionId.ZenithTokenInterval,
-                stateId: ZenithPublisherStateId.ZenithTokenInterval,
-                timeout: ZenithConnectionStateEngine.timeout_Never,
-            },
-            ZenithTokenRefresh: {
-                id: ActionId.ZenithTokenRefresh,
-                stateId: ZenithPublisherStateId.ZenithTokenRefresh,
+            UpdateAuth: {
+                id: ActionId.UpdateAuth,
+                stateId: ZenithPublisherStateId.AuthUpdate,
                 timeout: 40000,
             },
-            SocketClose: {
-                id: ActionId.SocketClose,
+            CloseSocket: {
+                id: ActionId.CloseSocket,
                 stateId: ZenithPublisherStateId.SocketClose,
                 timeout: 5000,
             },
