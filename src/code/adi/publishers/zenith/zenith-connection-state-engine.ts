@@ -5,6 +5,7 @@
  */
 
 import {
+    AssertInternalError,
     EnumInfoOutOfOrderError,
     Integer,
     Logger,
@@ -30,14 +31,14 @@ export class ZenithConnectionStateEngine {
     reconnectEvent: ZenithConnectionStateEngine.ReconnectEvent;
     logEvent: ZenithConnectionStateEngine.LogEvent;
 
-    private _stateId = ZenithPublisherStateId.Connect;
+    private _stateId = ZenithPublisherStateId.Initialise;
 
     private _finalising = false;
     private _activeWaitId: Integer = ZenithConnectionStateEngine._waitId_Null;
 
     private _zenithEndpoints: readonly string[];
     private _zenithEndpointsUpdated = false;
-    private _activeZenithEndpoint: string;
+    private _selectedZenithEndpoint: string;
 
     private _accessToken = ZenithConnectionStateEngine.invalidAccessToken;
     private _accessTokenUpdated = false;
@@ -79,7 +80,7 @@ export class ZenithConnectionStateEngine {
         this._zenithEndpointsUpdated = true;
 
         switch (this.stateId) {
-            case ZenithPublisherStateId.Connect:
+            case ZenithPublisherStateId.Initialise:
             case ZenithPublisherStateId.ReconnectDelay:
                 this.connect();
                 break;
@@ -88,11 +89,23 @@ export class ZenithConnectionStateEngine {
         }
     }
 
-    selectActiveZenithEndpoint() {
+    selectZenithEndpoint() {
         this._zenithEndpointsUpdated = false;
-        const randIndex = Math.floor(Math.random() * this._zenithEndpoints.length);
-        this._activeZenithEndpoint = this._zenithEndpoints[randIndex];
-        return this._activeZenithEndpoint;
+        const endpointsCount = this._zenithEndpoints.length;
+        let selectedEndpoint: string;
+        switch (endpointsCount) {
+            case 0: throw new AssertInternalError('ZCSESAZE08195');
+            case 1: {
+                selectedEndpoint = this._zenithEndpoints[0];
+                break;
+            }
+            default: {
+                const randIndex = Math.floor(Math.random() * this._zenithEndpoints.length);
+                selectedEndpoint = this._zenithEndpoints[randIndex];
+            }
+        }
+        this._selectedZenithEndpoint = selectedEndpoint;
+        return this._selectedZenithEndpoint;
     }
 
     getUpdatedAccessToken() {
@@ -130,6 +143,8 @@ export class ZenithConnectionStateEngine {
         if (this.stateId === ZenithPublisherStateId.AuthFetch) {
             this._zenithAuthFetchSuccessiveFailureCount++;
             if (rejected) {
+                this._accessToken = ZenithConnectionStateEngine.invalidAccessToken;
+                this._accessTokenUpdated = true;
                 this.reconnect(ZenithPublisherReconnectReasonId.AuthRejected);
             } else {
                 this.finalise(false);
@@ -144,7 +159,7 @@ export class ZenithConnectionStateEngine {
 
             if (this._accessToken !== ZenithConnectionStateEngine.invalidAccessToken) {
                 switch (this.stateId) {
-                    case ZenithPublisherStateId.Connect:
+                    case ZenithPublisherStateId.Initialise:
                         break; // ignore
                     case ZenithPublisherStateId.ReconnectDelay:
                         this.connect();
@@ -273,7 +288,7 @@ export class ZenithConnectionStateEngine {
 
     private processTimeout() {
         switch (this.stateId) {
-            case ZenithPublisherStateId.Connect:
+            case ZenithPublisherStateId.Initialise:
             case ZenithPublisherStateId.ReconnectDelay:
                 this.logWarning(`Unexpected timeout for ZenithConnectionStateEngine: ${this.stateId}`);
                 break;
@@ -286,7 +301,7 @@ export class ZenithConnectionStateEngine {
     }
 
     private connect() {
-        if (this.stateId === ZenithPublisherStateId.Connect) {
+        if (this._zenithEndpointsUpdated) {
             this._finalising = false;
             this._zenithEndpointsUpdated = false;
             this._authExpiryTime = 0;
@@ -301,14 +316,12 @@ export class ZenithConnectionStateEngine {
             this._reconnectReasonId = undefined;
             this._timeoutCount = 0;
             this._lastTimeoutStateId = undefined;
+        }
 
-            if (this._accessToken === ZenithConnectionStateEngine.invalidAccessToken) {
-                this.noAction(ZenithPublisherStateId.AccessTokenWaiting);
-            } else {
-                this.action(ZenithConnectionStateEngine.ActionId.OpenSocket);
-            }
+        if (this._accessToken === ZenithConnectionStateEngine.invalidAccessToken) {
+            this.noAction(ZenithPublisherStateId.AccessTokenWaiting);
         } else {
-            this.logWarning(`Unexpected state in ZenithConnectionStateEngine: ${this.stateId}`);
+            this.action(ZenithConnectionStateEngine.ActionId.OpenSocket);
         }
     }
 
@@ -331,24 +344,27 @@ export class ZenithConnectionStateEngine {
         switch (this.stateId) {
             case ZenithPublisherStateId.AuthActive:
             case ZenithPublisherStateId.AuthUpdate:
-            case ZenithPublisherStateId.AuthFetch:
-                if (this.stateId !== ZenithPublisherStateId.AuthFetch) {
-                    this.wentOfflineEvent(socketCloseCode, socketCloseReason, socketCloseWasClean);
-                }
-                if (!socketIsClosed) {
-                    this.action(ZenithConnectionStateEngine.ActionId.CloseSocket);
-                } else {
+                this.wentOfflineEvent(socketCloseCode, socketCloseReason, socketCloseWasClean);
+
+                if (socketIsClosed) {
                     this.disconnectSocketClosed();
+                } else {
+                    this.action(ZenithConnectionStateEngine.ActionId.CloseSocket);
                 }
                 break;
 
+            case ZenithPublisherStateId.AuthFetch:
             case ZenithPublisherStateId.SocketOpen:
-                this.action(ZenithConnectionStateEngine.ActionId.CloseSocket);
+                if (socketIsClosed) {
+                    this.disconnectSocketClosed();
+                } else {
+                    this.action(ZenithConnectionStateEngine.ActionId.CloseSocket);
+                }
                 break;
 
             case ZenithPublisherStateId.SocketClose:
             case ZenithPublisherStateId.AccessTokenWaiting:
-            case ZenithPublisherStateId.Connect:
+            case ZenithPublisherStateId.Initialise:
             case ZenithPublisherStateId.ReconnectDelay:
                 this.disconnectSocketClosed();
                 break;

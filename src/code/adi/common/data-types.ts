@@ -1020,7 +1020,7 @@ export const enum ChartIntervalId {
 }
 
 export const enum ZenithPublisherStateId {
-    Connect,
+    Initialise,
     ReconnectDelay,
     AccessTokenWaiting,
     SocketOpen,
@@ -6697,9 +6697,9 @@ export namespace ZenithPublisherState {
     type InfosObject = { [id in keyof typeof ZenithPublisherStateId]: Info };
 
     const infosObject: InfosObject = {
-        Connect: {
-            id: ZenithPublisherStateId.Connect,
-            displayId: StringId.ZenithPublisherStateDisplay_Connect,
+        Initialise: {
+            id: ZenithPublisherStateId.Initialise,
+            displayId: StringId.ZenithPublisherStateDisplay_Initialise,
         },
         ReconnectDelay: {
             id: ZenithPublisherStateId.ReconnectDelay,

@@ -942,10 +942,8 @@ export const enum StringId {
     LogLevel_Error,
     LogLevel_Severe,
     LogLevel_Debug,
-    ZenithPublisherStateDisplay_ConnectionSubscription,
+    ZenithPublisherStateDisplay_Initialise,
     ZenithPublisherStateDisplay_ReconnectDelay,
-    ZenithPublisherStateDisplay_NewConnectParameters,
-    ZenithPublisherStateDisplay_Connect,
     ZenithPublisherStateDisplay_AccessTokenWaiting,
     ZenithPublisherStateDisplay_SocketOpen,
     ZenithPublisherStateDisplay_AuthFetch,
@@ -6471,24 +6469,14 @@ export namespace I18nStrings {
                 en: 'Debug',
             }
         },
-        ZenithPublisherStateDisplay_ConnectionSubscription: {
-            id: StringId.ZenithPublisherStateDisplay_ConnectionSubscription, translations: {
-                en: 'ConnectionSubscription',
+        ZenithPublisherStateDisplay_Initialise: {
+            id: StringId.ZenithPublisherStateDisplay_Initialise, translations: {
+                en: 'Initialise',
             }
         },
         ZenithPublisherStateDisplay_ReconnectDelay: {
             id: StringId.ZenithPublisherStateDisplay_ReconnectDelay, translations: {
                 en: 'Reconnect Delay',
-            }
-        },
-        ZenithPublisherStateDisplay_NewConnectParameters: {
-            id: StringId.ZenithPublisherStateDisplay_NewConnectParameters, translations: {
-                en: 'New Connect Parameters',
-            }
-        },
-        ZenithPublisherStateDisplay_Connect: {
-            id: StringId.ZenithPublisherStateDisplay_Connect, translations: {
-                en: 'Connect',
             }
         },
         ZenithPublisherStateDisplay_AccessTokenWaiting: {

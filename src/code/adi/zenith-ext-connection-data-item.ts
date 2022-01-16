@@ -29,7 +29,7 @@ export class ZenithExtConnectionDataItem extends ExtConnectionDataItem {
 
     private _publisherOnline = false;
     private _publisherOnlineChangeHistory: ZenithExtConnectionDataItem.PublisherOnlineChange[] = [];
-    private _publisherStateId = ZenithPublisherStateId.Connect;
+    private _publisherStateId = ZenithPublisherStateId.Initialise;
     private _waitId = 0;
     private _lastReconnectReasonId: ZenithPublisherReconnectReasonId | undefined;
     private _sessionKickedOff = false;
@@ -183,7 +183,7 @@ export class ZenithExtConnectionDataItem extends ExtConnectionDataItem {
         const endpoint = msg.endpoint;
         if (endpoint !== this._selectedEndpoint) {
             this._selectedEndpoint = endpoint;
-            this.notifySelectedEndpointChanged(endpoint);
+            this.notifySelectedEndpointChanged();
         }
     }
 
@@ -326,10 +326,10 @@ export class ZenithExtConnectionDataItem extends ExtConnectionDataItem {
         }
     }
 
-    private notifySelectedEndpointChanged(newEndpoint: string) {
+    private notifySelectedEndpointChanged() {
         const handlers = this._selectedEndpointChangedMultiEvent.copyHandlers();
         for (let i = 0; i < handlers.length; i++) {
-            handlers[i](newEndpoint);
+            handlers[i]();
         }
     }
 
@@ -367,7 +367,7 @@ export namespace ZenithExtConnectionDataItem {
     export type PublisherOnlineChangeEventHandler = (this: void, online: boolean) => void;
     export type PublisherStateChangeEventHandler = (this: void, stateId: ZenithPublisherStateId, waitId: Integer) => void;
     export type ReconnectEventHandler = (this: void, reconnectReasonId: ZenithPublisherReconnectReasonId) => void;
-    export type SelectedEndpointChangedEventHandler = (this: void, newEndpoint: string) => void;
+    export type SelectedEndpointChangedEventHandler = (this: void) => void;
     export type CounterEventHandler = (this: void) => void;
     export type LogEventHandler = (this: void, time: Date, logLevelId: Logger.LevelId, text: string) => void;
     export type SessionKickedOffEventHandler = (this: void) => void;

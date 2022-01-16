@@ -507,7 +507,7 @@ export class ZenithPublisher extends Publisher {
     }
 
     private openSocket(waitId: Integer) {
-        const zenithEndpoint = this._stateEngine.selectActiveZenithEndpoint();
+        const zenithEndpoint = this._stateEngine.selectZenithEndpoint();
         const dataMessage = this.createZenithEndpointSelectedDataMessage(zenithEndpoint);
         this._dataMessages.add(dataMessage);
         this.logInfo('Opening WebSocket: ' + zenithEndpoint);
