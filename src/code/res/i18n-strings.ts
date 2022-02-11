@@ -53,6 +53,10 @@ export const enum StringId {
     Details,
     Acknowledge,
     Keywords,
+    ContactMe,
+    NotInterested,
+    Interested,
+    Similar,
     // eslint-disable-next-line id-blacklist
     Undefined,
     Visible,
@@ -1677,6 +1681,7 @@ export const enum StringId {
     DitemMenuDisplay_NewsBody,
     DitemMenuDisplay_Alerts,
     DitemMenuDisplay_Search,
+    DitemMenuDisplay_AdvertWebPage,
     DitemMenuDisplay_TopShareholders,
     DitemMenuDisplay_Status,
     DitemMenuDisplay_Trades,
@@ -1787,6 +1792,11 @@ export const enum StringId {
     SearchDitem_Location_UsArizonaTitle,
     SearchDitem_PriceRange_10000To20000Caption,
     SearchDitem_PriceRange_10000To20000Title,
+    AdvertTicker_InterestedTitle,
+    BannerAdvert_ContactMeTitle,
+    BannerAdvert_InterestedTitle,
+    BannerAdvert_SimilarTitle,
+    BannerAdvert_NotInterestedTitle,
 }
 
 /** @public */
@@ -2055,6 +2065,26 @@ export namespace I18nStrings {
         Keywords: {
             id: StringId.Keywords, translations: {
                 en: 'Keywords',
+            }
+        },
+        ContactMe: {
+            id: StringId.ContactMe, translations: {
+                en: 'Contact me',
+            }
+        },
+        NotInterested: {
+            id: StringId.NotInterested, translations: {
+                en: 'Not interested',
+            }
+        },
+        Interested: {
+            id: StringId.Interested, translations: {
+                en: 'Interested',
+            }
+        },
+        Similar: {
+            id: StringId.Similar, translations: {
+                en: 'Similar',
             }
         },
         // eslint-disable-next-line id-blacklist
@@ -10176,6 +10206,11 @@ export namespace I18nStrings {
                 en: 'Search (demo)',
             }
         },
+        DitemMenuDisplay_AdvertWebPage: {
+            id: StringId.DitemMenuDisplay_AdvertWebPage, translations: {
+                en: 'Advertisement Web Page',
+            }
+        },
         DitemMenuDisplay_TopShareholders: {
             id: StringId.DitemMenuDisplay_TopShareholders, translations: {
                 en: 'Top Shareholders',
@@ -10724,6 +10759,31 @@ export namespace I18nStrings {
         SearchDitem_PriceRange_10000To20000Title: {
             id: StringId.SearchDitem_PriceRange_10000To20000Title, translations: {
                 en: '10000 - 20000',
+            }
+        },
+        AdvertTicker_InterestedTitle: {
+            id: StringId.AdvertTicker_InterestedTitle, translations: {
+                en: 'Register interest in current advertisement',
+            }
+        },
+        BannerAdvert_ContactMeTitle: {
+            id: StringId.BannerAdvert_ContactMeTitle, translations: {
+                en: 'Request to be contacted regarding the current advertisement',
+            }
+        },
+        BannerAdvert_InterestedTitle: {
+            id: StringId.BannerAdvert_InterestedTitle, translations: {
+                en: 'I am interested in the product/service currently being advertised',
+            }
+        },
+        BannerAdvert_SimilarTitle: {
+            id: StringId.BannerAdvert_SimilarTitle, translations: {
+                en: 'I am interested in products/services similar to that currently being advertised',
+            }
+        },
+        BannerAdvert_NotInterestedTitle: {
+            id: StringId.BannerAdvert_NotInterestedTitle, translations: {
+                en: 'I am NOT interested in the product/service currently being advertised',
             }
         },
     } as const;

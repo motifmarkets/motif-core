@@ -46,6 +46,7 @@ export namespace InternalCommand {
         NewNewsBodyDitem,
         NewAlertsDitem,
         NewSearchDitem,
+        NewAdvertWebPageDitem,
         NewTopShareholdersDitem,
         NewStatusDitem,
         NewTradesDitem,
@@ -141,6 +142,13 @@ export namespace InternalCommand {
 
         Search,
         ShowSelectedSearchResultDetails,
+
+
+
+        RegisterContactRequestRegardingFocusedAdvertisement,
+        RegisterInterestInFocusedAdvertisement,
+        RegisterInterestInSimilarToFocusedAdvertisement,
+        RegisterNotInterestedInFocusedAdvertisement,
     }
 
     export const enum NameId {
@@ -177,6 +185,7 @@ export namespace InternalCommand {
         NewNewsBodyDitem = 'NewNewsBodyDitem',
         NewAlertsDitem = 'NewAlertsDitem',
         NewSearchDitem = 'NewSearchDitem',
+        NewAdvertWebPageDitem = 'NewAdvertWebPageDitem',
         NewTopShareholdersDitem = 'NewTopShareholdersDitem',
         NewStatusDitem = 'NewStatusDitem',
         NewTradesDitem = 'NewTradesDitem',
@@ -272,6 +281,11 @@ export namespace InternalCommand {
 
         Search = 'Search',
         ShowSelectedSearchResultDetails = 'ShowSelectedSearchResultDetails',
+
+        RegisterContactRequestRegardingFocusedAdvertisement = 'RegisterContactRequestRegardingFocusedAdvertisement',
+        RegisterInterestInFocusedAdvertisement = 'RegisterInterestInFocusedAdvertisement',
+        RegisterInterestInSimilarToFocusedAdvertisement = 'RegisterInterestInSimilarToFocusedAdvertisement',
+        RegisterNotInterestedInFocusedAdvertisement = 'RegisterNotInterestedInFocusedAdvertisement',
     }
 
     export type Name = keyof typeof NameId;
@@ -311,6 +325,7 @@ export namespace InternalCommand {
         NewNewsBodyDitem: { id: Id.NewNewsBodyDitem, nameId: NameId.NewNewsBodyDitem },
         NewAlertsDitem: { id: Id.NewAlertsDitem, nameId: NameId.NewAlertsDitem },
         NewSearchDitem: { id: Id.NewSearchDitem, nameId: NameId.NewSearchDitem },
+        NewAdvertWebPageDitem: { id: Id.NewAdvertWebPageDitem, nameId: NameId.NewAdvertWebPageDitem },
         NewTopShareholdersDitem: { id: Id.NewTopShareholdersDitem, nameId: NameId.NewTopShareholdersDitem },
         NewStatusDitem: { id: Id.NewStatusDitem, nameId: NameId.NewStatusDitem },
         NewTradesDitem: { id: Id.NewTradesDitem, nameId: NameId.NewTradesDitem },
@@ -389,6 +404,10 @@ export namespace InternalCommand {
         DeleteSelectedAlert: { id: Id.DeleteSelectedAlert, nameId: NameId.DeleteSelectedAlert },
         Search: { id: Id.Search, nameId: NameId.Search },
         ShowSelectedSearchResultDetails: { id: Id.ShowSelectedSearchResultDetails, nameId: NameId.ShowSelectedSearchResultDetails },
+        RegisterContactRequestRegardingFocusedAdvertisement: { id: Id.RegisterContactRequestRegardingFocusedAdvertisement, nameId: NameId.RegisterContactRequestRegardingFocusedAdvertisement},
+        RegisterInterestInFocusedAdvertisement: { id: Id.RegisterInterestInFocusedAdvertisement, nameId: NameId.RegisterInterestInFocusedAdvertisement},
+        RegisterInterestInSimilarToFocusedAdvertisement: { id: Id.RegisterInterestInSimilarToFocusedAdvertisement, nameId: NameId.RegisterInterestInSimilarToFocusedAdvertisement},
+        RegisterNotInterestedInFocusedAdvertisement: { id: Id.RegisterNotInterestedInFocusedAdvertisement, nameId: NameId.RegisterNotInterestedInFocusedAdvertisement},
     } as const;
 
     const infos = Object.values(infosObject);
