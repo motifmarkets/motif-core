@@ -182,6 +182,7 @@ export namespace SecurityMessageConvert {
                 openInterest: data.OpenInterest,
                 shareIssue: data.ShareIssue,
                 statusNote: data.StatusNote,
+                extended: parseExtended(data.Extended),
             } as const;
             return result;
         } catch (error) {
@@ -191,5 +192,13 @@ export namespace SecurityMessageConvert {
 
     function parseTradingMarkets(tradingMarkets: string[]): MarketId[] {
         return tradingMarkets.map(tm => ZenithConvert.EnvironmentedMarket.toId(tm).marketId);
+    }
+
+    function parseExtended(data: Zenith.MarketController.Security.Extended | undefined) {
+        if (data === undefined) {
+            return undefined;
+        } else {
+            return ZenithConvert.Security.Extended.toAdi(data);
+        }
     }
 }

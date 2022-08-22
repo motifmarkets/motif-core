@@ -86,6 +86,7 @@ import {
     PriceOrderTrigger,
     PublisherRequest,
     SearchSymbolsDataDefinition,
+    SecurityDataMessage,
     SymbolFieldId,
     TimeInForceId,
     TradeAffects as AdiTradeAffects,
@@ -2577,6 +2578,26 @@ export namespace ZenithConvert {
 
         export function fromId(accountId: BrokerageAccountId): string {
             return accountId +  TradingEnvironment.encloseFromDefault();
+        }
+    }
+
+    export namespace Security {
+        export namespace Extended {
+            export function toAdi(zenithExtended: Zenith.MarketController.Security.Extended): SecurityDataMessage.Extended {
+                const result: SecurityDataMessage.Extended = {
+                    pss: newUndefinableDecimal(zenithExtended.PSS),
+                    idss: newUndefinableDecimal(zenithExtended.IDSS),
+                    pdt: newUndefinableDecimal(zenithExtended.PDT),
+                    rss: newUndefinableDecimal(zenithExtended.RSS),
+                    high52: newUndefinableDecimal(zenithExtended.High52),
+                    low52: newUndefinableDecimal(zenithExtended.Low52),
+                    reference: newUndefinableDecimal(zenithExtended.Reference),
+                    highLimit: newUndefinableDecimal(zenithExtended.HighLimit),
+                    lowLimit: newUndefinableDecimal(zenithExtended.LowLimit),
+                }
+
+                return result;
+            }
         }
     }
 
