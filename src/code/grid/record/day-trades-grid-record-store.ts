@@ -79,7 +79,7 @@ export class DayTradesGridRecordStore implements GridRecordStore {
         return this._records.slice(0, this.recordCount);
     }
 
-    addFields(fields: DayTradesGridField[]) {
+    addFields(fields: readonly DayTradesGridField[]) {
         this._fieldsEventers.addFields(fields);
     }
 
