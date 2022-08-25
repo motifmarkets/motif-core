@@ -132,6 +132,7 @@ export namespace Zenith {
         Cxa = 'CXA',
         Nsx = 'NSX',
         Nzx = 'NZX',
+        SNzx = 'SNZX', // Sample NZX
         Myx = 'MYX',
         Calastone = 'Calastone',
         Ptx = 'PTX',

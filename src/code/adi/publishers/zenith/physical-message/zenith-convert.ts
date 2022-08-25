@@ -487,6 +487,9 @@ export namespace ZenithConvert {
                 case Zenith.Exchange.SAsx:
                     throw new AssertInternalError('ZCETI84773', value);
 
+                case Zenith.Exchange.SNzx:
+                    throw new AssertInternalError('ZCETI84773', value);
+
                 default:
                     throw new UnreachableCaseError('ZCETI84772', value);
             }
@@ -511,6 +514,7 @@ export namespace ZenithConvert {
         export function tryToSampleBaseId(value: Zenith.Exchange): undefined | ExchangeId {
             switch (value) {
                 case Zenith.Exchange.SAsx: return ExchangeId.Asx;
+                case Zenith.Exchange.SNzx: return ExchangeId.Nzx;
                 default:
                     return undefined;
             }
@@ -520,6 +524,7 @@ export namespace ZenithConvert {
         export function fromSampleId(value: ExchangeId): Zenith.Exchange {
             switch (value) {
                 case ExchangeId.Asx: return Zenith.Exchange.SAsx;
+                case ExchangeId.Nzx: return Zenith.Exchange.SNzx;
                 default:
                     throw new AssertInternalError('ZCEFSI84774', ExchangeInfo.idToJsonValue(value))
             }
