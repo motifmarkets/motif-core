@@ -182,6 +182,7 @@ export const enum StringId {
     Index,
     Undisclosed,
     Physical,
+    Matched,
     ExecuteCommandTitle,
     ApplySymbolCaption,
     ApplySymbolTitle,
@@ -1808,6 +1809,11 @@ export const enum StringId {
     BannerAdvert_InterestedTitle,
     BannerAdvert_SimilarTitle,
     BannerAdvert_NotInterestedTitle,
+    ScanModifiedStatusDisplay_Unmodified,
+    ScanModifiedStatusDisplay_Modified,
+    ScanModifiedStatusDisplay_Conflict,
+    ScanTargetTypeDisplay_Markets,
+    ScanTargetTypeDisplay_Symbols,
 }
 
 /** @public */
@@ -2717,6 +2723,11 @@ export namespace I18nStrings {
         Physical: {
             id: StringId.Physical, translations: {
                 en: 'Physical',
+            }
+        },
+        Matched: {
+            id: StringId.Matched, translations: {
+                en: 'Matched',
             }
         },
         ExecuteCommandTitle: {
@@ -10850,6 +10861,31 @@ export namespace I18nStrings {
         BannerAdvert_NotInterestedTitle: {
             id: StringId.BannerAdvert_NotInterestedTitle, translations: {
                 en: 'I am NOT interested in the product/service currently being advertised',
+            }
+        },
+        ScanModifiedStatusDisplay_Unmodified: {
+            id: StringId.ScanModifiedStatusDisplay_Unmodified, translations: {
+                en: 'Unmodified',
+            }
+        },
+        ScanModifiedStatusDisplay_Modified: {
+            id: StringId.ScanModifiedStatusDisplay_Modified, translations: {
+                en: 'Modified',
+            }
+        },
+        ScanModifiedStatusDisplay_Conflict: {
+            id: StringId.ScanModifiedStatusDisplay_Conflict, translations: {
+                en: 'lConflict',
+            }
+        },
+        ScanTargetTypeDisplay_Markets: {
+            id: StringId.ScanTargetTypeDisplay_Markets, translations: {
+                en: 'Markets',
+            }
+        },
+        ScanTargetTypeDisplay_Symbols: {
+            id: StringId.ScanTargetTypeDisplay_Symbols, translations: {
+                en: 'Symbols',
             }
         },
     } as const;

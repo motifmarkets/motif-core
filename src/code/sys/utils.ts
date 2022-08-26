@@ -1168,7 +1168,7 @@ export namespace SysTick {
 /** @public */
 export namespace ValueRecentChangeType {
     /** Assumes oldValue and newValue are different */
-    export function calculateChangeTypeId<T>(oldValue: T | undefined, newValue: T | undefined) {
+    export function calculateChangeTypeId(oldValue: number | undefined, newValue: number | undefined) {
         if (oldValue === undefined || newValue === undefined) {
             return ValueRecentChangeTypeId.Update;
         } else {

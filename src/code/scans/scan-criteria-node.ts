@@ -1,3 +1,9 @@
+/**
+ * %license Motif
+ * (c) 2021 Paritech Wealth Technology
+ * License: motionite.trade/license/motif
+ */
+
 import Decimal from 'decimal.js-light';
 
 export const enum ScanCriteriaNodeTypeId {
@@ -75,43 +81,43 @@ export abstract class MultiOperandBooleanScanCriteriaNode extends BooleanScanCri
 }
 
 export class NoneScanCriteriaNode extends ZeroOperandBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.None;
+    override typeId: ScanCriteriaNodeTypeId.None;
 }
 
 export class AllScanCriteriaNode extends ZeroOperandBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.All;
+    override typeId: ScanCriteriaNodeTypeId.All;
 }
 
 export class NotScanCriteriaNode extends SingleOperandBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.Not;
+    override typeId: ScanCriteriaNodeTypeId.Not;
 }
 
 export class EqualsScanCriteriaNode extends LeftRightOperandBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.Equals;
+    override typeId: ScanCriteriaNodeTypeId.Equals;
 }
 
 export class GreaterThanScanCriteriaNode extends LeftRightOperandBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.GreaterThan;
+    override typeId: ScanCriteriaNodeTypeId.GreaterThan;
 }
 
 export class GreaterThanOrEqualScanCriteriaNode extends LeftRightOperandBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.GreaterThanOrEqual;
+    override typeId: ScanCriteriaNodeTypeId.GreaterThanOrEqual;
 }
 
 export class LessThanScanCriteriaNode extends LeftRightOperandBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.LessThan;
+    override typeId: ScanCriteriaNodeTypeId.LessThan;
 }
 
 export class LessThanOrEqualScanCriteriaNode extends LeftRightOperandBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.LessThanOrEqual;
+    override typeId: ScanCriteriaNodeTypeId.LessThanOrEqual;
 }
 
 export class AndScanCriteriaNode extends MultiOperandBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.And;
+    override typeId: ScanCriteriaNodeTypeId.And;
 }
 
 export class OrScanCriteriaNode extends MultiOperandBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.Or;
+    override typeId: ScanCriteriaNodeTypeId.Or;
 }
 
 export abstract class FieldBooleanScanCriteriaNode extends BooleanScanCriteriaNode {
@@ -119,38 +125,38 @@ export abstract class FieldBooleanScanCriteriaNode extends BooleanScanCriteriaNo
 }
 
 export class FieldHasValueScanCriteriaNode extends FieldBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.FieldHasValue;
+    override typeId: ScanCriteriaNodeTypeId.FieldHasValue;
 }
 
 export class BooleanFieldEqualsScanCriteriaNode extends FieldBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.BooleanFieldEquals;
+    override typeId: ScanCriteriaNodeTypeId.BooleanFieldEquals;
     target: boolean | BooleanScanCriteriaNode;
 }
 
 export class DecimalFieldEqualsScanCriteriaNode extends FieldBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.DecimalFieldEquals;
+    override typeId: ScanCriteriaNodeTypeId.DecimalFieldEquals;
     target: Decimal | DecimalScanCriteriaNode;
 }
 
 export class DecimalFieldInRangeScanCriteriaNode extends FieldBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.DecimalFieldInRange;
+    override typeId: ScanCriteriaNodeTypeId.DecimalFieldInRange;
     min: Decimal | null | DecimalScanCriteriaNode;
     max: Decimal | null | DecimalScanCriteriaNode;
 }
 
 export class DateFieldEqualsScanCriteriaNode extends FieldBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.DateFieldEquals;
+    override typeId: ScanCriteriaNodeTypeId.DateFieldEquals;
     target: Date | DateScanCriteriaNode;
 }
 
 export class DateFieldInRangeScanCriteriaNode extends FieldBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.DateFieldInRange;
+    override typeId: ScanCriteriaNodeTypeId.DateFieldInRange;
     min: Date | null | DateScanCriteriaNode;
     max: Date | null | DateScanCriteriaNode;
 }
 
 export class StringFieldContainsScanCriteriaNode extends FieldBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.StringFieldContains;
+    override typeId: ScanCriteriaNodeTypeId.StringFieldContains;
     value: string;
     as: StringFieldContainsAs;
     ignoreCase: boolean;
@@ -161,33 +167,33 @@ export abstract class SubFieldBooleanScanCriteriaNode extends FieldBooleanScanCr
 }
 
 export class SubFieldHasValueScanCriteriaNode extends SubFieldBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.FieldHasValue;
+    override typeId: ScanCriteriaNodeTypeId.FieldHasValue;
 }
 
 export class DecimalSubFieldEqualsScanCriteriaNode extends SubFieldBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.DecimalSubFieldEquals;
+    override typeId: ScanCriteriaNodeTypeId.DecimalSubFieldEquals;
     target: Decimal | DecimalScanCriteriaNode;
 }
 
 export class DecimalSubFieldInRangeScanCriteriaNode extends SubFieldBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.DecimalSubFieldInRange;
+    override typeId: ScanCriteriaNodeTypeId.DecimalSubFieldInRange;
     min: Decimal | null | DecimalScanCriteriaNode;
     max: Decimal | null | DecimalScanCriteriaNode;
 }
 
 export class DateSubFieldEqualsScanCriteriaNode extends SubFieldBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.DateSubFieldEquals;
+    override typeId: ScanCriteriaNodeTypeId.DateSubFieldEquals;
     target: Date | DateScanCriteriaNode;
 }
 
 export class DateSubFieldInRangeScanCriteriaNode extends SubFieldBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.DateSubFieldInRange;
+    override typeId: ScanCriteriaNodeTypeId.DateSubFieldInRange;
     min: Date | null | DateScanCriteriaNode;
     max: Date | null | DateScanCriteriaNode;
 }
 
 export class StringSubFieldContainsScanCriteriaNode extends SubFieldBooleanScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.StringSubFieldContains;
+    override typeId: ScanCriteriaNodeTypeId.StringSubFieldContains;
     value: string;
     as: StringFieldContainsAs;
     ignoreCase: boolean;
@@ -203,15 +209,15 @@ export abstract class UnaryArithmeticScanCriteriaNode extends DecimalScanCriteri
 }
 
 export class NegScanCriteriaNode extends UnaryArithmeticScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.Neg;
+    override typeId: ScanCriteriaNodeTypeId.Neg;
 }
 
 export class PosScanCriteriaNode extends UnaryArithmeticScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.Pos;
+    override typeId: ScanCriteriaNodeTypeId.Pos;
 }
 
 export class AbsScanCriteriaNode extends UnaryArithmeticScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.Abs;
+    override typeId: ScanCriteriaNodeTypeId.Abs;
 }
 
 export abstract class LeftRightArithmeticScanCriteriaNode extends DecimalScanCriteriaNode {
@@ -220,32 +226,32 @@ export abstract class LeftRightArithmeticScanCriteriaNode extends DecimalScanCri
 }
 
 export class AddScanCriteriaNode extends LeftRightArithmeticScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.Add;
+    override typeId: ScanCriteriaNodeTypeId.Add;
 }
 
 export class DivScanCriteriaNode extends LeftRightArithmeticScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.Div;
+    override typeId: ScanCriteriaNodeTypeId.Div;
 }
 
 export class ModScanCriteriaNode extends LeftRightArithmeticScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.Mod;
+    override typeId: ScanCriteriaNodeTypeId.Mod;
 }
 
 export class MulScanCriteriaNode extends LeftRightArithmeticScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.Mul;
+    override typeId: ScanCriteriaNodeTypeId.Mul;
 }
 
 export abstract class SubScanCriteriaNode extends LeftRightArithmeticScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.Sub;
+    override typeId: ScanCriteriaNodeTypeId.Sub;
 }
 
 export class GetDecimalFieldValue extends DecimalScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.GetDecimalFieldValue;
+    override typeId: ScanCriteriaNodeTypeId.GetDecimalFieldValue;
     fieldName: string;
 }
 
 export class GetDecimalSubFieldValue extends DecimalScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.GetDecimalSubFieldValue;
+    override typeId: ScanCriteriaNodeTypeId.GetDecimalSubFieldValue;
     fieldName: string;
     subFieldName: string;
 }
@@ -256,12 +262,12 @@ export abstract class DateScanCriteriaNode extends ScanCriteriaNode {
 }
 
 export class GetDateFieldValue extends DateScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.GetDateFieldValue;
+    override typeId: ScanCriteriaNodeTypeId.GetDateFieldValue;
     fieldName: string;
 }
 
 export class GetDateSubFieldValue extends DateScanCriteriaNode {
-    typeId: ScanCriteriaNodeTypeId.GetDateSubFieldValue;
+    override typeId: ScanCriteriaNodeTypeId.GetDateSubFieldValue;
     fieldName: string;
     subFieldName: string;
 }
