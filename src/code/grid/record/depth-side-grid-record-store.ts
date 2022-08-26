@@ -39,7 +39,7 @@ export abstract class DepthSideGridRecordStore {
         this._recordsEventers = recordsEventers;
     }
 
-    eventifyAddFields(fields: GridRecordField[]) {
+    addFields(fields: readonly GridRecordField[]) {
         this._fieldsEventers.addFields(fields);
     }
 
