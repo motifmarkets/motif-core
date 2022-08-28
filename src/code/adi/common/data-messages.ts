@@ -724,7 +724,7 @@ export namespace SecurityDataMessage {
         openInterest: Integer | null | undefined;
         shareIssue: Integer | null | undefined;
         statusNote: string | null | undefined;
-        extended: Extended | undefined;
+        extended: Extended | null | undefined;
     }
 
     export interface Extended {
