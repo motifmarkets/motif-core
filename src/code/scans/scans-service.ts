@@ -4,7 +4,7 @@
  * License: motionite.trade/license/motif
  */
 
-import { AdiService } from '../adi/adi-internal-api';
+import { AdiService, LitIvemId, MarketId } from '../adi/adi-internal-api';
 import { MultiEvent } from '../sys/sys-internal-api';
 import { Integer, UsableListChangeTypeId } from '../sys/types';
 import { Scan } from './scan';
@@ -18,7 +18,17 @@ export class ScansService {
     private _badnessChangeMultiEvent = new MultiEvent<ScansService.BadnessChangeEventHandler>();
 
     constructor(private readonly _adi: AdiService) {
-
+        const scan = new Scan();
+        scan.id = '1';
+        scan.category = 'cat1';
+        scan.name = 'name1'
+        scan.description = 'description1'
+        scan.index = 0;
+        scan.targetTypeId = Scan.TargetTypeId.Symbols;
+        scan.targetLitIvemIds = [LitIvemId.createFromCodeMarket('BHP', MarketId.AsxTradeMatch)];
+        scan.matched = false;
+        scan.modifiedStatusId = Scan.ModifiedStatusId.Unmodified;
+        this._scans.push(scan);
     }
 
     start() {

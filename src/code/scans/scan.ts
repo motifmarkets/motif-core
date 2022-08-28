@@ -16,7 +16,9 @@ export class Scan {
     id: string;
     index: Integer; // within list of scans - used by Grid
     name: string;
+    uppercaseName: string;
     description: string;
+    uppercaseDescription: string;
     category: string;
     isWritable: string;
     targetTypeId: Scan.TargetTypeId;
@@ -24,12 +26,80 @@ export class Scan {
     targetLitIvemIds: LitIvemId[];
     matched: boolean;
     unmodifiedVersion: number;
+    criteriaTypeId: Scan.CriteriaTypeId;
     criteria: BooleanScanCriteriaNode;
     history: BooleanScanCriteriaNode[];
     modifiedStatusId: Scan.ModifiedStatusId;
 }
 
 export namespace Scan {
+    export const enum CriteriaTypeId {
+        Custom,
+        PriceGreaterThanValue,
+        PriceLessThanValue,
+        TodayPriceIncreaseGreaterThanPercentage,
+        TodayPriceDecreaseGreaterThanPercentage,
+    }
+
+    export namespace CriteriaType {
+        export type Id = CriteriaTypeId;
+
+        interface Info {
+            readonly id: Id;
+            readonly name: string;
+            readonly displayId: StringId;
+        }
+
+        type InfosObject = { [id in keyof typeof CriteriaTypeId]: Info };
+
+        const infosObject: InfosObject = {
+            Custom: {
+                id: CriteriaTypeId.Custom,
+                name: 'Custom',
+                displayId: StringId.ScanCriteriaTypeDisplay_Custom,
+            },
+            PriceGreaterThanValue: {
+                id: CriteriaTypeId.PriceGreaterThanValue,
+                name: 'PriceGreaterThanValue',
+                displayId: StringId.ScanCriteriaTypeDisplay_PriceGreaterThanValue,
+            },
+            PriceLessThanValue: {
+                id: CriteriaTypeId.PriceLessThanValue,
+                name: 'PriceLessThanValue',
+                displayId: StringId.ScanCriteriaTypeDisplay_PriceLessThanValue,
+            },
+            TodayPriceIncreaseGreaterThanPercentage: {
+                id: CriteriaTypeId.TodayPriceIncreaseGreaterThanPercentage,
+                name: 'TodayPriceIncreaseGreaterThanPercentage',
+                displayId: StringId.ScanCriteriaTypeDisplay_TodayPriceIncreaseGreaterThanPercentage,
+            },
+            TodayPriceDecreaseGreaterThanPercentage: {
+                id: CriteriaTypeId.TodayPriceDecreaseGreaterThanPercentage,
+                name: 'TodayPriceDecreaseGreaterThanPercentage',
+                displayId: StringId.ScanCriteriaTypeDisplay_TodayPriceDecreaseGreaterThanPercentage,
+            },
+        } as const;
+
+        export const idCount = Object.keys(infosObject).length;
+
+        const infos = Object.values(infosObject);
+
+        export function initialise() {
+            const outOfOrderIdx = infos.findIndex((info: Info, index: Integer) => info.id !== index);
+            if (outOfOrderIdx >= 0) {
+                throw new EnumInfoOutOfOrderError('Scan.CriteriaTypeId', outOfOrderIdx, infos[outOfOrderIdx].name);
+            }
+        }
+
+        export function idToDisplayId(id: Id): StringId {
+            return infos[id].displayId;
+        }
+
+        export function idToDisplay(id: Id): string {
+            return Strings[idToDisplayId(id)];
+        }
+    }
+
     export const enum ModifiedStatusId {
         Unmodified,
         Modified,
@@ -146,6 +216,8 @@ export namespace Scan {
             TargetLitIvemIds,
             Matched,
             // eslint-disable-next-line @typescript-eslint/no-shadow
+            CriteriaTypeId,
+            // eslint-disable-next-line @typescript-eslint/no-shadow
             ModifiedStatusId,
         }
 
@@ -188,6 +260,10 @@ export namespace Scan {
             Matched: {
                 id: Id.Matched,
                 name: 'Matched',
+            },
+            CriteriaTypeId: {
+                id: Id.CriteriaTypeId,
+                name: 'CriteriaTypeId',
             },
             ModifiedStatusId: {
                 id: Id.ModifiedStatusId,

@@ -806,7 +806,7 @@ export namespace Zenith {
                 OpenInterest?: Integer | null;
                 ShareIssue?: Integer | null;
                 StatusNote?: string | null;
-                Extended?: Extended;
+                Extended?: Extended | null;
             }
 
             export interface Extended {
@@ -1125,12 +1125,12 @@ export namespace Zenith {
         NzxNXT = 'NXT',
         NzxSpec = 'SPEC',
         NzxFonterraShareholders = 'FSM',
-        NzxIndex = 'I',
+        NzxIndex = 'INDX',
         NzxDebt = 'DX',
         NzxAlternate = 'AX',
-        NzxDerivativeFutures = 'DF',
-        NzxDerivativeOptions = 'DO',
-        NzxIndexFutures = 'IF',
+        NzxDerivativeFutures = 'D-FUT',
+        NzxDerivativeOptions = 'D-OPT',
+        NzxIndexFutures = 'I-FUT',
         NzxFxDerivativeOptions = 'DO',
         NzxFxDerivativeFutures = 'DF',
         NzxFxEquityOptions = 'EO',

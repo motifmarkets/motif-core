@@ -7,10 +7,12 @@
 import { Scan, ScansService } from '../../scans/scans-internal-api';
 import { Integer, MultiEvent, UnreachableCaseError, UsableListChangeTypeId } from '../../sys/sys-internal-api';
 import {
+    GridRecordIndex,
     GridRecordStore,
     GridRecordStoreFieldsEventers,
     GridRecordStoreRecordsEventers
 } from '../grid-revgrid-types';
+import { ScansGridField } from './scans-grid-field';
 
 export class ScansGridRecordStore implements GridRecordStore {
     private _fieldsEventers: GridRecordStoreFieldsEventers;
@@ -65,6 +67,18 @@ export class ScansGridRecordStore implements GridRecordStore {
 
     getRecords(): readonly Scan[] {
         return this._scansService.getAllScansAsArray();
+    }
+
+    addFields(fields: readonly ScansGridField[]) {
+        this._fieldsEventers.addFields(fields);
+    }
+
+    recordsLoaded() {
+        this._recordsEventers.recordsLoaded();
+    }
+
+    recordsInserted(firstInsertedRecordIndex: GridRecordIndex, count: Integer) {
+        this._recordsEventers.recordsInserted(firstInsertedRecordIndex, count);
     }
 
     private handleListChangeEvent(listChangeTypeId: UsableListChangeTypeId, index: Integer, count: Integer) {

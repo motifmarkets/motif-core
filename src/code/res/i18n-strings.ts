@@ -171,6 +171,7 @@ export const enum StringId {
     CannotDeleteBuiltinList,
     DeleteList,
     CannotDeleteList,
+    NewScan,
     TableJsonMissingFieldlist,
     List,
     None,
@@ -1691,6 +1692,7 @@ export const enum StringId {
     DitemMenuDisplay_Depth,
     DitemMenuDisplay_NewsHeadlines,
     DitemMenuDisplay_NewsBody,
+    DitemMenuDisplay_Scans,
     DitemMenuDisplay_Alerts,
     DitemMenuDisplay_Search,
     DitemMenuDisplay_AdvertWebPage,
@@ -1814,6 +1816,15 @@ export const enum StringId {
     ScanModifiedStatusDisplay_Conflict,
     ScanTargetTypeDisplay_Markets,
     ScanTargetTypeDisplay_Symbols,
+    ScansGridHeading_Id,
+    ScansGridHeading_Index,
+    ScansGridHeading_Name,
+    ScansGridHeading_Description,
+    ScansGridHeading_TargetTypeId,
+    ScansGridHeading_TargetMarkets,
+    ScansGridHeading_TargetLitIvemIds,
+    ScansGridHeading_Matched,
+    ScansGridHeading_ModifiedStatusId,
 }
 
 /** @public */
@@ -2668,6 +2679,11 @@ export namespace I18nStrings {
         CannotDeleteList: {
             id: StringId.CannotDeleteList, translations: {
                 en: 'Cannot delete list',
+            }
+        },
+        NewScan: {
+            id: StringId.NewScan, translations: {
+                en: 'New',
             }
         },
         TableJsonMissingFieldlist: {
@@ -10273,6 +10289,11 @@ export namespace I18nStrings {
                 en: 'News Body',
             }
         },
+        DitemMenuDisplay_Scans: {
+            id: StringId.DitemMenuDisplay_Scans, translations: {
+                en: 'Scans',
+            }
+        },
         DitemMenuDisplay_Alerts: {
             id: StringId.DitemMenuDisplay_Alerts, translations: {
                 en: 'Alerts (demo)',
@@ -10886,6 +10907,51 @@ export namespace I18nStrings {
         ScanTargetTypeDisplay_Symbols: {
             id: StringId.ScanTargetTypeDisplay_Symbols, translations: {
                 en: 'Symbols',
+            }
+        },
+        ScansGridHeading_Id: {
+            id: StringId.ScansGridHeading_Id, translations: {
+                en: 'Id',
+            }
+        },
+        ScansGridHeading_Index: {
+            id: StringId.ScansGridHeading_Index, translations: {
+                en: 'Index',
+            }
+        },
+        ScansGridHeading_Name: {
+            id: StringId.ScansGridHeading_Name, translations: {
+                en: 'Name',
+            }
+        },
+        ScansGridHeading_Description: {
+            id: StringId.ScansGridHeading_Description, translations: {
+                en: 'Description',
+            }
+        },
+        ScansGridHeading_TargetTypeId: {
+            id: StringId.ScansGridHeading_TargetTypeId, translations: {
+                en: 'Target type',
+            }
+        },
+        ScansGridHeading_TargetMarkets: {
+            id: StringId.ScansGridHeading_TargetMarkets, translations: {
+                en: 'Target markets',
+            }
+        },
+        ScansGridHeading_TargetLitIvemIds: {
+            id: StringId.ScansGridHeading_TargetLitIvemIds, translations: {
+                en: 'Target symbols',
+            }
+        },
+        ScansGridHeading_Matched: {
+            id: StringId.ScansGridHeading_Matched, translations: {
+                en: 'Matched',
+            }
+        },
+        ScansGridHeading_ModifiedStatusId: {
+            id: StringId.ScansGridHeading_ModifiedStatusId, translations: {
+                en: 'Modified',
             }
         },
     } as const;

@@ -109,7 +109,7 @@ export function ifDefined<U, T>(value: U | undefined, fn: (x: U) => T): T | unde
 }
 
 /** @public */
-export function ifDefinedAndNotNull<U, T>(value: U | undefined | null, fn: (x: U) => T): T | undefined | null {
+export function getUndefinedNullOrFunctionResult<U, T>(value: U | undefined | null, fn: (x: U) => T): T | undefined | null {
     if (value === undefined) {
         return undefined;
     } else {
