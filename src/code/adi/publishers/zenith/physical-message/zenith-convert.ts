@@ -1034,7 +1034,7 @@ export namespace ZenithConvert {
                         case Zenith.Market1Node.NzxMain:
                             switch (m2) {
                                 case undefined:
-                                    Logger.logDataError('ZCEMCMBZM66685', 'Using NZX Main');
+                                    Logger.logDataError('ZCEMBCMBINZMU66685', 'Using NZX Main');
                                     return MarketBoardId.NzxMainBoard;
                                 case Zenith.Market2Node.NzxMainBoard_Alt: return MarketBoardId.NzxAlternate;
                                 case Zenith.Market2Node.NzxNXT: return MarketBoardId.NzxNXT;
@@ -1052,13 +1052,13 @@ export namespace ZenithConvert {
                                 case Zenith.Market2Node.NzxFxIndexFutures: return MarketBoardId.NzxFxIndexFutures;
                                 case Zenith.Market2Node.NzxFxMilkOptions: return MarketBoardId.NzxFxMilkOptions;
                                 default:
-                                    Logger.logDataError('ZCEMCMBNSPD23232', `${m2}: Using NSX Main`);
-                                    return MarketBoardId.NsxMain;
+                                    Logger.logDataError('ZCEMBCMBINZMD23239', `${m2}: Using NZX Main`);
+                                    return MarketBoardId.NzxMainBoard;
                             }
                         case Zenith.Market1Node.NzxFxDerivative:
                             switch (m2) {
                                 case undefined:
-                                    Logger.logDataError('ZCEMCMBZF44886', 'Using NZX Derivative Options');
+                                    Logger.logDataError('ZCEMBCMBINZF44886', 'Using NZX Derivative Options');
                                     return MarketBoardId.NzxFxDerivativeOptions;
                                 case Zenith.Market2Node.NzxFxDerivativeOptions: return MarketBoardId.NzxFxDerivativeOptions;
                                 case Zenith.Market2Node.NzxFxDerivativeFutures: return MarketBoardId.NzxFxDerivativeFutures;
@@ -1069,11 +1069,11 @@ export namespace ZenithConvert {
                                 case Zenith.Market2Node.NzxFxES: return MarketBoardId.NzxFxES;
                                 case Zenith.Market2Node.NzxFxMS: return MarketBoardId.NzxFxMS;
                                 default:
-                                    Logger.logDataError('ZCEMCMBZF11188', `${m2}: Using NZX Derivative Options`);
+                                    Logger.logDataError('ZCEMBCMBINZF11188', `${m2}: Using NZX Derivative Options`);
                                     return MarketBoardId.NzxFxDerivativeOptions;
                             }
                         default:
-                            Logger.logDataError('ZCEMCMBZD77559', `${m1}: Using NZX Main`);
+                            Logger.logDataError('ZCEMBCMBINZD77559', `${m1}: Using NZX Main`);
                             return MarketBoardId.NzxMainBoard;
                     }
                 case ExchangeId.Myx:
