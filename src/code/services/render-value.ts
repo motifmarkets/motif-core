@@ -118,6 +118,7 @@ export namespace RenderValue {
         MarketClassificationIdMyxLitIvemAttribute,
         DeliveryBasisIdMyxLitIvemAttribute,
         DayTradesDataItemRecordTypeId,
+        ScanCriteriaTypeId,
         ScanTargetTypeId,
         ScanModifiedStatusId,
 

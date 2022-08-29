@@ -1816,15 +1816,52 @@ export const enum StringId {
     ScanModifiedStatusDisplay_Conflict,
     ScanTargetTypeDisplay_Markets,
     ScanTargetTypeDisplay_Symbols,
+    ScanCriteriaTypeDisplay_Custom,
+    ScanCriteriaTypeDisplay_PriceGreaterThanValue,
+    ScanCriteriaTypeDisplay_PriceLessThanValue,
+    ScanCriteriaTypeDisplay_TodayPriceIncreaseGreaterThanPercentage,
+    ScanCriteriaTypeDisplay_TodayPriceDecreaseGreaterThanPercentage,
+    ScanCriteriaViewTypeDisplay_Default,
+    ScanCriteriaViewTypeDescription_Default,
+    ScanCriteriaViewTypeDisplay_Predefined,
+    ScanCriteriaViewTypeDescription_Predefined,
+    ScanCriteriaViewTypeDisplay_Formula,
+    ScanCriteriaViewTypeDescription_Formula,
+    ScanCriteriaViewTypeDisplay_Zenith,
+    ScanCriteriaViewTypeDescription_Zenith,
     ScansGridHeading_Id,
     ScansGridHeading_Index,
     ScansGridHeading_Name,
     ScansGridHeading_Description,
     ScansGridHeading_TargetTypeId,
+    ScansGridHeading_Targets,
     ScansGridHeading_TargetMarkets,
     ScansGridHeading_TargetLitIvemIds,
     ScansGridHeading_Matched,
+    ScansGridHeading_CriteriaTypeId,
     ScansGridHeading_ModifiedStatusId,
+    ScanPropertiesCaption_Name,
+    ScanPropertiesTitle_Name,
+    ScanPropertiesCaption_Description,
+    ScanPropertiesTitle_Description,
+    ScanPropertiesCaption_Type,
+    ScanPropertiesTitle_Type,
+    ScanPropertiesCaption_View,
+    ScanPropertiesTitle_View,
+    ScanPropertiesCaption_MobileNotifier,
+    ScanPropertiesDescription_MobileNotifier,
+    ScanPropertiesCaption_SmsNotifier,
+    ScanPropertiesDescription_SmsNotifier,
+    ScanPropertiesCaption_EmailNotifier,
+    ScanPropertiesDescription_EmailNotifier,
+    ScanPropertiesCaption_MotifNotifier,
+    ScanPropertiesDescription_MotifNotifier,
+    ScanPropertiesCaption_AllNotifiers,
+    ScanPropertiesDescription_AllNotifiers,
+    ScanPropertiesCaption_MinimumStableTime,
+    ScanPropertiesDescription_MinimumStableTime,
+    ScanPropertiesCaption_MinimumElapsedTime,
+    ScanPropertiesDescription_MinimumElapsedTime,
 }
 
 /** @public */
@@ -10909,6 +10946,72 @@ export namespace I18nStrings {
                 en: 'Symbols',
             }
         },
+        ScanCriteriaTypeDisplay_Custom: {
+            id: StringId.ScanCriteriaTypeDisplay_Custom, translations: {
+                en: 'Custom',
+            }
+        },
+        ScanCriteriaTypeDisplay_PriceGreaterThanValue: {
+            id: StringId.ScanCriteriaTypeDisplay_PriceGreaterThanValue, translations: {
+                en: 'Price > value',
+            }
+        },
+        ScanCriteriaTypeDisplay_PriceLessThanValue: {
+            id: StringId.ScanCriteriaTypeDisplay_PriceLessThanValue, translations: {
+                en: 'Price < value',
+            }
+        },
+        ScanCriteriaTypeDisplay_TodayPriceIncreaseGreaterThanPercentage: {
+            id: StringId.ScanCriteriaTypeDisplay_TodayPriceIncreaseGreaterThanPercentage, translations: {
+                en: 'Today price increase > percentage',
+            }
+        },
+        ScanCriteriaTypeDisplay_TodayPriceDecreaseGreaterThanPercentage: {
+            id: StringId.ScanCriteriaTypeDisplay_TodayPriceDecreaseGreaterThanPercentage, translations: {
+                en: 'Today price decrease > percentage',
+            }
+        },
+
+        ScanCriteriaViewTypeDisplay_Default: {
+            id: StringId.ScanCriteriaViewTypeDisplay_Default, translations: {
+                en: 'Default',
+            }
+        },
+        ScanCriteriaViewTypeDescription_Default: {
+            id: StringId.ScanCriteriaViewTypeDescription_Default, translations: {
+                en: 'View/edit scan criteria with either basic or formula view as appropriate',
+            }
+        },
+        ScanCriteriaViewTypeDisplay_Predefined: {
+            id: StringId.ScanCriteriaViewTypeDisplay_Predefined, translations: {
+                en: 'Basic',
+            }
+        },
+        ScanCriteriaViewTypeDescription_Predefined: {
+            id: StringId.ScanCriteriaViewTypeDescription_Predefined, translations: {
+                en: 'View/edit scan criteria with basic view',
+            }
+        },
+        ScanCriteriaViewTypeDisplay_Formula: {
+            id: StringId.ScanCriteriaViewTypeDisplay_Formula, translations: {
+                en: 'Formula',
+            }
+        },
+        ScanCriteriaViewTypeDescription_Formula: {
+            id: StringId.ScanCriteriaViewTypeDescription_Formula, translations: {
+                en: 'View/edit scan criteria with formula view',
+            }
+        },
+        ScanCriteriaViewTypeDisplay_Zenith: {
+            id: StringId.ScanCriteriaViewTypeDisplay_Zenith, translations: {
+                en: 'Zenith',
+            }
+        },
+        ScanCriteriaViewTypeDescription_Zenith: {
+            id: StringId.ScanCriteriaViewTypeDescription_Zenith, translations: {
+                en: 'View/edit scan criteria with Zenith view (for API developers)',
+            }
+        },
         ScansGridHeading_Id: {
             id: StringId.ScansGridHeading_Id, translations: {
                 en: 'Id',
@@ -10934,14 +11037,19 @@ export namespace I18nStrings {
                 en: 'Target type',
             }
         },
+        ScansGridHeading_Targets: {
+            id: StringId.ScansGridHeading_Targets, translations: {
+                en: 'Targets',
+            }
+        },
         ScansGridHeading_TargetMarkets: {
             id: StringId.ScansGridHeading_TargetMarkets, translations: {
-                en: 'Target markets',
+                en: 'Markets',
             }
         },
         ScansGridHeading_TargetLitIvemIds: {
             id: StringId.ScansGridHeading_TargetLitIvemIds, translations: {
-                en: 'Target symbols',
+                en: 'Symbols',
             }
         },
         ScansGridHeading_Matched: {
@@ -10949,9 +11057,124 @@ export namespace I18nStrings {
                 en: 'Matched',
             }
         },
+        ScansGridHeading_CriteriaTypeId: {
+            id: StringId.ScansGridHeading_CriteriaTypeId, translations: {
+                en: 'Type',
+            }
+        },
         ScansGridHeading_ModifiedStatusId: {
             id: StringId.ScansGridHeading_ModifiedStatusId, translations: {
                 en: 'Modified',
+            }
+        },
+        ScanPropertiesCaption_Name: {
+            id: StringId.ScanPropertiesCaption_Name, translations: {
+                en: 'Name',
+            }
+        },
+        ScanPropertiesTitle_Name: {
+            id: StringId.ScanPropertiesTitle_Name, translations: {
+                en: 'A short name easily identifying the scan',
+            }
+        },
+        ScanPropertiesCaption_Description: {
+            id: StringId.ScanPropertiesCaption_Description, translations: {
+                en: 'Description',
+            }
+        },
+        ScanPropertiesTitle_Description: {
+            id: StringId.ScanPropertiesTitle_Description, translations: {
+                en: 'An (optional) longer description of the scan',
+            }
+        },
+        ScanPropertiesCaption_Type: {
+            id: StringId.ScanPropertiesCaption_Type, translations: {
+                en: 'Type',
+            }
+        },
+        ScanPropertiesTitle_Type: {
+            id: StringId.ScanPropertiesTitle_Type, translations: {
+                en: 'Specifies the type of criteria used by the scan.  Can either be \'custom\' or one of the basic types.',
+            }
+        },
+        ScanPropertiesCaption_View: {
+            id: StringId.ScanPropertiesCaption_View, translations: {
+                en: 'View',
+            }
+        },
+        ScanPropertiesTitle_View: {
+            id: StringId.ScanPropertiesTitle_View, translations: {
+                en: 'Specifies how the criteria should be viewed/edited',
+            }
+        },
+        ScanPropertiesCaption_MobileNotifier: {
+            id: StringId.ScanPropertiesCaption_MobileNotifier, translations: {
+                en: 'Mobile',
+            }
+        },
+        ScanPropertiesDescription_MobileNotifier: {
+            id: StringId.ScanPropertiesDescription_MobileNotifier, translations: {
+                en: 'Enable the default Mobile Notifier',
+            }
+        },
+        ScanPropertiesCaption_SmsNotifier: {
+            id: StringId.ScanPropertiesCaption_SmsNotifier, translations: {
+                en: 'SMS',
+            }
+        },
+        ScanPropertiesDescription_SmsNotifier: {
+            id: StringId.ScanPropertiesDescription_SmsNotifier, translations: {
+                en: 'Enable the default SMS notifier',
+            }
+        },
+        ScanPropertiesCaption_EmailNotifier: {
+            id: StringId.ScanPropertiesCaption_EmailNotifier, translations: {
+                en: 'Email',
+            }
+        },
+        ScanPropertiesDescription_EmailNotifier: {
+            id: StringId.ScanPropertiesDescription_EmailNotifier, translations: {
+                en: 'Enable the default Email notifier',
+            }
+        },
+        ScanPropertiesCaption_MotifNotifier: {
+            id: StringId.ScanPropertiesCaption_MotifNotifier, translations: {
+                en: 'Motif',
+            }
+        },
+        ScanPropertiesDescription_MotifNotifier: {
+            id: StringId.ScanPropertiesDescription_MotifNotifier, translations: {
+                en: 'Allow Motif to receive notifications',
+            }
+        },
+        ScanPropertiesCaption_AllNotifiers: {
+            id: StringId.ScanPropertiesCaption_AllNotifiers, translations: {
+                en: 'All',
+            }
+        },
+        ScanPropertiesDescription_AllNotifiers: {
+            id: StringId.ScanPropertiesDescription_AllNotifiers, translations: {
+                en: 'All notifiers enabled for this scan',
+            }
+        },
+        ScanPropertiesCaption_MinimumStableTime: {
+            id: StringId.ScanPropertiesCaption_MinimumStableTime, translations: {
+                en: 'Minimum stable time',
+            }
+        },
+        ScanPropertiesDescription_MinimumStableTime: {
+            id: StringId.ScanPropertiesDescription_MinimumStableTime, translations: {
+                en: 'The minimum amount of time (in seconds) a scan must match before a notification can be sent',
+            }
+        },
+        ScanPropertiesCaption_MinimumElapsedTime: {
+            id: StringId.ScanPropertiesCaption_MinimumElapsedTime, translations: {
+                en: 'Minimum elapsed time',
+            }
+        },
+        ScanPropertiesDescription_MinimumElapsedTime: {
+            id: StringId.ScanPropertiesDescription_MinimumElapsedTime, translations: {
+                en: 'The minimum amount of time since the last notification before a new one can be sent',
             }
         },
     } as const;

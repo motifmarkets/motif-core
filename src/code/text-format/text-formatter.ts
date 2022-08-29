@@ -374,6 +374,9 @@ export class TextFormatter {
     formatDayTradesDataItemRecordTypeId(value: DayTradesDataItem.Record.TypeId) {
         return DayTradesDataItem.Record.Type.idToDisplay(value);
     }
+    formatScanCriteriaTypeId(value: Scan.CriteriaTypeId) {
+        return Scan.CriteriaType.idToDisplay(value);
+    }
     formatScanTargetTypeId(value: Scan.TargetTypeId) {
         return Scan.TargetType.idToDisplay(value);
     }
@@ -643,6 +646,8 @@ export class TextFormatter {
                 return this.formatDeliveryBasisIdMyxLitIvemAttribute((renderValue as EnumRenderValue).definedData);
             case RenderValue.TypeId.DayTradesDataItemRecordTypeId:
                 return this.formatDayTradesDataItemRecordTypeId((renderValue as EnumRenderValue).definedData);
+            case RenderValue.TypeId.ScanCriteriaTypeId:
+                return this.formatScanCriteriaTypeId((renderValue as EnumRenderValue).definedData);
             case RenderValue.TypeId.ScanTargetTypeId:
                 return this.formatScanTargetTypeId((renderValue as EnumRenderValue).definedData);
             case RenderValue.TypeId.ScanModifiedStatusId:

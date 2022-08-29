@@ -104,6 +104,11 @@ export function isDecimalGreaterThan(subject: Decimal, other: Decimal) {
 }
 
 /** @public */
+export function isDecimalLessThan(subject: Decimal, other: Decimal) {
+    return subject.lessThan(other);
+}
+
+/** @public */
 export function ifDefined<U, T>(value: U | undefined, fn: (x: U) => T): T | undefined {
     return (value === undefined) ? undefined : fn(value);
 }

@@ -4842,6 +4842,17 @@ export function createNumberGroupCharRemoveRegex(groupChar: string | undefined):
 // @public (undocumented)
 export function createRandomUrlSearch(): string;
 
+// Warning: (ae-missing-release-tag) "CriteriaTypeIdScansGridField" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export class CriteriaTypeIdScansGridField extends ScansGridField {
+    constructor();
+    // (undocumented)
+    static readonly fieldStateDefinition: ScansGridField.FieldStateDefinition;
+    // (undocumented)
+    getValue(record: Scan): RenderValue;
+}
+
 // Warning: (ae-missing-release-tag) "Currency" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -11109,6 +11120,9 @@ export function isDecimalEqual(left: Decimal, right: Decimal): boolean;
 
 // @public (undocumented)
 export function isDecimalGreaterThan(subject: Decimal, other: Decimal): boolean;
+
+// @public (undocumented)
+export function isDecimalLessThan(subject: Decimal, other: Decimal): boolean;
 
 // @public (undocumented)
 export function isDigitCharCode(charCode: number): boolean;
@@ -18379,7 +18393,7 @@ export namespace RenderValue {
         // (undocumented)
         ColorSettingsItemStateId = 29,
         // (undocumented)
-        CountAndXrefs = 68,
+        CountAndXrefs = 69,
         // (undocumented)
         CurrencyId = 37,
         // (undocumented)
@@ -18411,7 +18425,7 @@ export namespace RenderValue {
         // (undocumented)
         Integer = 3,
         // (undocumented)
-        IntegerArray = 57,
+        IntegerArray = 58,
         // (undocumented)
         IsIndex = 21,
         // (undocumented)
@@ -18427,13 +18441,13 @@ export namespace RenderValue {
         // (undocumented)
         MarketBoardId = 34,
         // (undocumented)
-        MarketBoardIdArray = 58,
+        MarketBoardIdArray = 59,
         // (undocumented)
         MarketClassificationIdMyxLitIvemAttribute = 51,
         // (undocumented)
         MarketId = 27,
         // (undocumented)
-        MarketIdArray = 62,
+        MarketIdArray = 63,
         // (undocumented)
         Matched = 25,
         // (undocumented)
@@ -18449,9 +18463,9 @@ export namespace RenderValue {
         // (undocumented)
         OrderSideId = 39,
         // (undocumented)
-        OrderStatusAllowIdArray = 63,
+        OrderStatusAllowIdArray = 64,
         // (undocumented)
-        OrderStatusReasonIdArray = 64,
+        OrderStatusReasonIdArray = 65,
         // (undocumented)
         OrderTriggerTypeId = 45,
         // (undocumented)
@@ -18461,19 +18475,21 @@ export namespace RenderValue {
         // (undocumented)
         Price = 6,
         // (undocumented)
-        PriceAndHasUndisclosed = 66,
+        PriceAndHasUndisclosed = 67,
         // (undocumented)
         PriceOrRemainder = 19,
         // (undocumented)
-        PriceOrRemainderAndHasUndisclosed = 67,
+        PriceOrRemainderAndHasUndisclosed = 68,
         // (undocumented)
         RoutedIvemId = 18,
         // (undocumented)
-        ScanModifiedStatusId = 55,
+        ScanCriteriaTypeId = 54,
         // (undocumented)
-        ScanTargetTypeId = 54,
+        ScanModifiedStatusId = 56,
         // (undocumented)
-        ShortSellTypeIdArrayMyxLitIvemAttribute = 65,
+        ScanTargetTypeId = 55,
+        // (undocumented)
+        ShortSellTypeIdArrayMyxLitIvemAttribute = 66,
         // (undocumented)
         SourceTzOffsetDate = 13,
         // (undocumented)
@@ -18485,7 +18501,7 @@ export namespace RenderValue {
         // (undocumented)
         String = 0,
         // (undocumented)
-        StringArray = 56,
+        StringArray = 57,
         // (undocumented)
         Time = 9,
         // (undocumented)
@@ -18493,9 +18509,9 @@ export namespace RenderValue {
         // (undocumented)
         TradeAffectsIdArray = 30,
         // (undocumented)
-        TradeFlagIdArray = 60,
+        TradeFlagIdArray = 61,
         // (undocumented)
-        TradingStateAllowIdArray = 61,
+        TradingStateAllowIdArray = 62,
         // (undocumented)
         TradingStateReasonId = 26,
         // (undocumented)
@@ -18507,7 +18523,7 @@ export namespace RenderValue {
         // (undocumented)
         Undisclosed = 22,
         // (undocumented)
-        ZenithSubscriptionDataIdArray = 59
+        ZenithSubscriptionDataIdArray = 60
     }
     const // (undocumented)
     advertAttribute: AdvertAttribute;
@@ -18728,6 +18744,8 @@ export class Scan {
     // (undocumented)
     criteria: BooleanScanCriteriaNode;
     // (undocumented)
+    criteriaTypeId: Scan.CriteriaTypeId;
+    // (undocumented)
     description: string;
     // (undocumented)
     history: BooleanScanCriteriaNode[];
@@ -18744,9 +18762,9 @@ export class Scan {
     // (undocumented)
     name: string;
     // (undocumented)
-    targetLitIvemIds: LitIvemId[];
+    targetLitIvemIds: LitIvemId[] | undefined;
     // (undocumented)
-    targetMarkets: MarketId[];
+    targetMarkets: MarketId[] | undefined;
     // (undocumented)
     targetTypeId: Scan.TargetTypeId;
     // (undocumented)
@@ -18760,9 +18778,73 @@ export class Scan {
 // @public (undocumented)
 export namespace Scan {
     // (undocumented)
+    export namespace CriteriaType {
+        // (undocumented)
+        export function getAllIds(): CriteriaTypeId[];
+        const // (undocumented)
+        idCount: number;
+        // (undocumented)
+        export type Id = CriteriaTypeId;
+        // (undocumented)
+        export function idToDisplay(id: Id): string;
+        // (undocumented)
+        export function idToDisplayId(id: Id): StringId;
+        // (undocumented)
+        export function initialise(): void;
+    }
+    // (undocumented)
+    export const enum CriteriaTypeId {
+        // (undocumented)
+        Custom = 0,
+        // (undocumented)
+        PriceGreaterThanValue = 1,
+        // (undocumented)
+        PriceLessThanValue = 2,
+        // (undocumented)
+        TodayPriceDecreaseGreaterThanPercentage = 4,
+        // (undocumented)
+        TodayPriceIncreaseGreaterThanPercentage = 3
+    }
+    // (undocumented)
+    export class CriteriaTypeIdRenderValue extends EnumRenderValue {
+        constructor(data: CriteriaTypeId | undefined);
+    }
+    // (undocumented)
+    export namespace CriteriaViewType {
+        // (undocumented)
+        export function getAllIds(): CriteriaViewTypeId[];
+        const // (undocumented)
+        idCount: number;
+        // (undocumented)
+        export type Id = CriteriaViewTypeId;
+        // (undocumented)
+        export function idToDescription(id: Id): string;
+        // (undocumented)
+        export function idToDescriptionId(id: Id): StringId;
+        // (undocumented)
+        export function idToDisplay(id: Id): string;
+        // (undocumented)
+        export function idToDisplayId(id: Id): StringId;
+        // (undocumented)
+        export function initialise(): void;
+    }
+    // (undocumented)
+    export const enum CriteriaViewTypeId {
+        // (undocumented)
+        Default = 0,
+        // (undocumented)
+        Formula = 2,
+        // (undocumented)
+        Predefined = 1,
+        // (undocumented)
+        Zenith = 3
+    }
+    // (undocumented)
     export namespace Field {
         // (undocumented)
         export const enum Id {
+            // (undocumented)
+            CriteriaTypeId = 8,
             // (undocumented)
             Description = 3,
             // (undocumented)
@@ -18772,7 +18854,7 @@ export namespace Scan {
             // (undocumented)
             Matched = 7,
             // (undocumented)
-            ModifiedStatusId = 8,
+            ModifiedStatusId = 9,
             // (undocumented)
             Name = 2,
             // (undocumented)
@@ -18967,21 +19049,25 @@ export namespace ScansGridField {
     // (undocumented)
     export const enum Id {
         // (undocumented)
+        CriteriaTypeId = 9,
+        // (undocumented)
         Description = 3,
         // (undocumented)
         Id = 0,
         // (undocumented)
         Index = 1,
         // (undocumented)
-        Matched = 7,
+        Matched = 8,
         // (undocumented)
-        ModifiedStatusId = 8,
+        ModifiedStatusId = 10,
         // (undocumented)
         Name = 2,
         // (undocumented)
-        TargetLitIvemIds = 6,
+        TargetLitIvemIds = 7,
         // (undocumented)
-        TargetMarkets = 5,
+        TargetMarkets = 6,
+        // (undocumented)
+        Targets = 5,
         // (undocumented)
         TargetTypeId = 4
     }
@@ -19053,9 +19139,28 @@ export namespace ScansService {
     // (undocumented)
     export type CorrectnessChangeEventHandler = (this: void) => void;
     // (undocumented)
+    export interface InitialScan {
+        // (undocumented)
+        criteriaTypeId: Scan.CriteriaTypeId;
+        // (undocumented)
+        matched: boolean;
+        // (undocumented)
+        modifiedStatusId: Scan.ModifiedStatusId;
+        // (undocumented)
+        name: string;
+        // (undocumented)
+        targetLitIvemIds: LitIvemId[] | undefined;
+        // (undocumented)
+        targetMarkets: MarketId[] | undefined;
+        // (undocumented)
+        targetTypeId: Scan.TargetTypeId;
+    }
+    // (undocumented)
     export type ListChangeEventHandler = (this: void, listChangeTypeId: UsableListChangeTypeId, index: Integer, count: Integer) => void;
     // (undocumented)
     export type RecordChangeEventHandler = (this: void, index: Integer) => void;
+    const // (undocumented)
+    initialScans: InitialScan[];
 }
 
 // Warning: (ae-internal-missing-underscore) The name "ScansStaticInitialise" should be prefixed with an underscore because the declaration is marked as @internal
@@ -23051,29 +23156,103 @@ export const enum StringId {
     // (undocumented)
     SaveWatchlistTitle = 807,
     // (undocumented)
+    ScanCriteriaTypeDisplay_Custom = 1808,
+    // (undocumented)
+    ScanCriteriaTypeDisplay_PriceGreaterThanValue = 1809,
+    // (undocumented)
+    ScanCriteriaTypeDisplay_PriceLessThanValue = 1810,
+    // (undocumented)
+    ScanCriteriaTypeDisplay_TodayPriceDecreaseGreaterThanPercentage = 1812,
+    // (undocumented)
+    ScanCriteriaTypeDisplay_TodayPriceIncreaseGreaterThanPercentage = 1811,
+    // (undocumented)
+    ScanCriteriaViewTypeDescription_Default = 1814,
+    // (undocumented)
+    ScanCriteriaViewTypeDescription_Formula = 1818,
+    // (undocumented)
+    ScanCriteriaViewTypeDescription_Predefined = 1816,
+    // (undocumented)
+    ScanCriteriaViewTypeDescription_Zenith = 1820,
+    // (undocumented)
+    ScanCriteriaViewTypeDisplay_Default = 1813,
+    // (undocumented)
+    ScanCriteriaViewTypeDisplay_Formula = 1817,
+    // (undocumented)
+    ScanCriteriaViewTypeDisplay_Predefined = 1815,
+    // (undocumented)
+    ScanCriteriaViewTypeDisplay_Zenith = 1819,
+    // (undocumented)
     ScanModifiedStatusDisplay_Conflict = 1805,
     // (undocumented)
     ScanModifiedStatusDisplay_Modified = 1804,
     // (undocumented)
     ScanModifiedStatusDisplay_Unmodified = 1803,
     // (undocumented)
-    ScansGridHeading_Description = 1811,
+    ScanPropertiesCaption_AllNotifiers = 1848,
     // (undocumented)
-    ScansGridHeading_Id = 1808,
+    ScanPropertiesCaption_Description = 1834,
     // (undocumented)
-    ScansGridHeading_Index = 1809,
+    ScanPropertiesCaption_EmailNotifier = 1844,
     // (undocumented)
-    ScansGridHeading_Matched = 1815,
+    ScanPropertiesCaption_MinimumElapsedTime = 1852,
     // (undocumented)
-    ScansGridHeading_ModifiedStatusId = 1816,
+    ScanPropertiesCaption_MinimumStableTime = 1850,
     // (undocumented)
-    ScansGridHeading_Name = 1810,
+    ScanPropertiesCaption_MobileNotifier = 1840,
     // (undocumented)
-    ScansGridHeading_TargetLitIvemIds = 1814,
+    ScanPropertiesCaption_MotifNotifier = 1846,
     // (undocumented)
-    ScansGridHeading_TargetMarkets = 1813,
+    ScanPropertiesCaption_Name = 1832,
     // (undocumented)
-    ScansGridHeading_TargetTypeId = 1812,
+    ScanPropertiesCaption_SmsNotifier = 1842,
+    // (undocumented)
+    ScanPropertiesCaption_Type = 1836,
+    // (undocumented)
+    ScanPropertiesCaption_View = 1838,
+    // (undocumented)
+    ScanPropertiesDescription_AllNotifiers = 1849,
+    // (undocumented)
+    ScanPropertiesDescription_EmailNotifier = 1845,
+    // (undocumented)
+    ScanPropertiesDescription_MinimumElapsedTime = 1853,
+    // (undocumented)
+    ScanPropertiesDescription_MinimumStableTime = 1851,
+    // (undocumented)
+    ScanPropertiesDescription_MobileNotifier = 1841,
+    // (undocumented)
+    ScanPropertiesDescription_MotifNotifier = 1847,
+    // (undocumented)
+    ScanPropertiesDescription_SmsNotifier = 1843,
+    // (undocumented)
+    ScanPropertiesTitle_Description = 1835,
+    // (undocumented)
+    ScanPropertiesTitle_Name = 1833,
+    // (undocumented)
+    ScanPropertiesTitle_Type = 1837,
+    // (undocumented)
+    ScanPropertiesTitle_View = 1839,
+    // (undocumented)
+    ScansGridHeading_CriteriaTypeId = 1830,
+    // (undocumented)
+    ScansGridHeading_Description = 1824,
+    // (undocumented)
+    ScansGridHeading_Id = 1821,
+    // (undocumented)
+    ScansGridHeading_Index = 1822,
+    // (undocumented)
+    ScansGridHeading_Matched = 1829,
+    // (undocumented)
+    ScansGridHeading_ModifiedStatusId = 1831,
+    // (undocumented)
+    ScansGridHeading_Name = 1823,
+    // (undocumented)
+    ScansGridHeading_TargetLitIvemIds = 1828,
+    // (undocumented)
+    ScansGridHeading_TargetMarkets = 1827,
+    // (undocumented)
+    ScansGridHeading_Targets = 1826,
+    // (undocumented)
+    ScansGridHeading_TargetTypeId = 1825,
     // (undocumented)
     ScanTargetTypeDisplay_Markets = 1806,
     // (undocumented)
@@ -26431,6 +26610,17 @@ export class TargetMarketsScansGridField extends ScansGridField {
     getValue(record: Scan): RenderValue;
 }
 
+// Warning: (ae-missing-release-tag) "TargetsScansGridField" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export class TargetsScansGridField extends ScansGridField {
+    constructor();
+    // (undocumented)
+    static readonly fieldStateDefinition: ScansGridField.FieldStateDefinition;
+    // (undocumented)
+    getValue(record: Scan): RenderValue;
+}
+
 // Warning: (ae-missing-release-tag) "TargetTypeIdScansGridField" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -26688,6 +26878,8 @@ export class TextFormatter {
     formatRenderValue(renderValue: RenderValue): string;
     // (undocumented)
     formatRoutedIvemId(value: RoutedIvemId): string;
+    // (undocumented)
+    formatScanCriteriaTypeId(value: Scan.CriteriaTypeId): string;
     // (undocumented)
     formatScanModifiedStatusId(value: Scan.ModifiedStatusId): string;
     // (undocumented)

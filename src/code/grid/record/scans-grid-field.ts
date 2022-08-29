@@ -31,6 +31,7 @@ export namespace ScansGridField {
         Name,
         Description,
         TargetTypeId,
+        Targets,
         TargetMarkets,
         TargetLitIvemIds,
         Matched,
@@ -44,9 +45,11 @@ export namespace ScansGridField {
         Id.Name,
         Id.Description,
         Id.TargetTypeId,
+        Id.Targets,
         Id.TargetMarkets,
         Id.TargetLitIvemIds,
         Id.Matched,
+        Id.CriteriaTypeId,
         Id.ModifiedStatusId,
     ];
 
@@ -62,9 +65,11 @@ export namespace ScansGridField {
             case Id.Name: return new NameScansGridField();
             case Id.Description: return new DescriptionScansGridField();
             case Id.TargetTypeId: return new TargetTypeIdScansGridField();
+            case Id.Targets: return new TargetsScansGridField();
             case Id.TargetMarkets: return new TargetMarketsScansGridField();
             case Id.TargetLitIvemIds: return new TargetLitIvemIdsScansGridField();
             case Id.Matched: return new MatchedScansGridField();
+            case Id.CriteriaTypeId: return new CriteriaTypeIdScansGridField();
             case Id.ModifiedStatusId: return new ModifiedStatusIdScansGridField();
             default:
                 throw new UnreachableCaseError('SGFCF97133', id);
@@ -163,12 +168,40 @@ export class TargetTypeIdScansGridField extends ScansGridField {
             ScansGridField.Id.TargetTypeId,
             Scan.Field.idToName(Scan.Field.Id.TargetTypeId),
             TargetTypeIdScansGridField.fieldStateDefinition,
-            true,
+            false,
         )
     }
 
     override getValue(record: Scan): RenderValue {
         return new Scan.TargetTypeIdRenderValue(record.targetTypeId);
+    }
+}
+
+export class TargetsScansGridField extends ScansGridField {
+    static readonly fieldStateDefinition: ScansGridField.FieldStateDefinition = {
+        headerId: StringId.ScansGridHeading_Targets,
+        alignment: 'left',
+    };
+
+    constructor() {
+        super(
+            ScansGridField.Id.Targets,
+            'Targets',
+            TargetsScansGridField.fieldStateDefinition,
+            true,
+        )
+    }
+
+    override getValue(record: Scan): RenderValue {
+        if (record.targetLitIvemIds !== undefined) {
+            return new LitIvemIdArrayRenderValue(record.targetLitIvemIds);
+        } else {
+            if (record.targetMarkets !== undefined) {
+                return new MarketIdArrayRenderValue(record.targetMarkets);
+            } else {
+                return new StringRenderValue(undefined);
+            }
+        }
     }
 }
 
@@ -183,7 +216,7 @@ export class TargetMarketsScansGridField extends ScansGridField {
             ScansGridField.Id.TargetMarkets,
             Scan.Field.idToName(Scan.Field.Id.TargetMarkets),
             TargetMarketsScansGridField.fieldStateDefinition,
-            true,
+            false,
         )
     }
 
@@ -203,7 +236,7 @@ export class TargetLitIvemIdsScansGridField extends ScansGridField {
             ScansGridField.Id.TargetLitIvemIds,
             Scan.Field.idToName(Scan.Field.Id.TargetLitIvemIds),
             TargetLitIvemIdsScansGridField.fieldStateDefinition,
-            true,
+            false,
         )
     }
 
@@ -242,13 +275,13 @@ export class CriteriaTypeIdScansGridField extends ScansGridField {
         super(
             ScansGridField.Id.CriteriaTypeId,
             Scan.Field.idToName(Scan.Field.Id.CriteriaTypeId),
-            MatchedScansGridField.fieldStateDefinition,
+            CriteriaTypeIdScansGridField.fieldStateDefinition,
             true,
         )
     }
 
     override getValue(record: Scan): RenderValue {
-        return new CriteriaTypeIdRenderValue(record.criteriaTypeId);
+        return new Scan.CriteriaTypeIdRenderValue(record.criteriaTypeId);
     }
 }
 

@@ -4,7 +4,7 @@
  * License: motionite.trade/license/motif
  */
 
-import { AdiService, LitIvemId, MarketId } from '../adi/adi-internal-api';
+import { AdiService, DataEnvironmentId, LitIvemId, MarketId } from '../adi/adi-internal-api';
 import { MultiEvent } from '../sys/sys-internal-api';
 import { Integer, UsableListChangeTypeId } from '../sys/types';
 import { Scan } from './scan';
@@ -18,17 +18,21 @@ export class ScansService {
     private _badnessChangeMultiEvent = new MultiEvent<ScansService.BadnessChangeEventHandler>();
 
     constructor(private readonly _adi: AdiService) {
-        const scan = new Scan();
-        scan.id = '1';
-        scan.category = 'cat1';
-        scan.name = 'name1'
-        scan.description = 'description1'
-        scan.index = 0;
-        scan.targetTypeId = Scan.TargetTypeId.Symbols;
-        scan.targetLitIvemIds = [LitIvemId.createFromCodeMarket('BHP', MarketId.AsxTradeMatch)];
-        scan.matched = false;
-        scan.modifiedStatusId = Scan.ModifiedStatusId.Unmodified;
-        this._scans.push(scan);
+        const initialCount = ScansService.initialScans.length;
+        for (let i = 0; i < initialCount; i++) {
+            const initialScan = ScansService.initialScans[i];
+            const scan = new Scan();
+            scan.id = i.toString();
+            scan.index = i;
+            scan.name = initialScan.name;
+            scan.targetTypeId = initialScan.targetTypeId;
+            scan.targetLitIvemIds = initialScan.targetLitIvemIds;
+            scan.targetMarkets = initialScan.targetMarkets;
+            scan.matched = initialScan.matched;
+            scan.criteriaTypeId = initialScan.criteriaTypeId;
+            scan.modifiedStatusId = initialScan.modifiedStatusId;
+            this._scans.push(scan);
+        }
     }
 
     start() {
@@ -88,4 +92,66 @@ export namespace ScansService {
     export type RecordChangeEventHandler = (this: void, index: Integer) => void;
     export type CorrectnessChangeEventHandler = (this: void) => void;
     export type BadnessChangeEventHandler = (this: void) => void;
+
+
+    export interface InitialScan {
+        name: string;
+        targetTypeId: Scan.TargetTypeId;
+        targetMarkets: MarketId[] | undefined;
+        targetLitIvemIds: LitIvemId[] | undefined;
+        matched: boolean;
+        criteriaTypeId: Scan.CriteriaTypeId;
+        modifiedStatusId: Scan.ModifiedStatusId;
+    }
+
+    export const initialScans: InitialScan[] = [
+        {
+            name: 'BHP Last Price > 50',
+            targetTypeId: Scan.TargetTypeId.Symbols,
+            targetMarkets: undefined,
+            targetLitIvemIds: [new LitIvemId('BHP', MarketId.AsxTradeMatch, DataEnvironmentId.Sample)],
+            matched: false,
+            criteriaTypeId: Scan.CriteriaTypeId.PriceGreaterThanValue,
+            modifiedStatusId: Scan.ModifiedStatusId.Unmodified,
+        },
+        {
+            name: 'CBA Bid price increase > 10%',
+            targetTypeId: Scan.TargetTypeId.Symbols,
+            targetMarkets: undefined,
+            targetLitIvemIds: [new LitIvemId('CBA', MarketId.AsxTradeMatch, DataEnvironmentId.Sample)],
+            matched: false,
+            criteriaTypeId: Scan.CriteriaTypeId.TodayPriceIncreaseGreaterThanPercentage,
+            modifiedStatusId: Scan.ModifiedStatusId.Unmodified,
+        },
+        {
+            name: 'BHP or RIO Bid price increase > 10%',
+            targetTypeId: Scan.TargetTypeId.Symbols,
+            targetMarkets: undefined,
+            targetLitIvemIds: [
+                new LitIvemId('BHP', MarketId.AsxTradeMatch, DataEnvironmentId.Sample),
+                new LitIvemId('RIO', MarketId.AsxTradeMatch, DataEnvironmentId.Sample),
+            ],
+            matched: false,
+            criteriaTypeId: Scan.CriteriaTypeId.TodayPriceIncreaseGreaterThanPercentage,
+            modifiedStatusId: Scan.ModifiedStatusId.Unmodified,
+        },
+        {
+            name: 'CBA bid price > last price',
+            targetTypeId: Scan.TargetTypeId.Symbols,
+            targetMarkets: undefined,
+            targetLitIvemIds: [new LitIvemId('CBA', MarketId.AsxTradeMatch, DataEnvironmentId.Sample)],
+            matched: false,
+            criteriaTypeId: Scan.CriteriaTypeId.Custom,
+            modifiedStatusId: Scan.ModifiedStatusId.Unmodified,
+        },
+        {
+            name: 'Any bank has auction price 10% > last price',
+            targetTypeId: Scan.TargetTypeId.Markets,
+            targetMarkets: [MarketId.AsxTradeMatch],
+            targetLitIvemIds: undefined,
+            matched: false,
+            criteriaTypeId: Scan.CriteriaTypeId.Custom,
+            modifiedStatusId: Scan.ModifiedStatusId.Unmodified,
+        },
+    ];
 }
