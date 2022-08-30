@@ -27,7 +27,7 @@ export class ScansService {
             scan.name = initialScan.name;
             scan.targetTypeId = initialScan.targetTypeId;
             scan.targetLitIvemIds = initialScan.targetLitIvemIds;
-            scan.targetMarkets = initialScan.targetMarkets;
+            scan.targetMarketIds = initialScan.targetMarkets;
             scan.matched = initialScan.matched;
             scan.criteriaTypeId = initialScan.criteriaTypeId;
             scan.modifiedStatusId = initialScan.modifiedStatusId;
@@ -97,8 +97,8 @@ export namespace ScansService {
     export interface InitialScan {
         name: string;
         targetTypeId: Scan.TargetTypeId;
-        targetMarkets: MarketId[] | undefined;
-        targetLitIvemIds: LitIvemId[] | undefined;
+        targetMarkets: readonly MarketId[] | undefined;
+        targetLitIvemIds: readonly LitIvemId[] | undefined;
         matched: boolean;
         criteriaTypeId: Scan.CriteriaTypeId;
         modifiedStatusId: Scan.ModifiedStatusId;

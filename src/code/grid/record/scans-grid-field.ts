@@ -196,8 +196,8 @@ export class TargetsScansGridField extends ScansGridField {
         if (record.targetLitIvemIds !== undefined) {
             return new LitIvemIdArrayRenderValue(record.targetLitIvemIds);
         } else {
-            if (record.targetMarkets !== undefined) {
-                return new MarketIdArrayRenderValue(record.targetMarkets);
+            if (record.targetMarketIds !== undefined) {
+                return new MarketIdArrayRenderValue(record.targetMarketIds);
             } else {
                 return new StringRenderValue(undefined);
             }
@@ -221,7 +221,7 @@ export class TargetMarketsScansGridField extends ScansGridField {
     }
 
     override getValue(record: Scan): RenderValue {
-        return new MarketIdArrayRenderValue(record.targetMarkets);
+        return new MarketIdArrayRenderValue(record.targetMarketIds);
     }
 }
 

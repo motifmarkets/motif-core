@@ -22,8 +22,8 @@ export class Scan {
     category: string;
     isWritable: string;
     targetTypeId: Scan.TargetTypeId;
-    targetMarkets: MarketId[] | undefined;
-    targetLitIvemIds: LitIvemId[] | undefined;
+    targetMarketIds: readonly MarketId[] | undefined;
+    targetLitIvemIds: readonly LitIvemId[] | undefined;
     matched: boolean;
     unmodifiedVersion: number;
     criteriaTypeId: Scan.CriteriaTypeId;
@@ -100,83 +100,6 @@ export namespace Scan {
 
         export function idToDisplay(id: Id): string {
             return Strings[idToDisplayId(id)];
-        }
-    }
-
-    export const enum CriteriaViewTypeId {
-        Default,
-        Predefined,
-        Formula,
-        Zenith,
-    }
-
-    export namespace CriteriaViewType {
-        export type Id = CriteriaViewTypeId;
-
-        interface Info {
-            readonly id: Id;
-            readonly name: string;
-            readonly displayId: StringId;
-            readonly descriptionId: StringId;
-        }
-
-        type InfosObject = { [id in keyof typeof CriteriaViewTypeId]: Info };
-
-        const infosObject: InfosObject = {
-            Default: {
-                id: CriteriaViewTypeId.Default,
-                name: 'Default',
-                displayId: StringId.ScanCriteriaViewTypeDisplay_Default,
-                descriptionId: StringId.ScanCriteriaViewTypeDescription_Default,
-            },
-            Predefined: {
-                id: CriteriaViewTypeId.Predefined,
-                name: 'Predefined',
-                displayId: StringId.ScanCriteriaViewTypeDisplay_Predefined,
-                descriptionId: StringId.ScanCriteriaViewTypeDescription_Predefined,
-            },
-            Formula: {
-                id: CriteriaViewTypeId.Formula,
-                name: 'Formula',
-                displayId: StringId.ScanCriteriaViewTypeDisplay_Formula,
-                descriptionId: StringId.ScanCriteriaViewTypeDescription_Formula,
-            },
-            Zenith: {
-                id: CriteriaViewTypeId.Zenith,
-                name: 'Zenith',
-                displayId: StringId.ScanCriteriaViewTypeDisplay_Zenith,
-                descriptionId: StringId.ScanCriteriaViewTypeDescription_Zenith,
-            },
-        } as const;
-
-        export const idCount = Object.keys(infosObject).length;
-        const infos = Object.values(infosObject);
-
-        export function initialise() {
-            const outOfOrderIdx = infos.findIndex((info: Info, index: Integer) => info.id !== index);
-            if (outOfOrderIdx >= 0) {
-                throw new EnumInfoOutOfOrderError('ScanPropertiesNgComponent.CriteriaViewTypeId', outOfOrderIdx, infos[outOfOrderIdx].name);
-            }
-        }
-
-        export function getAllIds() {
-            return infos.map(info => info.id);
-        }
-
-        export function idToDisplayId(id: Id): StringId {
-            return infos[id].displayId;
-        }
-
-        export function idToDisplay(id: Id): string {
-            return Strings[idToDisplayId(id)];
-        }
-
-        export function idToDescriptionId(id: Id): StringId {
-            return infos[id].descriptionId;
-        }
-
-        export function idToDescription(id: Id): string {
-            return Strings[idToDescriptionId(id)];
         }
     }
 
@@ -389,6 +312,5 @@ export namespace ScanModule {
         Scan.CriteriaType.initialise();
         Scan.ModifiedStatus.initialise();
         Scan.TargetType.initialise();
-        Scan.CriteriaViewType.initialise();
     }
 }

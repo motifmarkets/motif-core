@@ -184,6 +184,9 @@ export const enum StringId {
     Undisclosed,
     Physical,
     Matched,
+    Criteria,
+    Targets,
+    Notifiers,
     ExecuteCommandTitle,
     ApplySymbolCaption,
     ApplySymbolTitle,
@@ -1862,6 +1865,26 @@ export const enum StringId {
     ScanPropertiesDescription_MinimumStableTime,
     ScanPropertiesCaption_MinimumElapsedTime,
     ScanPropertiesDescription_MinimumElapsedTime,
+    ScanTargetsCaption_TargetType,
+    ScanTargetsDescription_TargetType,
+    ScanTargetsCaption_SingleSymbol,
+    ScanTargetsDescription_SingleSymbol,
+    ScanTargetsCaption_SingleMarket,
+    ScanTargetsDescription_SingleMarket,
+    ScanTargetsCaption_MultiMarket,
+    ScanTargetsDescription_MultiMarket,
+    ScanTargetsTargetSubTypeIdDisplay_SingleSymbol,
+    ScanTargetsTargetSubTypeIdDescription_SingleSymbol,
+    ScanTargetsTargetSubTypeIdDisplay_MultiSymbol,
+    ScanTargetsTargetSubTypeIdDescription_MultiSymbol,
+    ScanTargetsTargetSubTypeIdDisplay_SingleMarket,
+    ScanTargetsTargetSubTypeIdDescription_SingleMarket,
+    ScanTargetsTargetSubTypeIdDisplay_MultiMarket,
+    ScanTargetsTargetSubTypeIdDescription_MultiMarket,
+    ScanCriteriaCaption_DefaultView,
+    ScanCriteriaDescription_DefaultView,
+    ScanCriteriaCaption_ViewType,
+    ScanCriteriaDescription_ViewType,
 }
 
 /** @public */
@@ -2781,6 +2804,21 @@ export namespace I18nStrings {
         Matched: {
             id: StringId.Matched, translations: {
                 en: 'Matched',
+            }
+        },
+        Criteria: {
+            id: StringId.Criteria, translations: {
+                en: 'Criteria',
+            }
+        },
+        Targets: {
+            id: StringId.Targets, translations: {
+                en: 'Targets',
+            }
+        },
+        Notifiers: {
+            id: StringId.Notifiers, translations: {
+                en: 'Notifiers',
             }
         },
         ExecuteCommandTitle: {
@@ -11177,6 +11215,107 @@ export namespace I18nStrings {
                 en: 'The minimum amount of time since the last notification before a new one can be sent',
             }
         },
+        ScanTargetsCaption_TargetType: {
+            id: StringId.ScanTargetsCaption_TargetType, translations: {
+                en: 'Target type',
+            }
+        },
+        ScanTargetsDescription_TargetType: {
+            id: StringId.ScanTargetsDescription_TargetType, translations: {
+                en: 'Specify whether a scan should target symbols or entire markets',
+            }
+        },
+        ScanTargetsCaption_SingleSymbol: {
+            id: StringId.ScanTargetsCaption_SingleSymbol, translations: {
+                en: 'Symbol',
+            }
+        },
+        ScanTargetsDescription_SingleSymbol: {
+            id: StringId.ScanTargetsDescription_SingleSymbol, translations: {
+                en: 'Specify the symbol a scan will target',
+            }
+        },
+        ScanTargetsCaption_SingleMarket: {
+            id: StringId.ScanTargetsCaption_SingleMarket, translations: {
+                en: 'Market',
+            }
+        },
+        ScanTargetsDescription_SingleMarket: {
+            id: StringId.ScanTargetsDescription_SingleMarket, translations: {
+                en: 'Specify the market in which the scan will target all symbols',
+            }
+        },
+        ScanTargetsCaption_MultiMarket: {
+            id: StringId.ScanTargetsCaption_MultiMarket, translations: {
+                en: 'Markets',
+            }
+        },
+        ScanTargetsDescription_MultiMarket: {
+            id: StringId.ScanTargetsDescription_MultiMarket, translations: {
+                en: 'Specify multiple markets in all of which, the scan will target all symbols',
+            }
+        },
+        ScanTargetsTargetSubTypeIdDisplay_SingleSymbol: {
+            id: StringId.ScanTargetsTargetSubTypeIdDisplay_SingleSymbol, translations: {
+                en: 'Single symbol',
+            }
+        },
+        ScanTargetsTargetSubTypeIdDescription_SingleSymbol: {
+            id: StringId.ScanTargetsTargetSubTypeIdDescription_SingleSymbol, translations: {
+                en: 'Target a single symbol only',
+            }
+        },
+        ScanTargetsTargetSubTypeIdDisplay_MultiSymbol: {
+            id: StringId.ScanTargetsTargetSubTypeIdDisplay_MultiSymbol, translations: {
+                en: 'Multiple Symbols',
+            }
+        },
+        ScanTargetsTargetSubTypeIdDescription_MultiSymbol: {
+            id: StringId.ScanTargetsTargetSubTypeIdDescription_MultiSymbol, translations: {
+                en: 'Target multiple symbol',
+            }
+        },
+        ScanTargetsTargetSubTypeIdDisplay_SingleMarket: {
+            id: StringId.ScanTargetsTargetSubTypeIdDisplay_SingleMarket, translations: {
+                en: 'Single market',
+            }
+        },
+        ScanTargetsTargetSubTypeIdDescription_SingleMarket: {
+            id: StringId.ScanTargetsTargetSubTypeIdDescription_SingleMarket, translations: {
+                en: 'Target all symbols in a single market',
+            }
+        },
+        ScanTargetsTargetSubTypeIdDisplay_MultiMarket: {
+            id: StringId.ScanTargetsTargetSubTypeIdDisplay_MultiMarket, translations: {
+                en: 'Multi market',
+            }
+        },
+        ScanTargetsTargetSubTypeIdDescription_MultiMarket: {
+            id: StringId.ScanTargetsTargetSubTypeIdDescription_MultiMarket, translations: {
+                en: 'Target all symbols in multiple markets',
+            }
+        },
+        ScanCriteriaCaption_DefaultView: {
+            id: StringId.ScanCriteriaCaption_DefaultView, translations: {
+                en: 'Default view',
+            }
+        },
+        ScanCriteriaDescription_DefaultView: {
+            id: StringId.ScanCriteriaDescription_DefaultView, translations: {
+                en: 'Use the default view for the scan\'s criteria',
+            }
+        },
+        ScanCriteriaCaption_ViewType: {
+            id: StringId.ScanCriteriaCaption_ViewType, translations: {
+                en: 'View type',
+            }
+        },
+        ScanCriteriaDescription_ViewType: {
+            id: StringId.ScanCriteriaDescription_ViewType, translations: {
+                en: 'Select how the criteria should be viewed',
+            }
+        },
+
     } as const;
 
     /* eslint-enable max-len */
