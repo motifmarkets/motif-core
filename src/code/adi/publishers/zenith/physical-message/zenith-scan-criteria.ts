@@ -1,99 +1,105 @@
+import { PickEnum } from '../../../../sys/sys-internal-api';
+import { Zenith } from './zenith';
+
 export namespace ZenithScanCriteria {
-    // Due to TypeScript not supporting Circular References in some scenarios, we need a hack types to
-    // work around this issue.  The hack types can be cast to their actual types at run time
+    // Due to TypeScript not supporting Circular References in some scenarios, we need 2 types of
+    // Node declarations.  Unions which exactly define possible node types but cannot be used
+    // in circular references and more general declarations.
 
     export type DateString = string;
 
-    export type Node<NodeType extends keyof ParamTupleMap> = [NodeType, ...ParamTupleMap[NodeType]];
+    export type NodeType = keyof ParamTupleMap;
+
+    export type TupleNode<T extends NodeType> = [T, ...ParamTupleMap[T]];
 
     // Logical Criteria Nodes
-    export type AndNode = Node<"And">;
-    export type OrNode = Node<"Or">;
-    export type NotNode = Node<"Not">;
+    export type AndNode = TupleNode<"And">;
+    export type OrNode = TupleNode<"Or">;
+    export type NotNode = TupleNode<"Not">;
 
     // Matching
-    export type AltCodeNode = Node<"AltCode">;
-    export type AttributeNode = Node<"Attribute">;
-    export type AuctionNode = Node<"Auction">;
-    export type AuctionLastNode = Node<"AuctionLast">;
-    export type AuctionQuantityNode = Node<"AuctionQuantity">;
-    export type BestAskCountNode = Node<"BestAskCount">;
-    export type BestAskPriceNode = Node<"BestAskPrice">;
-    export type BestAskQuantityNode = Node<"BestAskQuantity">;
-    export type BestBidCountNode = Node<"BestBidCount">;
-    export type BestBidPriceNode = Node<"BestBidPrice">;
-    export type BestBidQuantityNode = Node<"BestBidQuantity">;
-    export type BoardNode = Node<"Board">;
-    export type CallOrPutNode = Node<"CallOrPut">;
-    export type CategoryNode = Node<"Category">;
-    export type CFINode = Node<"CFI">;
-    export type ClassNode = Node<"Class">;
-    export type ClosePriceNode = Node<"ClosePrice">;
-    export type CodeNode = Node<"Code">;
-    export type ContractSizeNode = Node<"ContractSize">;
-    export type CurrencyNode = Node<"Currency">;
-    export type DataNode = Node<"Data">;
-    export type DateNode = Node<"Date">;
-    export type ExerciseTypeNode = Node<"ExerciseType">;
-    export type ExchangeNode = Node<"Exchange">;
-    export type ExpiryDateNode = Node<"ExpiryDate">;
-    export type HighPriceNode = Node<"HighPrice">;
-    export type IsIndexNode = Node<"IsIndex">;
-    export type LegNode = Node<"Leg">;
-    export type LastPriceNode = Node<"LastPrice">;
-    export type LotSizeNode = Node<"LotSize">;
-    export type LowPriceNode = Node<"LowPrice">;
-    export type MarketNode = Node<"Market">;
-    export type NameNode = Node<"Name">;
-    export type OpenInterestNode = Node<"OpenInterest">;
-    export type OpenPriceNode = Node<"OpenPrice">;
-    export type PriceNode = Node<"Price">;
-    export type PreviousCloseNode = Node<"PreviousClose">;
-    export type QuotationBasisNode = Node<"QuotationBasis">;
-    export type RemainderNode = Node<"Remainder">;
-    export type ShareIssueNode = Node<"ShareIssue">;
-    export type StateNode = Node<"State">;
-    export type StateAllowsNode = Node<"StateAllows">;
-    export type StatusNoteNode = Node<"StatusNote">;
-    export type StrikePriceNode = Node<"StrikePrice">;
-    export type TradesNode = Node<"Trades">;
-    export type TradingMarketNode = Node<"TradingMarket">;
-    export type ValueTradedNode = Node<"ValueTraded">;
-    export type VolumeNode = Node<"Volume">;
-    export type VWAPNode = Node<"VWAP">;
+    export type AltCodeNode = TupleNode<"AltCode">;
+    export type AttributeNode = TupleNode<"Attribute">;
+    export type AuctionNode = TupleNode<"Auction">;
+    export type AuctionLastNode = TupleNode<"AuctionLast">;
+    export type AuctionQuantityNode = TupleNode<"AuctionQuantity">;
+    export type BestAskCountNode = TupleNode<"BestAskCount">;
+    export type BestAskPriceNode = TupleNode<"BestAskPrice">;
+    export type BestAskQuantityNode = TupleNode<"BestAskQuantity">;
+    export type BestBidCountNode = TupleNode<"BestBidCount">;
+    export type BestBidPriceNode = TupleNode<"BestBidPrice">;
+    export type BestBidQuantityNode = TupleNode<"BestBidQuantity">;
+    export type BoardNode = TupleNode<"Board">;
+    export type CallOrPutNode = TupleNode<"CallOrPut">;
+    export type CategoryNode = TupleNode<"Category">;
+    export type CFINode = TupleNode<"CFI">;
+    export type ClassNode = TupleNode<"Class">;
+    export type ClosePriceNode = TupleNode<"ClosePrice">;
+    export type CodeNode = TupleNode<"Code">;
+    export type ContractSizeNode = TupleNode<"ContractSize">;
+    export type CurrencyNode = TupleNode<"Currency">;
+    export type DataNode = TupleNode<"Data">;
+    export type DateNode = TupleNode<"Date">;
+    export type ExerciseTypeNode = TupleNode<"ExerciseType">;
+    export type ExchangeNode = TupleNode<"Exchange">;
+    export type ExpiryDateNode = TupleNode<"ExpiryDate">;
+    export type HighPriceNode = TupleNode<"HighPrice">;
+    export type IsIndexNode = TupleNode<"IsIndex">;
+    export type LegNode = TupleNode<"Leg">;
+    export type LastPriceNode = TupleNode<"LastPrice">;
+    export type LotSizeNode = TupleNode<"LotSize">;
+    export type LowPriceNode = TupleNode<"LowPrice">;
+    export type MarketNode = TupleNode<"Market">;
+    export type NameNode = TupleNode<"Name">;
+    export type OpenInterestNode = TupleNode<"OpenInterest">;
+    export type OpenPriceNode = TupleNode<"OpenPrice">;
+    export type PriceNode = TupleNode<"Price">;
+    export type PreviousCloseNode = TupleNode<"PreviousClose">;
+    export type QuotationBasisNode = TupleNode<"QuotationBasis">;
+    export type RemainderNode = TupleNode<"Remainder">;
+    export type ShareIssueNode = TupleNode<"ShareIssue">;
+    export type StateNode = TupleNode<"State">;
+    export type StateAllowsNode = TupleNode<"StateAllows">;
+    export type StatusNoteNode = TupleNode<"StatusNote">;
+    export type StrikePriceNode = TupleNode<"StrikePrice">;
+    export type TradesNode = TupleNode<"Trades">;
+    export type TradingMarketNode = TupleNode<"TradingMarket">;
+    export type ValueTradedNode = TupleNode<"ValueTraded">;
+    export type VolumeNode = TupleNode<"Volume">;
+    export type VWAPNode = TupleNode<"VWAP">;
 
     // Comparison
-    export type EqualNode = Node<"=">;
-    export type GreaterThanNode = Node<">">;
-    export type GreaterThanOrEqualNode = Node<">=">;
-    export type LessThanNode = Node<"<">;
-    export type LessThanOrEqualNode = Node<"<=">;
-    export type AllNode = Node<"All">;
-    export type NoneNode = Node<"None">;
+    export type EqualNode = TupleNode<"=">;
+    export type GreaterThanNode = TupleNode<">">;
+    export type GreaterThanOrEqualNode = TupleNode<">=">;
+    export type LessThanNode = TupleNode<"<">;
+    export type LessThanOrEqualNode = TupleNode<"<=">;
+    export type AllNode = TupleNode<"All">;
+    export type NoneNode = TupleNode<"None">;
 
     // Binary
-    export type AddNode = Node<"Add">;
-    export type SymbolDivNode = Node<"/">;
-    export type DivNode = Node<"Div">;
-    export type SymbolModNode = Node<"%">;
-    export type ModNode = Node<"Mod">;
-    export type SymbolMulNode = Node<"*">;
-    export type MulNode = Node<"Mul">;
-    export type SubNode = Node<"Sub">;
+    export type AddNode = TupleNode<"Add">;
+    export type SymbolDivNode = TupleNode<"/">;
+    export type DivNode = TupleNode<"Div">;
+    export type SymbolModNode = TupleNode<"%">;
+    export type ModNode = TupleNode<"Mod">;
+    export type SymbolMulNode = TupleNode<"*">;
+    export type MulNode = TupleNode<"Mul">;
+    export type SubNode = TupleNode<"Sub">;
 
     // Unary
-    export type NegNode = Node<"Neg">;
-    export type PosNode = Node<"Pos">;
-    export type AbsNode = Node<"Abs">;
+    export type NegNode = TupleNode<"Neg">;
+    export type PosNode = TupleNode<"Pos">;
+    export type AbsNode = TupleNode<"Abs">;
 
     // Unary or Binary (depending on number of params)
-    export type SymbolSubNegNode = Node<"-">;
-    export type SymbolAddPosNode = Node<"+">;
+    export type SymbolSubNegNode = TupleNode<"-">;
+    export type SymbolAddPosNode = TupleNode<"+">;
 
-    export const enum NoParamNode {
-        // AltCode = "AltCode",
-        // Attribute = "Attribute",
-        // Auction = "Auction",
+    export const enum MatchingFieldEnum {
+        AltCode = "AltCode",
+        Attribute = "Attribute",
+        Auction = "Auction",
         AuctionLast = "AuctionLast",
         AuctionQuantity = "AuctionQuantity",
         BestAskCount = "BestAskCount",
@@ -112,21 +118,21 @@ export namespace ZenithScanCriteria {
         ContractSize = "ContractSize",
         Currency = "Currency",
         Data = "Data",
-        // Date = "Date",
-        ExerciseType = "ExerciseType",
+        Date = "Date",
         Exchange = "Exchange",
+        ExerciseType = "ExerciseType",
         ExpiryDate = "ExpiryDate",
         HighPrice = "HighPrice",
         IsIndex = "IsIndex",
-        Leg = "Leg",
         LastPrice = "LastPrice",
+        Leg = "Leg",
         LotSize = "LotSize",
         LowPrice = "LowPrice",
         Market = "Market",
         Name = "Name",
         OpenInterest = "OpenInterest",
         OpenPrice = "OpenPrice",
-        // Price = "Price",
+        Price = "Price",
         PreviousClose = "PreviousClose",
         QuotationBasis = "QuotationBasis",
         Remainder = "Remainder",
@@ -142,10 +148,26 @@ export namespace ZenithScanCriteria {
         VWAP = "VWAP",
     }
 
-    export type LogicalNode = AndNode | OrNode | NotNode;
-    export type HackLogicalNode = [type: string, ...params: unknown[]];
+    export type MatchingField = keyof typeof MatchingFieldEnum;
 
-    export type MatchingNode =
+    export const enum MatchingPriceSubFieldEnum {
+        LastPrice = 'LastPrice',
+    }
+    export type MatchingPriceSubField = keyof typeof MatchingPriceSubFieldEnum;
+
+    export const enum MatchingDateSubFieldEnum {
+        Dividend = 'Dividend',
+    }
+    export type MatchingDateSubField = keyof typeof MatchingDateSubFieldEnum;
+
+    export type MatchingAltCodeSubField = keyof typeof Zenith.MarketController.SearchSymbols.AlternateKey;
+    export type MatchingAttributeSubField = keyof typeof Zenith.MarketController.SearchSymbols.KnownAttributeKey;
+    export type MatchingTextSubField = MatchingAltCodeSubField | MatchingAttributeSubField;
+
+    export type LogicalNodeUnion = AndNode | OrNode | NotNode;
+    export type LogicalNode = [nodeType: NodeType, ...params: unknown[]];
+
+    export type MatchingNodeUnion =
         AltCodeNode |
         AttributeNode |
         AuctionNode |
@@ -196,22 +218,22 @@ export namespace ZenithScanCriteria {
         VolumeNode |
         VWAPNode;
 
-    export type HackMatchingNode = [type: string, param1?: unknown, param2?: unknown, param3?: unknown, param4?: unknown, param5?: unknown];
+    export type MatchingNode = [nodeType: MatchingFieldEnum, param1?: unknown, param2?: unknown, param3?: unknown, param4?: unknown, param5?: unknown];
 
-    export type ComparisonNode =
+    export type ComparisonNodeUnion =
         EqualNode |
         GreaterThanNode |
         GreaterThanOrEqualNode |
         LessThanNode |
         LessThanOrEqualNode;
 
-    export type HackComparisonNode = [type: string, leftParam: unknown, rightParam: unknown];
+    export type ComparisonNode = [nodeType: NodeType, leftParam: unknown, rightParam: unknown];
 
-    export type AllNoneNode =
+    export type AllNoneNodeUnion =
         AllNode |
         NoneNode;
 
-    export type BinaryExpressionNode =
+    export type BinaryExpressionNodeUnion =
         AddNode |
         SymbolDivNode |
         DivNode |
@@ -221,114 +243,108 @@ export namespace ZenithScanCriteria {
         MulNode |
         SubNode;
 
-    export type HackBinaryExpressionNode = [type: string, leftParam: unknown, rightParam: unknown];
+    export type BinaryExpressionNode = [nodeType: NodeType, leftParam: unknown, rightParam: unknown];
 
-    export type UnaryExpressionNode =
+    export type UnaryExpressionNodeUnion =
         NegNode |
         PosNode |
         AbsNode;
 
-    export type HackUnaryExpressionNode = [type: string, param: unknown];
+    export type UnaryExpressionNode = [nodeType: NodeType, param: unknown];
 
-    export type UnaryOrBinaryExpressionNode =
+    export type UnaryOrBinaryExpressionNodeUnion =
         SymbolSubNegNode |
         SymbolAddPosNode;
 
-    export type HackUnaryOrBinaryExpressionNode = [type: string, param: unknown, param?: unknown];
+    export type UnaryOrBinaryExpressionNode = [nodeType: NodeType, leftOrUnaryparam: unknown, rightParam?: unknown];
 
-    export type BooleanNode = LogicalNode | MatchingNode | ComparisonNode | AllNoneNode| NoParamNode;
-    export type HackBooleanNode = HackLogicalNode | HackMatchingNode | HackComparisonNode | AllNoneNode| NoParamNode;
-    export type NumericNode = UnaryExpressionNode | BinaryExpressionNode | UnaryOrBinaryExpressionNode | NoParamNode;
-    export type HackNumericNode = HackUnaryExpressionNode | HackBinaryExpressionNode | HackUnaryOrBinaryExpressionNode | NoParamNode;
+    export type BooleanNodeUnion = LogicalNodeUnion | MatchingNodeUnion | ComparisonNodeUnion | AllNoneNodeUnion;
+    export type BooleanNode = LogicalNode | MatchingNode | ComparisonNode | AllNoneNodeUnion| MatchingField;
+    export type NumericNodeUnion = UnaryExpressionNodeUnion | BinaryExpressionNodeUnion | UnaryOrBinaryExpressionNodeUnion;
+    export type NumericNode = UnaryExpressionNode | BinaryExpressionNode | UnaryOrBinaryExpressionNode | MatchingField;
+    export type AnyNodeUnion = BooleanNodeUnion | NumericNodeUnion;
+    export type AnyNode = BooleanNode | NumericNode;
 
     export type NoParams = [];
+    export type LogicalUnionParams = (boolean | BooleanNodeUnion)[];
     export type LogicalParams = (boolean | BooleanNode)[];
-    export type HackLogicalParams = (boolean | HackBooleanNode)[];
 
-    export type NumericParam = number | NumericNode;
-    export type HackNumericParam = number | HackNumericNode;
-    export type SingleNumericParam = [value: NumericParam];
-    export type HackSingleNumericParam = [value: HackNumericParam];
+    export interface TextNamedParameters {
+        As?: TextContainsAsEnum;
+        IgnoreCase?: boolean;
+    }
+    export interface NumericNamedParameters {
+        At?: number; // Set for equals
+        Min?: number; // Set for "in range (inclusive)" or "greater than or equal"
+        Max?: number; // Set for "in range (inclusive)" or "less than or equal"
+    }
+    export interface DateNamedParameters {
+        At?: DateString; // Set for equals
+        Min?: DateString; // Set for "in range (inclusive)" or "greater than or equal"
+        Max?: DateString; // Set for "in range (inclusive)" or "less than or equal"
+    }
+
+    export type NumericUnion = number | NumericNodeUnion;
+    export type NumericParam = number | NumericNode | ComparableField;
+    export type SingleNumericUnionParams = [value: NumericUnion];
+    export type SingleNumericParams = [value: NumericParam];
+    export type LeftRightNumericUnionParams = [left: NumericUnion, right: NumericUnion];
     export type LeftRightNumericParams = [left: NumericParam, right: NumericParam];
-    export type HackLeftRightNumericParams = [left: HackNumericParam, right: HackNumericParam];
-    export type SingleOrLeftRightNumericParams = SingleNumericParam | LeftRightNumericParams;
-    export type HackSingleOrLeftRightNumericParams = HackSingleNumericParam | HackLeftRightNumericParams;
+    export type SingleOrLeftRightNumericUnionParams = SingleNumericUnionParams | LeftRightNumericUnionParams;
+    export type SingleOrLeftRightNumericParams = SingleNumericParams | LeftRightNumericParams;
+    export type NumericParams = SingleNumericParams | LeftRightNumericParams;
 
-    export type TextParams_FirstForm = [name: string]; // exists
-    export type TextParams_SecondForm = [name: string, value: string]; // Contains
-    export type TextParams_ThirdForm = [name: string, value: string, as?: string, ignoreCase?: boolean]; // Advanced contains
-    export type TextParams_FourthForm = [name: string, value: string, namedParameters: { As?: string, IgnoreCase?: boolean}];
+    export type TextParams_FirstForm = [field: MatchingField]; // exists
+    export type TextParams_SecondForm = [field: MatchingField, value: string]; // Contains
+    export type TextParams_ThirdForm = [field: MatchingField, value: string, as?: TextContainsAsEnum, ignoreCase?: boolean]; // Advanced contains
+    export type TextParams_FourthForm = [field: MatchingField, value: string, namedParameters: TextNamedParameters];
     export type TextParams = TextParams_FirstForm | TextParams_SecondForm | TextParams_ThirdForm | TextParams_FourthForm;
 
-    export type NamedTextParams_FirstForm = [name: string, subName: string]; // exists
-    export type NamedTextParams_SecondForm = [name: string, subName: string, value: string]; // Contains
-    export type NamedTextParams_ThirdForm = [name: string, subName: string, value: string, as?: string, ignoreCase?: boolean]; // Advanced contains
-    export type NamedTextParams_FourthForm = [name: string, subName: string, value: string, namedParameters: { As?: string, IgnoreCase?: boolean}];
+    export type NamedTextParams_FirstForm = [field: MatchingField, subField: MatchingTextSubField]; // exists
+    export type NamedTextParams_SecondForm = [field: MatchingField, subField: MatchingTextSubField, value: string]; // Contains
+    export type NamedTextParams_ThirdForm = [field: MatchingField, subField: MatchingTextSubField, value: string, as?: TextContainsAsEnum, ignoreCase?: boolean]; // Advanced contains
+    export type NamedTextParams_FourthForm = [field: MatchingField, subField: MatchingTextSubField, value: string, namedParameters: TextNamedParameters];
     export type NamedTextParams = NamedTextParams_FirstForm | NamedTextParams_SecondForm | NamedTextParams_ThirdForm | NamedTextParams_FourthForm;
 
-    export type NumericRangeParams_FirstForm = [name: string]; // exists
-    export type NumericRangeParams_SecondForm = [name: string, value: number]; // equals
-    export type NumericRangeParams_ThirdForm = [name: string, min: number | null, max: number | null]; // in range
-    export type NumericRangeParams_ForthForm_Equals = [name: string, value: { At: number }]; // equals
-    export type NumericRangeParams_ForthForm_GreaterThanOrEqual = [name: string, value: { Min: number }]; // greater than or equal
-    export type NumericRangeParams_ForthForm_LessThanOrEqual = [name: string, value: { Max: number }]; // less than or equal
-    export type NumericRangeParams_ForthForm_InRange = [name: string, value: { Min: number, Max: number }]; // In range
+    export type NumericRangeParams_FirstForm = [field: MatchingField]; // exists
+    export type NumericRangeParams_SecondForm = [field: MatchingField, value: number]; // equals
+    export type NumericRangeParams_ThirdForm = [field: MatchingField, value: number, min: number | null, max: number | null]; // in range
+    export type NumericRangeParams_ForthForm = [field: MatchingField, namedParameters: NumericNamedParameters];
     export type NumericRangeParams =
         NumericRangeParams_FirstForm |
         NumericRangeParams_SecondForm |
         NumericRangeParams_ThirdForm |
-        NumericRangeParams_ForthForm_Equals |
-        NumericRangeParams_ForthForm_GreaterThanOrEqual |
-        NumericRangeParams_ForthForm_LessThanOrEqual |
-        NumericRangeParams_ForthForm_InRange;
+        NumericRangeParams_ForthForm;
 
-    export type NumericNamedRangeParams_FirstForm = [name: string, subName: string]; // exists
-    export type NumericNamedRangeParams_SecondForm = [name: string, subName: string, value: number]; // equals
-    export type NumericNamedRangeParams_ThirdForm = [name: string, subName: string, min: number | null, max: number | null]; // in range
-    export type NumericNamedRangeParams_ForthForm_Equals = [name: string, subName: string, value: { At: number }]; // equals
-    export type NumericNamedRangeParams_ForthForm_GreaterThanOrEqual = [name: string, subName: string, value: { Min: number }]; // greater than or equal
-    export type NumericNamedRangeParams_ForthForm_LessThanOrEqual = [name: string, subName: string, value: { Max: number }]; // less than or equal
-    export type NumericNamedRangeParams_ForthForm_InRange = [name: string, subName: string, value: { Min: number, Max: number }]; // In range
+    export type NumericNamedRangeParams_FirstForm = [field: MatchingField, subField: MatchingPriceSubField]; // exists
+    export type NumericNamedRangeParams_SecondForm = [field: MatchingField, subField: MatchingPriceSubField, value: number]; // equals
+    export type NumericNamedRangeParams_ThirdForm = [field: MatchingField, subField: MatchingPriceSubField, min: number | null, max: number | null]; // in range
+    export type NumericNamedRangeParams_ForthForm = [field: MatchingField, subField: MatchingPriceSubField, namedParameters: NumericNamedParameters];
     export type NumericNamedRangeParams =
         NumericNamedRangeParams_FirstForm |
         NumericNamedRangeParams_SecondForm |
         NumericNamedRangeParams_ThirdForm |
-        NumericNamedRangeParams_ForthForm_Equals |
-        NumericNamedRangeParams_ForthForm_GreaterThanOrEqual |
-        NumericNamedRangeParams_ForthForm_LessThanOrEqual |
-        NumericNamedRangeParams_ForthForm_InRange;
+        NumericNamedRangeParams_ForthForm;
 
-    export type DateRangeParams_FirstForm = [name: string]; // exists
-    export type DateRangeParams_SecondForm = [name: string, value: DateString]; // equals
-    export type DateRangeParams_ThirdForm = [name: string, min: DateString | null, max: DateString | null]; // in range
-    export type DateRangeParams_ForthForm_Equals = [name: string, value: { At: DateString }]; // equals
-    export type DateRangeParams_ForthForm_GreaterThanOrEqual = [name: string, value: { Min: DateString }]; // greater than or equal
-    export type DateRangeParams_ForthForm_LessThanOrEqual = [name: string, value: { Max: DateString }]; // less than or equal
-    export type DateRangeParams_ForthForm_InRange = [name: string, value: { Min: DateString, Max: DateString }]; // In range
+    export type DateRangeParams_FirstForm = [field: MatchingField]; // exists
+    export type DateRangeParams_SecondForm = [field: MatchingField, value: DateString]; // equals
+    export type DateRangeParams_ThirdForm = [field: MatchingField, min: DateString | null, max: DateString | null]; // in range
+    export type DateRangeParams_ForthForm = [field: MatchingField, namedParameters: DateNamedParameters]; // equals
     export type DateRangeParams =
         DateRangeParams_FirstForm |
         DateRangeParams_SecondForm |
         DateRangeParams_ThirdForm |
-        DateRangeParams_ForthForm_Equals |
-        DateRangeParams_ForthForm_GreaterThanOrEqual |
-        DateRangeParams_ForthForm_LessThanOrEqual |
-        DateRangeParams_ForthForm_InRange;
+        DateRangeParams_ForthForm;
 
-    export type DateNamedRangeParams_FirstForm = [name: string, subName: string]; // exists
-    export type DateNamedRangeParams_SecondForm = [name: string, subName: string, value: DateString]; // equals
-    export type DateNamedRangeParams_ThirdForm = [name: string, subName: string, min: DateString | null, max: DateString | null]; // in range
-    export type DateNamedRangeParams_ForthForm_Equals = [name: string, subName: string, value: { At: DateString }]; // equals
-    export type DateNamedRangeParams_ForthForm_GreaterThanOrEqual = [name: string, subName: string, value: { Min: DateString }]; // greater than or equal
-    export type DateNamedRangeParams_ForthForm_LessThanOrEqual = [name: string, subName: string, value: { Max: DateString }]; // less than or equal
-    export type DateNamedRangeParams_ForthForm_InRange = [name: string, subName: string, value: { Min: DateString, Max: DateString }]; // In range
+    export type DateNamedRangeParams_FirstForm = [field: MatchingField, subField: MatchingDateSubField]; // exists
+    export type DateNamedRangeParams_SecondForm = [field: MatchingField, subField: MatchingDateSubField, value: DateString]; // equals
+    export type DateNamedRangeParams_ThirdForm = [field: MatchingField, subField: MatchingDateSubField, min: DateString | null, max: DateString | null]; // in range
+    export type DateNamedRangeParams_ForthForm = [field: MatchingField, subField: MatchingDateSubField, namedParameters: DateNamedParameters];
     export type DateNamedRangeParams =
         DateNamedRangeParams_FirstForm |
         DateNamedRangeParams_SecondForm |
         DateNamedRangeParams_ThirdForm |
-        DateNamedRangeParams_ForthForm_Equals |
-        DateNamedRangeParams_ForthForm_GreaterThanOrEqual |
-        DateNamedRangeParams_ForthForm_LessThanOrEqual |
-        DateNamedRangeParams_ForthForm_InRange;
+        DateNamedRangeParams_ForthForm;
 
     export type SingleParam_EqualsValue = [value: boolean | number | string]; // equals
     export type SingleParam_EqualsDefault = []; // equals default
@@ -339,9 +355,9 @@ export namespace ZenithScanCriteria {
 
     export interface ParamTupleMap {
         // Logical
-        "And": HackLogicalParams;
-        "Not": HackLogicalParams;
-        "Or": HackLogicalParams;
+        "And": LogicalParams;
+        "Not": LogicalParams;
+        "Or": LogicalParams;
 
         // Matching
         "AltCode": NamedTextParams;
@@ -395,31 +411,99 @@ export namespace ZenithScanCriteria {
         "VWAP": NumericRangeParams;
 
         // Comparison
-        "=": HackLeftRightNumericParams;
-        ">": HackLeftRightNumericParams;
-        ">=": HackLeftRightNumericParams;
-        "<": HackLeftRightNumericParams;
-        "<=": HackLeftRightNumericParams;
+        "=": LeftRightNumericParams;
+        ">": LeftRightNumericParams;
+        ">=": LeftRightNumericParams;
+        "<": LeftRightNumericParams;
+        "<=": LeftRightNumericParams;
         "All": NoParams;
         "None": NoParams;
 
         // Binary
-        "Add": HackLeftRightNumericParams;
-        "/": HackLeftRightNumericParams;
-        "Div": HackLeftRightNumericParams;
-        "%": HackLeftRightNumericParams;
-        "Mod": HackLeftRightNumericParams;
-        "*": HackLeftRightNumericParams;
-        "Mul": HackLeftRightNumericParams;
-        "Sub": HackLeftRightNumericParams;
+        "Add": LeftRightNumericParams;
+        "/": LeftRightNumericParams;
+        "Div": LeftRightNumericParams;
+        "%": LeftRightNumericParams;
+        "Mod": LeftRightNumericParams;
+        "*": LeftRightNumericParams;
+        "Mul": LeftRightNumericParams;
+        "Sub": LeftRightNumericParams;
 
         // Unary
-        "Neg": HackSingleNumericParam;
-        "Pos": HackSingleNumericParam;
-        "Abs": HackSingleNumericParam;
+        "Neg": SingleNumericParams;
+        "Pos": SingleNumericParams;
+        "Abs": SingleNumericParams;
 
         // Unary or Binary (depending on number of params)
-        "-": HackSingleOrLeftRightNumericParams;
-        "+": HackSingleOrLeftRightNumericParams;
+        "-": SingleOrLeftRightNumericParams;
+        "+": SingleOrLeftRightNumericParams;
+    }
+
+    // export type ComparableField = MatchingField; // actually only subset
+    export type ComparableField = PickEnum<MatchingField,
+        MatchingFieldEnum.Auction |
+        MatchingFieldEnum.AuctionLast |
+        MatchingFieldEnum.AuctionQuantity |
+        MatchingFieldEnum.BestAskCount |
+        MatchingFieldEnum.BestAskPrice |
+        MatchingFieldEnum.BestAskQuantity |
+        MatchingFieldEnum.BestBidCount |
+        MatchingFieldEnum.BestBidPrice |
+        MatchingFieldEnum.BestBidQuantity |
+        MatchingFieldEnum.ClosePrice |
+        MatchingFieldEnum.ContractSize |
+        MatchingFieldEnum.HighPrice |
+        MatchingFieldEnum.LastPrice |
+        MatchingFieldEnum.LotSize |
+        MatchingFieldEnum.LowPrice |
+        MatchingFieldEnum.OpenInterest |
+        MatchingFieldEnum.OpenPrice |
+        MatchingFieldEnum.PreviousClose |
+        MatchingFieldEnum.Price |
+        MatchingFieldEnum.Remainder |
+        MatchingFieldEnum.ShareIssue |
+        MatchingFieldEnum.StrikePrice |
+        MatchingFieldEnum.Trades |
+        MatchingFieldEnum.ValueTraded |
+        MatchingFieldEnum.Volume |
+        MatchingFieldEnum.VWAP
+    >;
+
+    // export const enum ComparableFieldEnum {
+    //     Auction = 'Auction',
+    //     AuctionLast = 'AuctionLast',
+    //     AuctionQuantity = 'AuctionQuantity',
+    //     BestAskCount = 'BestAskCount',
+    //     BestAskPrice = 'BestAskPrice',
+    //     BestAskQuantity = 'BestAskQuantity',
+    //     BestBidCount = 'BestBidCount',
+    //     BestBidPrice = 'BestBidPrice',
+    //     BestBidQuantity = 'BestBidQuantity',
+    //     ClosePrice = 'ClosePrice',
+    //     ContractSize = 'ContractSize',
+    //     HighPrice = 'HighPrice',
+    //     LastPrice = 'LastPrice',
+    //     LotSize = 'LotSize',
+    //     LowPrice = 'LowPrice',
+    //     OpenInterest = 'OpenInterest',
+    //     OpenPrice = 'OpenPrice',
+    //     PreviousClose = 'PreviousClose',
+    //     Price = 'Price',
+    //     Remainder = 'Remainder',
+    //     ShareIssue = 'ShareIssue',
+    //     StrikePrice = 'StrikePrice',
+    //     Trades = 'Trades',
+    //     ValueTraded = 'ValueTraded',
+    //     Volume = 'Volume',
+    //     VWAP = 'VWAP',
+    // }
+
+    // export type ComparableField = keyof typeof ComparableFieldEnum;
+
+    export const enum TextContainsAsEnum {
+        None = 'None',
+        FromStart = 'FromStart',
+        FromEnd = 'FromEnd',
+        Exact = 'Exact',
     }
 }

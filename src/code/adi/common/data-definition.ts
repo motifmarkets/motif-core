@@ -31,7 +31,7 @@ import { OrderRoute } from './order-route';
 import { OrderTrigger } from './order-trigger';
 import { PublisherSubscription } from './publisher-subscription';
 import { PublisherSubscriptionDelayRetryAlgorithmId } from './publisher-subscription-delay-retry-algorithm';
-import { BooleanScanCriteriaNode } from './scan-criteria-node';
+import { ScanCriteria } from './scan-criteria';
 import { ScanNotification } from './scan-types';
 
 export abstract class DataDefinition {
@@ -1160,7 +1160,7 @@ export class MoveOrderRequestDataDefinition extends OrderRequestDataDefinition {
 export class CreateScanDataDefinition extends FeedSubscriptionDataDefinition {
     name: string;
     scanDescription?: string;
-    criteria: BooleanScanCriteriaNode;
+    criteria: ScanCriteria.BooleanNode;
     targetTypeId: ScanTargetTypeId;
     targetMarketIds: readonly MarketId[] | undefined;
     targetLitIvemIds: readonly LitIvemId[] | undefined;
@@ -1197,7 +1197,7 @@ export class UpdateScanDataDefinition extends FeedSubscriptionDataDefinition {
     id: string;
     name: string;
     scanDescription?: string;
-    criteria: BooleanScanCriteriaNode;
+    criteria: ScanCriteria.BooleanNode;
     targetTypeId: ScanTargetTypeId;
     targetMarketIds: readonly MarketId[] | undefined;
     targetLitIvemIds: readonly LitIvemId[] | undefined;
@@ -1211,7 +1211,7 @@ export class UpdateScanDataDefinition extends FeedSubscriptionDataDefinition {
 }
 
 export class ExecuteScanDataDefinition extends FeedSubscriptionDataDefinition {
-    criteria: BooleanScanCriteriaNode;
+    criteria: ScanCriteria.BooleanNode;
     targetTypeId: ScanTargetTypeId;
     targetMarketIds: readonly MarketId[] | undefined;
     targetLitIvemIds: readonly LitIvemId[] | undefined;

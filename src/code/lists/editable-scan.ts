@@ -5,7 +5,7 @@
  */
 
 import { LitIvemId, MarketId, ScanTargetTypeId } from '../adi/adi-internal-api';
-import { BooleanScanCriteriaNode } from '../adi/common/scan-criteria-node';
+import { ScanCriteria } from '../adi/common/scan-criteria';
 import { StringId, Strings } from '../res/res-internal-api';
 import { EnumRenderValue, RenderValue } from '../services/services-internal-api';
 import { EnumInfoOutOfOrderError } from '../sys/sys-internal-api';
@@ -27,8 +27,8 @@ export class EditableScan {
     matchCount: Integer;
     unmodifiedVersion: number;
     criteriaTypeId: EditableScan.CriteriaTypeId;
-    criteria: BooleanScanCriteriaNode;
-    history: BooleanScanCriteriaNode[];
+    criteria: ScanCriteria.BooleanNode;
+    history: ScanCriteria.BooleanNode[];
     modifiedStatusId: EditableScan.ModifiedStatusId;
 }
 

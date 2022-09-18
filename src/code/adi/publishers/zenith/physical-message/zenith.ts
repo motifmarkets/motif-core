@@ -768,6 +768,17 @@ export namespace Zenith {
             export interface Attributes {
                 [index: string]: string | undefined;
             }
+
+            export const enum KnownAttributeKey {
+                Category = 'Category',
+                Class = 'Class',
+                Delivery = 'Delivery',
+                Sector = 'Sector',
+                Short = 'Short',
+                ShortSuspended = 'ShortSuspended',
+                SubSector = 'SubSector',
+                MaxRss = 'MaxRSS',
+            }
         }
 
         export namespace Security {

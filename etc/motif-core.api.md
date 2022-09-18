@@ -25303,7 +25303,6 @@ export class SymbolsService {
     unsubscribeAllowedExchangeIdsChangedEvent(subscriptionId: MultiEvent.SubscriptionId): void;
     // (undocumented)
     unsubscribeAllowedMarketIdsChangedEvent(subscriptionId: MultiEvent.SubscriptionId): void;
-    // (undocumented)
     get usableAllowedExchangeIds(): Promise<ExchangeId[] | undefined>;
     get usableAllowedMarketIds(): Promise<MarketId[] | undefined>;
 }
