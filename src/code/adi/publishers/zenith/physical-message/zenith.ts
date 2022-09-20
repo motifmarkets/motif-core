@@ -2037,7 +2037,7 @@ export namespace Zenith {
 
         export interface ScanParameters {
             readonly Type: ScanType;
-            readonly Criteria: ZenithScanCriteria.BooleanNode;
+            readonly Criteria: ZenithScanCriteria.BooleanTupleNode;
             readonly Target: Target;
             readonly Notifications?: [unknown];
         }
@@ -2134,7 +2134,7 @@ export namespace Zenith {
         export namespace ExecuteScan {
             export interface QueryRequest {
                 readonly Type: ScanType;
-                readonly Criteria: ZenithScanCriteria.BooleanNode;
+                readonly Criteria: ZenithScanCriteria.BooleanTupleNode;
                 readonly Target: Target;
             }
 

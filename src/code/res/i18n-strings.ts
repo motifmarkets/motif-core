@@ -25,6 +25,7 @@ export const enum StringId {
     ZenithDataExternalError,
     ZenithUnexpectedCaseExternalError,
     ZenithDataStateExternalError,
+    ZenithScanCriteriaParseError,
     MotifServicesExternalError,
     ExtensionExternalError,
     ExtensionOrInternalExternalError,
@@ -41,6 +42,8 @@ export const enum StringId {
     No,
     True,
     False,
+    Left,
+    Right,
     Show,
     For,
     On,
@@ -2014,6 +2017,11 @@ export namespace I18nStrings {
                 en: 'Zenith data state error',
             }
         },
+        ZenithScanCriteriaParseError: {
+            id: StringId.ZenithScanCriteriaParseError, translations: {
+                en: 'Zenith scan criteria parse error',
+            }
+        },
         MotifServicesExternalError: {
             id: StringId.MotifServicesExternalError, translations: {
                 en: 'Motif services error',
@@ -2092,6 +2100,16 @@ export namespace I18nStrings {
         False: {
             id: StringId.False, translations: {
                 en: 'false',
+            }
+        },
+        Left: {
+            id: StringId.Left, translations: {
+                en: 'left',
+            }
+        },
+        Right: {
+            id: StringId.Right, translations: {
+                en: 'right',
             }
         },
         Show: {

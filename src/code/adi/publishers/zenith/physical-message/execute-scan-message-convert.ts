@@ -29,7 +29,7 @@ export namespace ExecuteScanMessageConvert {
             Action: Zenith.MessageContainer.Action.Publish,
             TransactionID: PublisherRequest.getNextTransactionId(),
             Data: {
-                Criteria: ZenithScanCriteriaConvert.fromNode(definition.criteria),
+                Criteria: ZenithScanCriteriaConvert.fromBooleanNode(definition.criteria),
                 Type: ZenithNotifyConvert.ScanType.fromId(definition.targetTypeId),
                 Target: ZenithNotifyConvert.Target.fromId(definition.targetTypeId, definition.targetLitIvemIds, definition.targetMarketIds),
             }

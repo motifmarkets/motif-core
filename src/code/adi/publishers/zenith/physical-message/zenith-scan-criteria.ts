@@ -8,266 +8,319 @@ export namespace ZenithScanCriteria {
 
     export type DateString = string;
 
-    export type NodeType = keyof ParamTupleMap;
+    export type TupleNodeType = keyof ParamTupleMap;
 
-    export type TupleNode<T extends NodeType> = [T, ...ParamTupleMap[T]];
+    export type TupleNode<T extends TupleNodeType> = [T, ...ParamTupleMap[T]];
 
     // Logical Criteria Nodes
-    export type AndNode = TupleNode<"And">;
-    export type OrNode = TupleNode<"Or">;
-    export type NotNode = TupleNode<"Not">;
+    export type AndTupleNode = TupleNode<typeof AndTupleNodeType>;
+    export type OrTupleNode = TupleNode<typeof OrTupleNodeType>;
+    export type NotTupleNode = TupleNode<typeof NotTupleNodeType>;
 
     // Matching
-    export type AltCodeNode = TupleNode<"AltCode">;
-    export type AttributeNode = TupleNode<"Attribute">;
-    export type AuctionNode = TupleNode<"Auction">;
-    export type AuctionLastNode = TupleNode<"AuctionLast">;
-    export type AuctionQuantityNode = TupleNode<"AuctionQuantity">;
-    export type BestAskCountNode = TupleNode<"BestAskCount">;
-    export type BestAskPriceNode = TupleNode<"BestAskPrice">;
-    export type BestAskQuantityNode = TupleNode<"BestAskQuantity">;
-    export type BestBidCountNode = TupleNode<"BestBidCount">;
-    export type BestBidPriceNode = TupleNode<"BestBidPrice">;
-    export type BestBidQuantityNode = TupleNode<"BestBidQuantity">;
-    export type BoardNode = TupleNode<"Board">;
-    export type CallOrPutNode = TupleNode<"CallOrPut">;
-    export type CategoryNode = TupleNode<"Category">;
-    export type CFINode = TupleNode<"CFI">;
-    export type ClassNode = TupleNode<"Class">;
-    export type ClosePriceNode = TupleNode<"ClosePrice">;
-    export type CodeNode = TupleNode<"Code">;
-    export type ContractSizeNode = TupleNode<"ContractSize">;
-    export type CurrencyNode = TupleNode<"Currency">;
-    export type DataNode = TupleNode<"Data">;
-    export type DateNode = TupleNode<"Date">;
-    export type ExerciseTypeNode = TupleNode<"ExerciseType">;
-    export type ExchangeNode = TupleNode<"Exchange">;
-    export type ExpiryDateNode = TupleNode<"ExpiryDate">;
-    export type HighPriceNode = TupleNode<"HighPrice">;
-    export type IsIndexNode = TupleNode<"IsIndex">;
-    export type LegNode = TupleNode<"Leg">;
-    export type LastPriceNode = TupleNode<"LastPrice">;
-    export type LotSizeNode = TupleNode<"LotSize">;
-    export type LowPriceNode = TupleNode<"LowPrice">;
-    export type MarketNode = TupleNode<"Market">;
-    export type NameNode = TupleNode<"Name">;
-    export type OpenInterestNode = TupleNode<"OpenInterest">;
-    export type OpenPriceNode = TupleNode<"OpenPrice">;
-    export type PriceNode = TupleNode<"Price">;
-    export type PreviousCloseNode = TupleNode<"PreviousClose">;
-    export type QuotationBasisNode = TupleNode<"QuotationBasis">;
-    export type RemainderNode = TupleNode<"Remainder">;
-    export type ShareIssueNode = TupleNode<"ShareIssue">;
-    export type StateNode = TupleNode<"State">;
-    export type StateAllowsNode = TupleNode<"StateAllows">;
-    export type StatusNoteNode = TupleNode<"StatusNote">;
-    export type StrikePriceNode = TupleNode<"StrikePrice">;
-    export type TradesNode = TupleNode<"Trades">;
-    export type TradingMarketNode = TupleNode<"TradingMarket">;
-    export type ValueTradedNode = TupleNode<"ValueTraded">;
-    export type VolumeNode = TupleNode<"Volume">;
-    export type VWAPNode = TupleNode<"VWAP">;
+    export type AltCodeTupleNode = TupleNode<typeof AltCodeTupleNodeType>;
+    export type AttributeTupleNode = TupleNode<typeof AttributeTupleNodeType>;
+    export type AuctionTupleNode = TupleNode<typeof AuctionTupleNodeType>;
+    export type AuctionLastTupleNode = TupleNode<typeof AuctionLastTupleNodeType>;
+    export type AuctionQuantityTupleNode = TupleNode<typeof AuctionQuantityTupleNodeType>;
+    export type BestAskCountTupleNode = TupleNode<typeof BestAskCountTupleNodeType>;
+    export type BestAskPriceTupleNode = TupleNode<typeof BestAskPriceTupleNodeType>;
+    export type BestAskQuantityTupleNode = TupleNode<typeof BestAskQuantityTupleNodeType>;
+    export type BestBidCountTupleNode = TupleNode<typeof BestBidCountTupleNodeType>;
+    export type BestBidPriceTupleNode = TupleNode<typeof BestBidPriceTupleNodeType>;
+    export type BestBidQuantityTupleNode = TupleNode<typeof BestBidQuantityTupleNodeType>;
+    export type BoardTupleNode = TupleNode<typeof BoardTupleNodeType>;
+    export type CallOrPutTupleNode = TupleNode<typeof CallOrPutTupleNodeType>;
+    export type CategoryTupleNode = TupleNode<typeof CategoryTupleNodeType>;
+    export type CfiTupleNode = TupleNode<typeof CfiTupleNodeType>;
+    export type ClassTupleNode = TupleNode<typeof ClassTupleNodeType>;
+    export type ClosePriceTupleNode = TupleNode<typeof ClosePriceTupleNodeType>;
+    export type CodeTupleNode = TupleNode<typeof CodeTupleNodeType>;
+    export type ContractSizeTupleNode = TupleNode<typeof ContractSizeTupleNodeType>;
+    export type CurrencyTupleNode = TupleNode<typeof CurrencyTupleNodeType>;
+    export type DataTupleNode = TupleNode<typeof DataTupleNodeType>;
+    export type DateTupleNode = TupleNode<typeof DateTupleNodeType>;
+    export type ExerciseTypeTupleNode = TupleNode<typeof ExerciseTypeTupleNodeType>;
+    export type ExchangeTupleNode = TupleNode<typeof ExchangeTupleNodeType>;
+    export type ExpiryDateTupleNode = TupleNode<typeof ExpiryDateTupleNodeType>;
+    export type HighPriceTupleNode = TupleNode<typeof HighPriceTupleNodeType>;
+    export type IsIndexTupleNode = TupleNode<typeof IsIndexTupleNodeType>;
+    export type LegTupleNode = TupleNode<typeof LegTupleNodeType>;
+    export type LastPriceTupleNode = TupleNode<typeof LastPriceTupleNodeType>;
+    export type LotSizeTupleNode = TupleNode<typeof LotSizeTupleNodeType>;
+    export type LowPriceTupleNode = TupleNode<typeof LowPriceTupleNodeType>;
+    export type MarketTupleNode = TupleNode<typeof MarketTupleNodeType>;
+    export type NameTupleNode = TupleNode<typeof NameTupleNodeType>;
+    export type OpenInterestTupleNode = TupleNode<typeof OpenInterestTupleNodeType>;
+    export type OpenPriceTupleNode = TupleNode<typeof OpenPriceTupleNodeType>;
+    export type PriceTupleNode = TupleNode<typeof PriceTupleNodeType>;
+    export type PreviousCloseTupleNode = TupleNode<typeof PreviousCloseTupleNodeType>;
+    export type QuotationBasisTupleNode = TupleNode<typeof QuotationBasisTupleNodeType>;
+    export type RemainderTupleNode = TupleNode<typeof RemainderTupleNodeType>;
+    export type ShareIssueTupleNode = TupleNode<typeof ShareIssueTupleNodeType>;
+    export type StateTupleNode = TupleNode<typeof StateTupleNodeType>;
+    export type StateAllowsTupleNode = TupleNode<typeof StateAllowsTupleNodeType>;
+    export type StatusNoteTupleNode = TupleNode<typeof StatusNoteTupleNodeType>;
+    export type StrikePriceTupleNode = TupleNode<typeof StrikePriceTupleNodeType>;
+    export type TradesTupleNode = TupleNode<typeof TradesTupleNodeType>;
+    export type TradingMarketTupleNode = TupleNode<typeof TradingMarketTupleNodeType>;
+    export type ValueTradedTupleNode = TupleNode<typeof ValueTradedTupleNodeType>;
+    export type VolumeTupleNode = TupleNode<typeof VolumeTupleNodeType>;
+    export type VwapTupleNode = TupleNode<typeof VwapTupleNodeType>;
 
     // Comparison
-    export type EqualNode = TupleNode<"=">;
-    export type GreaterThanNode = TupleNode<">">;
-    export type GreaterThanOrEqualNode = TupleNode<">=">;
-    export type LessThanNode = TupleNode<"<">;
-    export type LessThanOrEqualNode = TupleNode<"<=">;
-    export type AllNode = TupleNode<"All">;
-    export type NoneNode = TupleNode<"None">;
+    export type EqualTupleNode = TupleNode<typeof EqualTupleNodeType>;
+    export type GreaterThanTupleNode = TupleNode<typeof GreaterThanTupleNodeType>;
+    export type GreaterThanOrEqualTupleNode = TupleNode<typeof GreaterThanOrEqualTupleNodeType>;
+    export type LessThanTupleNode = TupleNode<typeof LessThanTupleNodeType>;
+    export type LessThanOrEqualTupleNode = TupleNode<typeof LessThanOrEqualTupleNodeType>;
+    export type AllTupleNode = TupleNode<typeof AllTupleNodeType>;
+    export type NoneTupleNode = TupleNode<typeof NoneTupleNodeType>;
 
     // Binary
-    export type AddNode = TupleNode<"Add">;
-    export type SymbolDivNode = TupleNode<"/">;
-    export type DivNode = TupleNode<"Div">;
-    export type SymbolModNode = TupleNode<"%">;
-    export type ModNode = TupleNode<"Mod">;
-    export type SymbolMulNode = TupleNode<"*">;
-    export type MulNode = TupleNode<"Mul">;
-    export type SubNode = TupleNode<"Sub">;
+    export type AddTupleNode = TupleNode<typeof AddTupleNodeType>;
+    export type DivSymbolTupleNode = TupleNode<typeof DivSymbolTupleNodeType>;
+    export type DivTupleNode = TupleNode<typeof DivTupleNodeType>;
+    export type ModSymbolTupleNode = TupleNode<typeof ModSymbolTupleNodeType>;
+    export type ModTupleNode = TupleNode<typeof ModTupleNodeType>;
+    export type MulSymbolTupleNode = TupleNode<typeof MulSymbolTupleNodeType>;
+    export type MulTupleNode = TupleNode<typeof MulTupleNodeType>;
+    export type SubTupleNode = TupleNode<typeof SubTupleNodeType>;
 
     // Unary
-    export type NegNode = TupleNode<"Neg">;
-    export type PosNode = TupleNode<"Pos">;
-    export type AbsNode = TupleNode<"Abs">;
+    export type NegTupleNode = TupleNode<typeof NegTupleNodeType>;
+    export type PosTupleNode = TupleNode<typeof PosTupleNodeType>;
+    export type AbsTupleNode = TupleNode<typeof AbsTupleNodeType>;
 
     // Unary or Binary (depending on number of params)
-    export type SymbolSubNegNode = TupleNode<"-">;
-    export type SymbolAddPosNode = TupleNode<"+">;
+    export type SubOrNegSymbolTupleNode = TupleNode<typeof SubOrNegSymbolTupleNodeType>;
+    export type AddOrPosSymbolTupleNode = TupleNode<typeof AddOrPosSymbolTupleNodeType>;
 
-    export const enum MatchingFieldEnum {
-        AltCode = "AltCode",
-        Attribute = "Attribute",
-        Auction = "Auction",
-        AuctionLast = "AuctionLast",
-        AuctionQuantity = "AuctionQuantity",
-        BestAskCount = "BestAskCount",
-        BestAskPrice = "BestAskPrice",
-        BestAskQuantity = "BestAskQuantity",
-        BestBidCount = "BestBidCount",
-        BestBidPrice = "BestBidPrice",
-        BestBidQuantity = "BestBidQuantity",
-        Board = "Board",
-        CallOrPut = "CallOrPut",
-        Category = "Category",
-        CFI = "CFI",
-        Class = "Class",
-        ClosePrice = "ClosePrice",
-        Code = "Code",
-        ContractSize = "ContractSize",
-        Currency = "Currency",
-        Data = "Data",
-        Date = "Date",
-        Exchange = "Exchange",
-        ExerciseType = "ExerciseType",
-        ExpiryDate = "ExpiryDate",
-        HighPrice = "HighPrice",
-        IsIndex = "IsIndex",
-        LastPrice = "LastPrice",
-        Leg = "Leg",
-        LotSize = "LotSize",
-        LowPrice = "LowPrice",
-        Market = "Market",
-        Name = "Name",
-        OpenInterest = "OpenInterest",
-        OpenPrice = "OpenPrice",
-        Price = "Price",
-        PreviousClose = "PreviousClose",
-        QuotationBasis = "QuotationBasis",
-        Remainder = "Remainder",
-        ShareIssue = "ShareIssue",
-        State = "State",
-        StateAllows = "StateAllows",
-        StatusNote = "StatusNote",
-        StrikePrice = "StrikePrice",
-        Trades = "Trades",
-        TradingMarket = "TradingMarket",
-        ValueTraded = "ValueTraded",
-        Volume = "Volume",
-        VWAP = "VWAP",
-    }
+    export type LogicalTupleNodeType = PickEnum<TupleNodeType,
+        typeof AndTupleNodeType |
+        typeof OrTupleNodeType |
+        typeof NotTupleNodeType
+    >;
 
-    export type MatchingField = keyof typeof MatchingFieldEnum;
+    export type NumericField = PickEnum<TupleNodeType,
+        typeof AuctionTupleNodeType |
+        typeof AuctionLastTupleNodeType |
+        typeof AuctionQuantityTupleNodeType |
+        typeof BestAskCountTupleNodeType |
+        typeof BestAskPriceTupleNodeType |
+        typeof BestAskQuantityTupleNodeType |
+        typeof BestBidCountTupleNodeType |
+        typeof BestBidPriceTupleNodeType |
+        typeof BestBidQuantityTupleNodeType |
+        typeof ClosePriceTupleNodeType |
+        typeof ContractSizeTupleNodeType |
+        typeof HighPriceTupleNodeType |
+        typeof LastPriceTupleNodeType |
+        typeof LotSizeTupleNodeType |
+        typeof LowPriceTupleNodeType |
+        typeof OpenInterestTupleNodeType |
+        typeof OpenPriceTupleNodeType |
+        typeof PreviousCloseTupleNodeType |
+        typeof RemainderTupleNodeType |
+        typeof ShareIssueTupleNodeType |
+        typeof StrikePriceTupleNodeType |
+        typeof TradesTupleNodeType |
+        typeof ValueTradedTupleNodeType |
+        typeof VolumeTupleNodeType |
+        typeof VwapTupleNodeType
+    >;
+
+    export type DateField = PickEnum<TupleNodeType,
+        typeof ExpiryDateTupleNodeType
+    >;
+
+    export type BooleanField = PickEnum<TupleNodeType,
+        typeof IsIndexTupleNodeType
+    >;
+
+    export type TextField = PickEnum<TupleNodeType,
+        typeof BoardTupleNodeType |
+        typeof CallOrPutTupleNodeType |
+        typeof CategoryTupleNodeType |
+        typeof CfiTupleNodeType |
+        typeof ClassTupleNodeType |
+        typeof CodeTupleNodeType |
+        typeof CurrencyTupleNodeType |
+        typeof DataTupleNodeType |
+        typeof ExchangeTupleNodeType |
+        typeof ExerciseTypeTupleNodeType |
+        typeof LegTupleNodeType |
+        typeof MarketTupleNodeType |
+        typeof NameTupleNodeType |
+        typeof QuotationBasisTupleNodeType |
+        typeof StateTupleNodeType |
+        typeof StateAllowsTupleNodeType |
+        typeof StatusNoteTupleNodeType |
+        typeof TradingMarketTupleNodeType
+    >;
+
+    export type PriceSubbedField = typeof PriceTupleNodeType;
+    export type NumericSubbedField = PriceSubbedField;
+    export type DateSubbedField = typeof DateTupleNodeType;
+    export type AltCodeSubbedField = typeof AltCodeTupleNodeType;
+    export type AttributeSubbedField = typeof AttributeTupleNodeType;
+    export type TextSubbedField = AltCodeSubbedField | AttributeSubbedField;
+
+    export type MatchingField =
+        NumericField |
+        DateField |
+        BooleanField |
+        TextField |
+        NumericSubbedField |
+        DateSubbedField |
+        TextSubbedField;
 
     export const enum MatchingPriceSubFieldEnum {
         LastPrice = 'LastPrice',
     }
-    export type MatchingPriceSubField = keyof typeof MatchingPriceSubFieldEnum;
+    export type MatchingPriceSubField = MatchingPriceSubFieldEnum;
 
     export const enum MatchingDateSubFieldEnum {
         Dividend = 'Dividend',
     }
-    export type MatchingDateSubField = keyof typeof MatchingDateSubFieldEnum;
+    export type MatchingDateSubField = MatchingDateSubFieldEnum;
 
-    export type MatchingAltCodeSubField = keyof typeof Zenith.MarketController.SearchSymbols.AlternateKey;
-    export type MatchingAttributeSubField = keyof typeof Zenith.MarketController.SearchSymbols.KnownAttributeKey;
+    export type MatchingAltCodeSubField = Zenith.MarketController.SearchSymbols.AlternateKey;
+    export type MatchingAttributeSubField = Zenith.MarketController.SearchSymbols.KnownAttributeKey;
     export type MatchingTextSubField = MatchingAltCodeSubField | MatchingAttributeSubField;
 
-    export type LogicalNodeUnion = AndNode | OrNode | NotNode;
-    export type LogicalNode = [nodeType: NodeType, ...params: unknown[]];
+    export type LogicalTupleNodeUnion = AndTupleNode | OrTupleNode | NotTupleNode;
+    export type LogicalTupleNode = [nodeType: LogicalTupleNodeType, ...params: BooleanParam[]];
 
-    export type MatchingNodeUnion =
-        AltCodeNode |
-        AttributeNode |
-        AuctionNode |
-        AuctionLastNode |
-        AuctionQuantityNode |
-        BestAskCountNode |
-        BestAskPriceNode |
-        BestAskQuantityNode |
-        BestBidCountNode |
-        BestBidPriceNode |
-        BestBidQuantityNode |
-        BoardNode |
-        CallOrPutNode |
-        CategoryNode |
-        CFINode |
-        ClassNode |
-        ClosePriceNode |
-        CodeNode |
-        ContractSizeNode |
-        CurrencyNode |
-        DataNode |
-        DateNode |
-        ExerciseTypeNode |
-        ExchangeNode |
-        ExpiryDateNode |
-        HighPriceNode |
-        IsIndexNode |
-        LegNode |
-        LastPriceNode |
-        LotSizeNode |
-        LowPriceNode |
-        MarketNode |
-        NameNode |
-        OpenInterestNode |
-        OpenPriceNode |
-        PriceNode |
-        PreviousCloseNode |
-        QuotationBasisNode |
-        RemainderNode |
-        ShareIssueNode |
-        StateNode |
-        StateAllowsNode |
-        StatusNoteNode |
-        StrikePriceNode |
-        TradesNode |
-        TradingMarketNode |
-        ValueTradedNode |
-        VolumeNode |
-        VWAPNode;
+    export type MatchingTupleNodeUnion =
+        AltCodeTupleNode |
+        AttributeTupleNode |
+        AuctionTupleNode |
+        AuctionLastTupleNode |
+        AuctionQuantityTupleNode |
+        BestAskCountTupleNode |
+        BestAskPriceTupleNode |
+        BestAskQuantityTupleNode |
+        BestBidCountTupleNode |
+        BestBidPriceTupleNode |
+        BestBidQuantityTupleNode |
+        BoardTupleNode |
+        CallOrPutTupleNode |
+        CategoryTupleNode |
+        CfiTupleNode |
+        ClassTupleNode |
+        ClosePriceTupleNode |
+        CodeTupleNode |
+        ContractSizeTupleNode |
+        CurrencyTupleNode |
+        DataTupleNode |
+        DateTupleNode |
+        ExerciseTypeTupleNode |
+        ExchangeTupleNode |
+        ExpiryDateTupleNode |
+        HighPriceTupleNode |
+        IsIndexTupleNode |
+        LegTupleNode |
+        LastPriceTupleNode |
+        LotSizeTupleNode |
+        LowPriceTupleNode |
+        MarketTupleNode |
+        NameTupleNode |
+        OpenInterestTupleNode |
+        OpenPriceTupleNode |
+        PriceTupleNode |
+        PreviousCloseTupleNode |
+        QuotationBasisTupleNode |
+        RemainderTupleNode |
+        ShareIssueTupleNode |
+        StateTupleNode |
+        StateAllowsTupleNode |
+        StatusNoteTupleNode |
+        StrikePriceTupleNode |
+        TradesTupleNode |
+        TradingMarketTupleNode |
+        ValueTradedTupleNode |
+        VolumeTupleNode |
+        VwapTupleNode;
 
-    export type MatchingNode = [nodeType: MatchingFieldEnum, param1?: unknown, param2?: unknown, param3?: unknown, param4?: unknown, param5?: unknown];
+    export type NumericRangeMatchingTupleNode = [nodeType: NumericField, ...params: NumericRangeParams];
+    export type NumericNamedRangeMatchingTupleNode = [nodeType: NumericField, ...params: NumericNamedRangeParams];
+    export type DateRangeMatchingTupleNode = [nodeType: DateField, ...params: DateRangeParams];
+    export type DateNamedRangeMatchingTupleNode = [nodeType: DateField, ...params: DateNamedRangeParams];
+    export type TextMatchingTupleNode = [nodeType: TextField, ...params: TextParams];
+    export type NamedTextMatchingTupleNode = [nodeType: TextField, ...params: NamedTextParams];
+    export type BooleanSingleMatchingTupleNode = [nodeType: BooleanField, ...params: BooleanSingleParam];
+    export type BooleanSingle_DefaultMatchingTupleNode = [nodeType: BooleanField, ...params: BooleanSingleParam_Default];
+    export type BooleanSingle_ExistsMatchingTupleNode = [nodeType: BooleanField, ...params: BooleanSingleParam_Exists];
+    export type NumericSingleMatchingTupleNode = [nodeType: NumericField, ...params: NumericSingleParam];
+    export type NumericSingle_DefaultMatchingTupleNode = [nodeType: NumericField, ...params: NumericSingleParam_Default];
+    export type NumericSingle_ExistsMatchingTupleNode = [nodeType: NumericField, ...params: NumericSingleParam_Exists];
+    export type TextSingleMatchingTupleNode = [nodeType: TextField, ...params: TextSingleParam];
+    export type TextSingle_DefaultMatchingTupleNode = [nodeType: TextField, ...params: TextSingleParam_Default];
+    export type TextSingle_ExistsMatchingTupleNode = [nodeType: TextField, ...params: TextSingleParam_Exists];
 
-    export type ComparisonNodeUnion =
-        EqualNode |
-        GreaterThanNode |
-        GreaterThanOrEqualNode |
-        LessThanNode |
-        LessThanOrEqualNode;
+    export type MatchingTupleNode =
+        NumericRangeMatchingTupleNode |
+        NumericNamedRangeMatchingTupleNode |
+        DateRangeMatchingTupleNode |
+        DateNamedRangeMatchingTupleNode |
+        TextMatchingTupleNode |
+        NamedTextMatchingTupleNode |
+        BooleanSingleMatchingTupleNode |
+        BooleanSingle_DefaultMatchingTupleNode |
+        BooleanSingle_ExistsMatchingTupleNode |
+        NumericSingleMatchingTupleNode |
+        NumericSingle_DefaultMatchingTupleNode |
+        NumericSingle_ExistsMatchingTupleNode |
+        TextSingleMatchingTupleNode |
+        TextSingle_DefaultMatchingTupleNode |
+        TextSingle_ExistsMatchingTupleNode;
 
-    export type ComparisonNode = [nodeType: NodeType, leftParam: unknown, rightParam: unknown];
+    export type ComparisonTupleNodeUnion =
+        EqualTupleNode |
+        GreaterThanTupleNode |
+        GreaterThanOrEqualTupleNode |
+        LessThanTupleNode |
+        LessThanOrEqualTupleNode;
 
-    export type AllNoneNodeUnion =
-        AllNode |
-        NoneNode;
+    export type ComparisonTupleNode = [nodeType: TupleNodeType, leftParam: unknown, rightParam: unknown];
 
-    export type BinaryExpressionNodeUnion =
-        AddNode |
-        SymbolDivNode |
-        DivNode |
-        SymbolModNode |
-        ModNode |
-        SymbolMulNode |
-        MulNode |
-        SubNode;
+    export type AllNoneTupleNodeUnion =
+        AllTupleNode |
+        NoneTupleNode;
 
-    export type BinaryExpressionNode = [nodeType: NodeType, leftParam: unknown, rightParam: unknown];
+    export type AllNoneTupleNode = [nodeType: TupleNodeType];
 
-    export type UnaryExpressionNodeUnion =
-        NegNode |
-        PosNode |
-        AbsNode;
+    export type BinaryExpressionTupleNodeUnion =
+        AddTupleNode |
+        DivSymbolTupleNode |
+        DivTupleNode |
+        ModSymbolTupleNode |
+        ModTupleNode |
+        MulSymbolTupleNode |
+        MulTupleNode |
+        SubTupleNode;
 
-    export type UnaryExpressionNode = [nodeType: NodeType, param: unknown];
+    export type BinaryExpressionTupleNode = [nodeType: TupleNodeType, leftParam: unknown, rightParam: unknown];
 
-    export type UnaryOrBinaryExpressionNodeUnion =
-        SymbolSubNegNode |
-        SymbolAddPosNode;
+    export type UnaryExpressionTupleNodeUnion =
+        NegTupleNode |
+        PosTupleNode |
+        AbsTupleNode;
 
-    export type UnaryOrBinaryExpressionNode = [nodeType: NodeType, leftOrUnaryparam: unknown, rightParam?: unknown];
+    export type UnaryExpressionTupleNode = [nodeType: TupleNodeType, param: unknown];
 
-    export type BooleanNodeUnion = LogicalNodeUnion | MatchingNodeUnion | ComparisonNodeUnion | AllNoneNodeUnion;
-    export type BooleanNode = LogicalNode | MatchingNode | ComparisonNode | AllNoneNodeUnion| MatchingField;
-    export type NumericNodeUnion = UnaryExpressionNodeUnion | BinaryExpressionNodeUnion | UnaryOrBinaryExpressionNodeUnion;
-    export type NumericNode = UnaryExpressionNode | BinaryExpressionNode | UnaryOrBinaryExpressionNode | MatchingField;
-    export type AnyNodeUnion = BooleanNodeUnion | NumericNodeUnion;
-    export type AnyNode = BooleanNode | NumericNode;
+    export type UnaryOrBinaryExpressionTupleNodeUnion =
+        SubOrNegSymbolTupleNode |
+        AddOrPosSymbolTupleNode;
 
-    export type NoParams = [];
-    export type LogicalUnionParams = (boolean | BooleanNodeUnion)[];
-    export type LogicalParams = (boolean | BooleanNode)[];
+    export type UnaryOrBinaryExpressionTupleNode = [nodeType: TupleNodeType, leftOrUnaryparam: unknown, rightParam?: unknown];
+
+    export type BooleanTupleNodeUnion = LogicalTupleNodeUnion | MatchingTupleNodeUnion | ComparisonTupleNodeUnion | AllNoneTupleNodeUnion;
+    export type BooleanTupleNode = LogicalTupleNode | MatchingTupleNode | ComparisonTupleNode | AllNoneTupleNode;
+
+    export type NumericTupleNodeUnion = UnaryExpressionTupleNodeUnion | BinaryExpressionTupleNodeUnion | UnaryOrBinaryExpressionTupleNodeUnion;
+    export type NumericTupleNode = UnaryExpressionTupleNode | BinaryExpressionTupleNode | UnaryOrBinaryExpressionTupleNode;
 
     export interface TextNamedParameters {
         As?: TextContainsAsEnum;
@@ -284,8 +337,12 @@ export namespace ZenithScanCriteria {
         Max?: DateString; // Set for "in range (inclusive)" or "less than or equal"
     }
 
-    export type NumericUnion = number | NumericNodeUnion;
-    export type NumericParam = number | NumericNode | ComparableField;
+
+    export type NoParams = [];
+    export type LogicalParams = (BooleanParam)[];
+    export type BooleanParam = LogicalTupleNode | MatchingTupleNode | ComparisonTupleNode | AllNoneTupleNode | MatchingField;
+    export type NumericUnion = number | NumericTupleNodeUnion;
+    export type NumericParam = number | NumericTupleNode | NumericField;
     export type SingleNumericUnionParams = [value: NumericUnion];
     export type SingleNumericParams = [value: NumericParam];
     export type LeftRightNumericUnionParams = [left: NumericUnion, right: NumericUnion];
@@ -300,174 +357,226 @@ export namespace ZenithScanCriteria {
     export type TextParams_FourthForm = [field: MatchingField, value: string, namedParameters: TextNamedParameters];
     export type TextParams = TextParams_FirstForm | TextParams_SecondForm | TextParams_ThirdForm | TextParams_FourthForm;
 
-    export type NamedTextParams_FirstForm = [field: MatchingField, subField: MatchingTextSubField]; // exists
-    export type NamedTextParams_SecondForm = [field: MatchingField, subField: MatchingTextSubField, value: string]; // Contains
-    export type NamedTextParams_ThirdForm = [field: MatchingField, subField: MatchingTextSubField, value: string, as?: TextContainsAsEnum, ignoreCase?: boolean]; // Advanced contains
-    export type NamedTextParams_FourthForm = [field: MatchingField, subField: MatchingTextSubField, value: string, namedParameters: TextNamedParameters];
+    export type NamedTextParams_FirstForm = [field: TextSubbedField, subField: MatchingTextSubField]; // exists
+    export type NamedTextParams_SecondForm = [field: TextSubbedField, subField: MatchingTextSubField, value: string]; // Contains
+    export type NamedTextParams_ThirdForm = [field: TextSubbedField, subField: MatchingTextSubField, value: string, as?: TextContainsAsEnum, ignoreCase?: boolean]; // Advanced contains
+    export type NamedTextParams_FourthForm = [field: TextSubbedField, subField: MatchingTextSubField, value: string, namedParameters: TextNamedParameters];
     export type NamedTextParams = NamedTextParams_FirstForm | NamedTextParams_SecondForm | NamedTextParams_ThirdForm | NamedTextParams_FourthForm;
 
-    export type NumericRangeParams_FirstForm = [field: MatchingField]; // exists
-    export type NumericRangeParams_SecondForm = [field: MatchingField, value: number]; // equals
-    export type NumericRangeParams_ThirdForm = [field: MatchingField, value: number, min: number | null, max: number | null]; // in range
-    export type NumericRangeParams_ForthForm = [field: MatchingField, namedParameters: NumericNamedParameters];
+    export type NumericRangeParams_FirstForm = [field: NumericField]; // exists
+    export type NumericRangeParams_SecondForm = [field: NumericField, value: number]; // equals
+    export type NumericRangeParams_ThirdForm = [field: NumericField, value: number, min: number | null, max: number | null]; // in range
+    export type NumericRangeParams_FourthForm = [field: NumericField, namedParameters: NumericNamedParameters];
     export type NumericRangeParams =
         NumericRangeParams_FirstForm |
         NumericRangeParams_SecondForm |
         NumericRangeParams_ThirdForm |
-        NumericRangeParams_ForthForm;
+        NumericRangeParams_FourthForm;
 
-    export type NumericNamedRangeParams_FirstForm = [field: MatchingField, subField: MatchingPriceSubField]; // exists
-    export type NumericNamedRangeParams_SecondForm = [field: MatchingField, subField: MatchingPriceSubField, value: number]; // equals
-    export type NumericNamedRangeParams_ThirdForm = [field: MatchingField, subField: MatchingPriceSubField, min: number | null, max: number | null]; // in range
-    export type NumericNamedRangeParams_ForthForm = [field: MatchingField, subField: MatchingPriceSubField, namedParameters: NumericNamedParameters];
+    export type NumericNamedRangeParams_FirstForm = [field: NumericSubbedField, subField: MatchingPriceSubField]; // exists
+    export type NumericNamedRangeParams_SecondForm = [field: NumericSubbedField, subField: MatchingPriceSubField, value: number]; // equals
+    export type NumericNamedRangeParams_ThirdForm = [field: NumericSubbedField, subField: MatchingPriceSubField, min: number | null, max: number | null]; // in range
+    export type NumericNamedRangeParams_FourthForm = [field: NumericSubbedField, subField: MatchingPriceSubField, namedParameters: NumericNamedParameters];
     export type NumericNamedRangeParams =
         NumericNamedRangeParams_FirstForm |
         NumericNamedRangeParams_SecondForm |
         NumericNamedRangeParams_ThirdForm |
-        NumericNamedRangeParams_ForthForm;
+        NumericNamedRangeParams_FourthForm;
 
-    export type DateRangeParams_FirstForm = [field: MatchingField]; // exists
-    export type DateRangeParams_SecondForm = [field: MatchingField, value: DateString]; // equals
-    export type DateRangeParams_ThirdForm = [field: MatchingField, min: DateString | null, max: DateString | null]; // in range
-    export type DateRangeParams_ForthForm = [field: MatchingField, namedParameters: DateNamedParameters]; // equals
+    export type DateRangeParams_FirstForm = [field: DateField]; // exists
+    export type DateRangeParams_SecondForm = [field: DateField, value: DateString]; // equals
+    export type DateRangeParams_ThirdForm = [field: DateField, min: DateString | null, max: DateString | null]; // in range
+    export type DateRangeParams_FourthForm = [field: DateField, namedParameters: DateNamedParameters]; // equals
     export type DateRangeParams =
         DateRangeParams_FirstForm |
         DateRangeParams_SecondForm |
         DateRangeParams_ThirdForm |
-        DateRangeParams_ForthForm;
+        DateRangeParams_FourthForm;
 
-    export type DateNamedRangeParams_FirstForm = [field: MatchingField, subField: MatchingDateSubField]; // exists
-    export type DateNamedRangeParams_SecondForm = [field: MatchingField, subField: MatchingDateSubField, value: DateString]; // equals
-    export type DateNamedRangeParams_ThirdForm = [field: MatchingField, subField: MatchingDateSubField, min: DateString | null, max: DateString | null]; // in range
-    export type DateNamedRangeParams_ForthForm = [field: MatchingField, subField: MatchingDateSubField, namedParameters: DateNamedParameters];
+    export type DateNamedRangeParams_FirstForm = [field: DateSubbedField, subField: MatchingDateSubField]; // exists
+    export type DateNamedRangeParams_SecondForm = [field: DateSubbedField, subField: MatchingDateSubField, value: DateString]; // equals
+    export type DateNamedRangeParams_ThirdForm = [field: DateSubbedField, subField: MatchingDateSubField, min: DateString | null, max: DateString | null]; // in range
+    export type DateNamedRangeParams_FourthForm = [field: DateSubbedField, subField: MatchingDateSubField, namedParameters: DateNamedParameters];
     export type DateNamedRangeParams =
         DateNamedRangeParams_FirstForm |
         DateNamedRangeParams_SecondForm |
         DateNamedRangeParams_ThirdForm |
-        DateNamedRangeParams_ForthForm;
+        DateNamedRangeParams_FourthForm;
 
-    export type SingleParam_EqualsValue = [value: boolean | number | string]; // equals
     export type SingleParam_EqualsDefault = []; // equals default
     export type SingleParam_IsSet = []; // is set
-    export type SingleParam = SingleParam_EqualsValue; // equals value or equals default
-    export type SingleParam_Default = SingleParam_EqualsValue | SingleParam_EqualsDefault; // equals value or equals default
-    export type SingleParam_Exists = SingleParam_EqualsValue | SingleParam_IsSet; // equals value or is set
+    export type BooleanSingleParam_EqualsValue = [value: boolean]; // equals
+    export type BooleanSingleParam = BooleanSingleParam_EqualsValue; // equals value
+    export type BooleanSingleParam_Default = BooleanSingleParam_EqualsValue | SingleParam_EqualsDefault; // equals value or equals default
+    export type BooleanSingleParam_Exists = BooleanSingleParam_EqualsValue | SingleParam_IsSet; // equals value or is set
+    export type NumericSingleParam_EqualsValue = [value: number]; // equals
+    export type NumericSingleParam = NumericSingleParam_EqualsValue; // equals
+    export type NumericSingleParam_Default = NumericSingleParam_EqualsValue | SingleParam_EqualsDefault; // equals value or equals default
+    export type NumericSingleParam_Exists = NumericSingleParam_EqualsValue | SingleParam_IsSet; // equals value or is set
+    export type TextSingleParam_EqualsValue = [value: string]; // equals
+    export type TextSingleParam = TextSingleParam_EqualsValue; // equals
+    export type TextSingleParam_Default = TextSingleParam_EqualsValue | SingleParam_EqualsDefault; // equals value or equals default
+    export type TextSingleParam_Exists = TextSingleParam_EqualsValue | SingleParam_IsSet; // equals value or is set
+
+    export const AndTupleNodeType: TupleNodeType = 'And';
+    export const NotTupleNodeType: TupleNodeType = 'Not';
+    export const OrTupleNodeType: TupleNodeType = 'Or';
+    export const AltCodeTupleNodeType: TupleNodeType = 'AltCode';
+    export const AttributeTupleNodeType: TupleNodeType = 'Attribute';
+    export const AuctionTupleNodeType: TupleNodeType = 'Auction';
+    export const AuctionLastTupleNodeType: TupleNodeType = 'AuctionLast';
+    export const AuctionQuantityTupleNodeType: TupleNodeType = 'AuctionQuantity';
+    export const BestAskCountTupleNodeType: TupleNodeType = 'BestAskCount';
+    export const BestAskPriceTupleNodeType: TupleNodeType = 'BestAskPrice';
+    export const BestAskQuantityTupleNodeType: TupleNodeType = 'BestAskQuantity';
+    export const BestBidCountTupleNodeType: TupleNodeType = 'BestBidCount';
+    export const BestBidPriceTupleNodeType: TupleNodeType = 'BestBidPrice';
+    export const BestBidQuantityTupleNodeType: TupleNodeType = 'BestBidQuantity';
+    export const BoardTupleNodeType: TupleNodeType = 'Board';
+    export const CallOrPutTupleNodeType: TupleNodeType = 'CallOrPut';
+    export const CategoryTupleNodeType: TupleNodeType = 'Category';
+    export const CfiTupleNodeType: TupleNodeType = 'CFI';
+    export const ClassTupleNodeType: TupleNodeType = 'Class';
+    export const ClosePriceTupleNodeType: TupleNodeType = 'ClosePrice';
+    export const CodeTupleNodeType: TupleNodeType = 'Code';
+    export const ContractSizeTupleNodeType: TupleNodeType = 'ContractSize';
+    export const CurrencyTupleNodeType: TupleNodeType = 'Currency';
+    export const DataTupleNodeType: TupleNodeType = 'Data';
+    export const DateTupleNodeType: TupleNodeType = 'Date';
+    export const ExerciseTypeTupleNodeType: TupleNodeType = 'ExerciseType';
+    export const ExchangeTupleNodeType: TupleNodeType = 'Exchange';
+    export const ExpiryDateTupleNodeType: TupleNodeType = 'ExpiryDate';
+    export const HighPriceTupleNodeType: TupleNodeType = 'HighPrice';
+    export const IsIndexTupleNodeType: TupleNodeType = 'IsIndex';
+    export const LegTupleNodeType: TupleNodeType = 'Leg';
+    export const LastPriceTupleNodeType: TupleNodeType = 'LastPrice';
+    export const LotSizeTupleNodeType: TupleNodeType = 'LotSize';
+    export const LowPriceTupleNodeType: TupleNodeType = 'LowPrice';
+    export const MarketTupleNodeType: TupleNodeType = 'Market';
+    export const NameTupleNodeType: TupleNodeType = 'Name';
+    export const OpenInterestTupleNodeType: TupleNodeType = 'OpenInterest';
+    export const OpenPriceTupleNodeType: TupleNodeType = 'OpenPrice';
+    export const PriceTupleNodeType: TupleNodeType = 'Price';
+    export const PreviousCloseTupleNodeType: TupleNodeType = 'PreviousClose';
+    export const QuotationBasisTupleNodeType: TupleNodeType = 'QuotationBasis';
+    export const RemainderTupleNodeType: TupleNodeType = 'Remainder';
+    export const ShareIssueTupleNodeType: TupleNodeType = 'ShareIssue';
+    export const StateTupleNodeType: TupleNodeType = 'State';
+    export const StateAllowsTupleNodeType: TupleNodeType = 'StateAllows';
+    export const StatusNoteTupleNodeType: TupleNodeType = 'StatusNote';
+    export const StrikePriceTupleNodeType: TupleNodeType = 'StrikePrice';
+    export const TradesTupleNodeType: TupleNodeType = 'Trades';
+    export const TradingMarketTupleNodeType: TupleNodeType = 'TradingMarket';
+    export const ValueTradedTupleNodeType: TupleNodeType = 'ValueTraded';
+    export const VolumeTupleNodeType: TupleNodeType = 'Volume';
+    export const VwapTupleNodeType: TupleNodeType = 'VWAP';
+    export const EqualTupleNodeType: TupleNodeType =  '=';
+    export const GreaterThanTupleNodeType: TupleNodeType =  '>';
+    export const GreaterThanOrEqualTupleNodeType: TupleNodeType =  '>=';
+    export const LessThanTupleNodeType: TupleNodeType =  '<';
+    export const LessThanOrEqualTupleNodeType: TupleNodeType =  '<=';
+    export const AllTupleNodeType: TupleNodeType = 'All';
+    export const NoneTupleNodeType: TupleNodeType = 'None';
+    export const AddTupleNodeType: TupleNodeType = 'Add';
+    export const DivSymbolTupleNodeType: TupleNodeType =  '/';
+    export const DivTupleNodeType: TupleNodeType = 'Div';
+    export const ModSymbolTupleNodeType: TupleNodeType =  '%';
+    export const ModTupleNodeType: TupleNodeType = 'Mod';
+    export const MulSymbolTupleNodeType: TupleNodeType =  '*';
+    export const MulTupleNodeType: TupleNodeType = 'Mul';
+    export const SubTupleNodeType: TupleNodeType = 'Sub';
+    export const NegTupleNodeType: TupleNodeType = 'Neg';
+    export const PosTupleNodeType: TupleNodeType = 'Pos';
+    export const AbsTupleNodeType: TupleNodeType = 'Abs';
+    export const SubOrNegSymbolTupleNodeType: TupleNodeType =  '-';
+    export const AddOrPosSymbolTupleNodeType: TupleNodeType =  '+';
+
 
     export interface ParamTupleMap {
         // Logical
-        "And": LogicalParams;
-        "Not": LogicalParams;
-        "Or": LogicalParams;
+        'And': LogicalParams;
+        'Not': LogicalParams;
+        'Or': LogicalParams;
 
         // Matching
-        "AltCode": NamedTextParams;
-        "Attribute": NamedTextParams;
-        "Auction": NumericRangeParams;
-        "AuctionLast": NumericRangeParams;
-        "AuctionQuantity": NumericRangeParams;
-        "BestAskCount": NumericRangeParams;
-        "BestAskPrice": NumericRangeParams;
-        "BestAskQuantity": NumericRangeParams;
-        "BestBidCount": NumericRangeParams;
-        "BestBidPrice": NumericRangeParams;
-        "BestBidQuantity": NumericRangeParams;
-        "Board": SingleParam;
-        "CallOrPut": SingleParam_Exists;
-        "Category": SingleParam;
-        "CFI": SingleParam;
-        "Class": SingleParam;
-        "ClosePrice": NumericRangeParams;
-        "Code": TextParams;
-        "ContractSize": NumericRangeParams;
-        "Currency": SingleParam;
-        "Data": SingleParam;
-        "Date": DateNamedRangeParams;
-        "ExerciseType": SingleParam_Exists;
-        "Exchange": SingleParam;
-        "ExpiryDate": DateRangeParams;
-        "HighPrice": NumericRangeParams;
-        "IsIndex": SingleParam_Default;
-        "Leg": SingleParam;
-        "LastPrice": NumericRangeParams;
-        "LotSize": NumericRangeParams;
-        "LowPrice": NumericRangeParams;
-        "Market": SingleParam;
-        "Name": TextParams;
-        "OpenInterest": NumericRangeParams;
-        "OpenPrice": NumericRangeParams;
-        "Price": NumericNamedRangeParams;
-        "PreviousClose": NumericRangeParams;
-        "QuotationBasis": SingleParam;
-        "Remainder": NumericRangeParams;
-        "ShareIssue": NumericRangeParams;
-        "State": SingleParam;
-        "StateAllows": SingleParam;
-        "StatusNote": SingleParam;
-        "StrikePrice": NumericRangeParams;
-        "Trades": NumericRangeParams;
-        "TradingMarket": SingleParam;
-        "ValueTraded": NumericRangeParams;
-        "Volume": NumericRangeParams;
-        "VWAP": NumericRangeParams;
+        'AltCode': NamedTextParams;
+        'Attribute': NamedTextParams;
+        'Auction': NumericRangeParams;
+        'AuctionLast': NumericRangeParams;
+        'AuctionQuantity': NumericRangeParams;
+        'BestAskCount': NumericRangeParams;
+        'BestAskPrice': NumericRangeParams;
+        'BestAskQuantity': NumericRangeParams;
+        'BestBidCount': NumericRangeParams;
+        'BestBidPrice': NumericRangeParams;
+        'BestBidQuantity': NumericRangeParams;
+        'Board': SingleParam;
+        'CallOrPut': SingleParam_Exists;
+        'Category': SingleParam;
+        'CFI': SingleParam;
+        'Class': SingleParam;
+        'ClosePrice': NumericRangeParams;
+        'Code': TextParams;
+        'ContractSize': NumericRangeParams;
+        'Currency': SingleParam;
+        'Data': SingleParam;
+        'Date': DateNamedRangeParams;
+        'ExerciseType': SingleParam_Exists;
+        'Exchange': SingleParam;
+        'ExpiryDate': DateRangeParams;
+        'HighPrice': NumericRangeParams;
+        'IsIndex': SingleParam_Default;
+        'Leg': SingleParam;
+        'LastPrice': NumericRangeParams;
+        'LotSize': NumericRangeParams;
+        'LowPrice': NumericRangeParams;
+        'Market': SingleParam;
+        'Name': TextParams;
+        'OpenInterest': NumericRangeParams;
+        'OpenPrice': NumericRangeParams;
+        'Price': NumericNamedRangeParams;
+        'PreviousClose': NumericRangeParams;
+        'QuotationBasis': SingleParam;
+        'Remainder': NumericRangeParams;
+        'ShareIssue': NumericRangeParams;
+        'State': SingleParam;
+        'StateAllows': SingleParam;
+        'StatusNote': SingleParam;
+        'StrikePrice': NumericRangeParams;
+        'Trades': NumericRangeParams;
+        'TradingMarket': SingleParam;
+        'ValueTraded': NumericRangeParams;
+        'Volume': NumericRangeParams;
+        'VWAP': NumericRangeParams;
 
         // Comparison
-        "=": LeftRightNumericParams;
-        ">": LeftRightNumericParams;
-        ">=": LeftRightNumericParams;
-        "<": LeftRightNumericParams;
-        "<=": LeftRightNumericParams;
-        "All": NoParams;
-        "None": NoParams;
+        '=': LeftRightNumericParams;
+        '>': LeftRightNumericParams;
+        '>=': LeftRightNumericParams;
+        '<': LeftRightNumericParams;
+        '<=': LeftRightNumericParams;
+        'All': NoParams;
+        'None': NoParams;
 
         // Binary
-        "Add": LeftRightNumericParams;
-        "/": LeftRightNumericParams;
-        "Div": LeftRightNumericParams;
-        "%": LeftRightNumericParams;
-        "Mod": LeftRightNumericParams;
-        "*": LeftRightNumericParams;
-        "Mul": LeftRightNumericParams;
-        "Sub": LeftRightNumericParams;
+        'Add': LeftRightNumericParams;
+        '/': LeftRightNumericParams;
+        'Div': LeftRightNumericParams;
+        '%': LeftRightNumericParams;
+        'Mod': LeftRightNumericParams;
+        '*': LeftRightNumericParams;
+        'Mul': LeftRightNumericParams;
+        'Sub': LeftRightNumericParams;
 
         // Unary
-        "Neg": SingleNumericParams;
-        "Pos": SingleNumericParams;
-        "Abs": SingleNumericParams;
+        'Neg': SingleNumericParams;
+        'Pos': SingleNumericParams;
+        'Abs': SingleNumericParams;
 
         // Unary or Binary (depending on number of params)
-        "-": SingleOrLeftRightNumericParams;
-        "+": SingleOrLeftRightNumericParams;
+        '-': SingleOrLeftRightNumericParams;
+        '+': SingleOrLeftRightNumericParams;
     }
-
-    // export type ComparableField = MatchingField; // actually only subset
-    export type ComparableField = PickEnum<MatchingField,
-        MatchingFieldEnum.Auction |
-        MatchingFieldEnum.AuctionLast |
-        MatchingFieldEnum.AuctionQuantity |
-        MatchingFieldEnum.BestAskCount |
-        MatchingFieldEnum.BestAskPrice |
-        MatchingFieldEnum.BestAskQuantity |
-        MatchingFieldEnum.BestBidCount |
-        MatchingFieldEnum.BestBidPrice |
-        MatchingFieldEnum.BestBidQuantity |
-        MatchingFieldEnum.ClosePrice |
-        MatchingFieldEnum.ContractSize |
-        MatchingFieldEnum.HighPrice |
-        MatchingFieldEnum.LastPrice |
-        MatchingFieldEnum.LotSize |
-        MatchingFieldEnum.LowPrice |
-        MatchingFieldEnum.OpenInterest |
-        MatchingFieldEnum.OpenPrice |
-        MatchingFieldEnum.PreviousClose |
-        MatchingFieldEnum.Price |
-        MatchingFieldEnum.Remainder |
-        MatchingFieldEnum.ShareIssue |
-        MatchingFieldEnum.StrikePrice |
-        MatchingFieldEnum.Trades |
-        MatchingFieldEnum.ValueTraded |
-        MatchingFieldEnum.Volume |
-        MatchingFieldEnum.VWAP
-    >;
 
     // export const enum ComparableFieldEnum {
     //     Auction = 'Auction',

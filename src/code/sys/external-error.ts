@@ -318,5 +318,14 @@ export namespace ExternalError {
         SymbolHasEmptyMarket = 'SHEM50113',
         ScanIdUpdated = 'SIU10668',
         WatchlistIdUpdated = 'WIU10668',
+        ZenithScanCriteriaParse_BooleanNodeIsNotAnArray = 'ZenithScanCriteriaParse_BooleanNodeIsNotAnArray',
+        ZenithScanCriteriaParse_BooleanNodeArrayIsZeroLength = 'ZenithScanCriteriaParse_BooleanNodeArrayIsZeroLength',
+        ZenithScanCriteriaParse_BooleanNodeTypeIsNotString = 'ZenithScanCriteriaParse_BooleanNodeTypeIsNotString',
+        ZenithScanCriteriaParse_LogicalBooleanMissingOperands = 'ZenithScanCriteriaParse_LogicalBooleanMissingOperands',
+        ZenithScanCriteriaParse_LogicalBooleanMissingOperand = 'ZenithScanCriteriaParse_LogicalBooleanMissingOperand',
+        ZenithScanCriteriaParse_NumericComparisonDoesNotHave2Operands = 'ZenithScanCriteriaParse_NumericComparisonDoesNotHave2Operands',
+        ZenithScanCriteriaParse_NumericParameterIsNotNumberOrComparableFieldOrArray = 'ZenithScanCriteriaParse_NumericParameterIsNotNumberOrComparableFieldOrArray',
+        ZenithScanCriteriaParse_UnexpectedBooleanParamType = 'ZenithScanCriteriaParse_UnexpectedBooleanParamType',
+        ZenithScanCriteriaParse_UnknownFieldBooleanParam = 'ZenithScanCriteriaParse_UnknownFieldBooleanParam',
     }
 }

@@ -36,7 +36,7 @@ export namespace CreateScanMessageConvert {
         }
 
         const parameters: Zenith.NotifyController.ScanParameters = {
-            Criteria: ZenithScanCriteriaConvert.fromNode(definition.criteria),
+            Criteria: ZenithScanCriteriaConvert.fromBooleanNode(definition.criteria),
             Type: ZenithNotifyConvert.ScanType.fromId(definition.targetTypeId),
             Target: ZenithNotifyConvert.Target.fromId(definition.targetTypeId, definition.targetLitIvemIds, definition.targetMarketIds),
         }

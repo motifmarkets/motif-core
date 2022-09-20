@@ -146,7 +146,7 @@ export namespace SecurityMessageConvert {
                 dataEnvironmentId: environmentId,
                 name: data.Name,
                 classId: ifDefined(data.Class, x => ZenithConvert.IvemClass.toId(x)),
-                cfi: data.CFI,
+                cfi: data.Cfi,
                 tradingState: data.TradingState,
                 marketIds: ifDefined(data.TradingMarkets, parseTradingMarkets),
                 isIndex: data.IsIndex === true,
