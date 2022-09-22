@@ -175,19 +175,20 @@ export namespace ZenithScanCriteria {
         DateSubbedField |
         TextSubbedField;
 
-    export const enum MatchingPriceSubFieldEnum {
+    export const enum PriceSubFieldEnum {
         LastPrice = 'LastPrice',
     }
-    export type MatchingPriceSubField = MatchingPriceSubFieldEnum;
+    export type PriceSubField = PriceSubFieldEnum;
 
-    export const enum MatchingDateSubFieldEnum {
+    export const enum DateSubFieldEnum {
         Dividend = 'Dividend',
     }
-    export type MatchingDateSubField = MatchingDateSubFieldEnum;
+    export type DateSubField = DateSubFieldEnum;
 
-    export type MatchingAltCodeSubField = Zenith.MarketController.SearchSymbols.AlternateKey;
-    export type MatchingAttributeSubField = Zenith.MarketController.SearchSymbols.KnownAttributeKey;
-    export type MatchingTextSubField = MatchingAltCodeSubField | MatchingAttributeSubField;
+    export type AltCodeSubField = Zenith.MarketController.SearchSymbols.AlternateKey;
+    export type AttributeSubField = Zenith.MarketController.SearchSymbols.KnownAttributeKey;
+    export type TextSubField = AltCodeSubField | AttributeSubField;
+    // export type MatchingSubField = MatchingPriceSubField | MatchingDateSubField | MatchingTextSubField;
 
     export type LogicalTupleNodeUnion = AndTupleNode | OrTupleNode | NotTupleNode;
     export type LogicalTupleNode = [nodeType: LogicalTupleNodeType, ...params: BooleanParam[]];
@@ -351,52 +352,52 @@ export namespace ZenithScanCriteria {
     export type SingleOrLeftRightNumericParams = SingleNumericParams | LeftRightNumericParams;
     export type NumericParams = SingleNumericParams | LeftRightNumericParams;
 
-    export type TextParams_FirstForm = [field: MatchingField]; // exists
-    export type TextParams_SecondForm = [field: MatchingField, value: string]; // Contains
-    export type TextParams_ThirdForm = [field: MatchingField, value: string, as?: TextContainsAsEnum, ignoreCase?: boolean]; // Advanced contains
-    export type TextParams_FourthForm = [field: MatchingField, value: string, namedParameters: TextNamedParameters];
+    export type TextParams_FirstForm = []; // exists
+    export type TextParams_SecondForm = [value: string]; // Contains
+    export type TextParams_ThirdForm = [value: string, as?: TextContainsAsEnum, ignoreCase?: boolean]; // Advanced contains
+    export type TextParams_FourthForm = [value: string, namedParameters: TextNamedParameters];
     export type TextParams = TextParams_FirstForm | TextParams_SecondForm | TextParams_ThirdForm | TextParams_FourthForm;
 
-    export type NamedTextParams_FirstForm = [field: TextSubbedField, subField: MatchingTextSubField]; // exists
-    export type NamedTextParams_SecondForm = [field: TextSubbedField, subField: MatchingTextSubField, value: string]; // Contains
-    export type NamedTextParams_ThirdForm = [field: TextSubbedField, subField: MatchingTextSubField, value: string, as?: TextContainsAsEnum, ignoreCase?: boolean]; // Advanced contains
-    export type NamedTextParams_FourthForm = [field: TextSubbedField, subField: MatchingTextSubField, value: string, namedParameters: TextNamedParameters];
+    export type NamedTextParams_FirstForm = [subField: TextSubField]; // exists
+    export type NamedTextParams_SecondForm = [subField: TextSubField, value: string]; // Contains
+    export type NamedTextParams_ThirdForm = [subField: TextSubField, value: string, as?: TextContainsAsEnum, ignoreCase?: boolean]; // Advanced contains
+    export type NamedTextParams_FourthForm = [subField: TextSubField, value: string, namedParameters: TextNamedParameters];
     export type NamedTextParams = NamedTextParams_FirstForm | NamedTextParams_SecondForm | NamedTextParams_ThirdForm | NamedTextParams_FourthForm;
 
-    export type NumericRangeParams_FirstForm = [field: NumericField]; // exists
-    export type NumericRangeParams_SecondForm = [field: NumericField, value: number]; // equals
-    export type NumericRangeParams_ThirdForm = [field: NumericField, value: number, min: number | null, max: number | null]; // in range
-    export type NumericRangeParams_FourthForm = [field: NumericField, namedParameters: NumericNamedParameters];
+    export type NumericRangeParams_FirstForm = []; // exists
+    export type NumericRangeParams_SecondForm = [value: number]; // equals
+    export type NumericRangeParams_ThirdForm = [min: number | null, max: number | null]; // in range
+    export type NumericRangeParams_FourthForm = [namedParameters: NumericNamedParameters];
     export type NumericRangeParams =
         NumericRangeParams_FirstForm |
         NumericRangeParams_SecondForm |
         NumericRangeParams_ThirdForm |
         NumericRangeParams_FourthForm;
 
-    export type NumericNamedRangeParams_FirstForm = [field: NumericSubbedField, subField: MatchingPriceSubField]; // exists
-    export type NumericNamedRangeParams_SecondForm = [field: NumericSubbedField, subField: MatchingPriceSubField, value: number]; // equals
-    export type NumericNamedRangeParams_ThirdForm = [field: NumericSubbedField, subField: MatchingPriceSubField, min: number | null, max: number | null]; // in range
-    export type NumericNamedRangeParams_FourthForm = [field: NumericSubbedField, subField: MatchingPriceSubField, namedParameters: NumericNamedParameters];
+    export type NumericNamedRangeParams_FirstForm = [subField: PriceSubField]; // exists
+    export type NumericNamedRangeParams_SecondForm = [subField: PriceSubField, value: number]; // equals
+    export type NumericNamedRangeParams_ThirdForm = [subField: PriceSubField, min: number | null, max: number | null]; // in range
+    export type NumericNamedRangeParams_FourthForm = [subField: PriceSubField, namedParameters: NumericNamedParameters];
     export type NumericNamedRangeParams =
         NumericNamedRangeParams_FirstForm |
         NumericNamedRangeParams_SecondForm |
         NumericNamedRangeParams_ThirdForm |
         NumericNamedRangeParams_FourthForm;
 
-    export type DateRangeParams_FirstForm = [field: DateField]; // exists
-    export type DateRangeParams_SecondForm = [field: DateField, value: DateString]; // equals
-    export type DateRangeParams_ThirdForm = [field: DateField, min: DateString | null, max: DateString | null]; // in range
-    export type DateRangeParams_FourthForm = [field: DateField, namedParameters: DateNamedParameters]; // equals
+    export type DateRangeParams_FirstForm = []; // exists
+    export type DateRangeParams_SecondForm = [value: DateString]; // equals
+    export type DateRangeParams_ThirdForm = [min: DateString | null, max: DateString | null]; // in range
+    export type DateRangeParams_FourthForm = [namedParameters: DateNamedParameters]; // equals
     export type DateRangeParams =
         DateRangeParams_FirstForm |
         DateRangeParams_SecondForm |
         DateRangeParams_ThirdForm |
         DateRangeParams_FourthForm;
 
-    export type DateNamedRangeParams_FirstForm = [field: DateSubbedField, subField: MatchingDateSubField]; // exists
-    export type DateNamedRangeParams_SecondForm = [field: DateSubbedField, subField: MatchingDateSubField, value: DateString]; // equals
-    export type DateNamedRangeParams_ThirdForm = [field: DateSubbedField, subField: MatchingDateSubField, min: DateString | null, max: DateString | null]; // in range
-    export type DateNamedRangeParams_FourthForm = [field: DateSubbedField, subField: MatchingDateSubField, namedParameters: DateNamedParameters];
+    export type DateNamedRangeParams_FirstForm = [subField: DateSubField]; // exists
+    export type DateNamedRangeParams_SecondForm = [subField: DateSubField, value: DateString]; // equals
+    export type DateNamedRangeParams_ThirdForm = [subField: DateSubField, min: DateString | null, max: DateString | null]; // in range
+    export type DateNamedRangeParams_FourthForm = [subField: DateSubField, namedParameters: DateNamedParameters];
     export type DateNamedRangeParams =
         DateNamedRangeParams_FirstForm |
         DateNamedRangeParams_SecondForm |
@@ -417,6 +418,8 @@ export namespace ZenithScanCriteria {
     export type TextSingleParam = TextSingleParam_EqualsValue; // equals
     export type TextSingleParam_Default = TextSingleParam_EqualsValue | SingleParam_EqualsDefault; // equals value or equals default
     export type TextSingleParam_Exists = TextSingleParam_EqualsValue | SingleParam_IsSet; // equals value or is set
+
+    export const SingleDefault_IsIndex = true;
 
     export const AndTupleNodeType: TupleNodeType = 'And';
     export const NotTupleNodeType: TupleNodeType = 'Not';
@@ -510,41 +513,41 @@ export namespace ZenithScanCriteria {
         'BestBidCount': NumericRangeParams;
         'BestBidPrice': NumericRangeParams;
         'BestBidQuantity': NumericRangeParams;
-        'Board': SingleParam;
-        'CallOrPut': SingleParam_Exists;
-        'Category': SingleParam;
-        'CFI': SingleParam;
-        'Class': SingleParam;
+        'Board': TextSingleParam;
+        'CallOrPut': TextSingleParam_Exists;
+        'Category': TextSingleParam;
+        'CFI': TextSingleParam;
+        'Class': TextSingleParam;
         'ClosePrice': NumericRangeParams;
         'Code': TextParams;
         'ContractSize': NumericRangeParams;
-        'Currency': SingleParam;
-        'Data': SingleParam;
+        'Currency': TextSingleParam;
+        'Data': TextSingleParam;
         'Date': DateNamedRangeParams;
-        'ExerciseType': SingleParam_Exists;
-        'Exchange': SingleParam;
+        'ExerciseType': TextSingleParam_Exists;
+        'Exchange': TextSingleParam;
         'ExpiryDate': DateRangeParams;
         'HighPrice': NumericRangeParams;
-        'IsIndex': SingleParam_Default;
-        'Leg': SingleParam;
+        'IsIndex': BooleanSingleParam_Default;
+        'Leg': TextSingleParam;
         'LastPrice': NumericRangeParams;
         'LotSize': NumericRangeParams;
         'LowPrice': NumericRangeParams;
-        'Market': SingleParam;
+        'Market': TextSingleParam;
         'Name': TextParams;
         'OpenInterest': NumericRangeParams;
         'OpenPrice': NumericRangeParams;
         'Price': NumericNamedRangeParams;
         'PreviousClose': NumericRangeParams;
-        'QuotationBasis': SingleParam;
+        'QuotationBasis': TextSingleParam;
         'Remainder': NumericRangeParams;
         'ShareIssue': NumericRangeParams;
-        'State': SingleParam;
-        'StateAllows': SingleParam;
-        'StatusNote': SingleParam;
+        'State': TextSingleParam;
+        'StateAllows': TextSingleParam;
+        'StatusNote': TextSingleParam;
         'StrikePrice': NumericRangeParams;
         'Trades': NumericRangeParams;
-        'TradingMarket': SingleParam;
+        'TradingMarket': TextSingleParam;
         'ValueTraded': NumericRangeParams;
         'Volume': NumericRangeParams;
         'VWAP': NumericRangeParams;

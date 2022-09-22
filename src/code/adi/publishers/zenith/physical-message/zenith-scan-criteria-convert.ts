@@ -5,7 +5,7 @@
  */
 
 import { StringId, Strings } from '../../../../res/res-internal-api';
-import { AssertInternalError, BaseZenithDataError, Err, ExternalError, Ok, Result, UnexpectedCaseError, UnreachableCaseError } from '../../../../sys/sys-internal-api';
+import { AssertInternalError, BaseZenithDataError, Err, ExternalError, Ok, Result, UnreachableCaseError } from '../../../../sys/sys-internal-api';
 import { ScanCriteria } from '../../../common/scan-criteria';
 import { Zenith } from './zenith';
 import { ZenithConvert } from './zenith-convert';
@@ -76,19 +76,18 @@ export namespace ZenithScanCriteriaConvert {
             case ScanCriteria.NodeTypeId.NumericLessThanOrEqual: return fromNumericComparisonNode(ZenithScanCriteria.LessThanOrEqualTupleNodeType, node as ScanCriteria.NumericComparisonBooleanNode);
             case ScanCriteria.NodeTypeId.All: return [ZenithScanCriteria.AllTupleNodeType];
             case ScanCriteria.NodeTypeId.None: return [ZenithScanCriteria.NoneTupleNodeType];
+            case ScanCriteria.NodeTypeId.FieldHasValue: return fromFieldHasValueNode(node as ScanCriteria.FieldHasValueNode);
             case ScanCriteria.NodeTypeId.BooleanFieldEquals: return fromBooleanFieldEqualsNode(node as ScanCriteria.BooleanFieldEqualsNode);
-            case ScanCriteria.NodeTypeId.NumericFieldHasValue: return fromNumericFieldHasValueNode(node as ScanCriteria.NumericFieldHasValueNode);
             case ScanCriteria.NodeTypeId.NumericFieldEquals: return fromNumericFieldEqualsNode(node as ScanCriteria.NumericFieldEqualsNode);
             case ScanCriteria.NodeTypeId.NumericFieldInRange: return fromNumericFieldInRangeNode(node as ScanCriteria.NumericFieldInRangeNode);
-            case ScanCriteria.NodeTypeId.DateFieldHasValue: return fromDateFieldHasValueNode(node as ScanCriteria.DateFieldHasValueNode);
             case ScanCriteria.NodeTypeId.DateFieldEquals: return fromDateFieldEqualsNode(node as ScanCriteria.DateFieldEqualsNode);
             case ScanCriteria.NodeTypeId.DateFieldInRange: return fromDateFieldInRangeNode(node as ScanCriteria.DateFieldInRangeNode);
-            case ScanCriteria.NodeTypeId.TextFieldHasValue: return fromTextFieldHasValueNode(node as ScanCriteria.TextFieldHasValueNode);
             case ScanCriteria.NodeTypeId.TextFieldContains: return fromTextFieldContainsNode(node as ScanCriteria.TextFieldContainsNode);
-            case ScanCriteria.NodeTypeId.PriceSubFieldHasValue: return fromPriceSubHasValueNode(node as ScanCriteria.PriceSubFieldHasValueNode);
+            case ScanCriteria.NodeTypeId.SubFieldHasValue: return fromSubFieldHasValueNode(node as ScanCriteria.SubFieldHasValueNode);
+            case ScanCriteria.NodeTypeId.PriceSubFieldHasValue: return fromPriceSubFieldHasValueNode(node as ScanCriteria.PriceSubFieldHasValueNode);
             case ScanCriteria.NodeTypeId.PriceSubFieldEquals: return fromPriceSubFieldEqualsNode(node as ScanCriteria.PriceSubFieldEqualsNode);
             case ScanCriteria.NodeTypeId.PriceSubFieldInRange: return fromPriceSubFieldInRangeNode(node as ScanCriteria.PriceSubFieldInRangeNode);
-            case ScanCriteria.NodeTypeId.DateSubFieldHasValue: return fromDateSubFieldHasValueNode(node as ScanCriteria.DateSubFieldHasValueNode)
+            case ScanCriteria.NodeTypeId.DateSubFieldHasValue: return fromDateSubFieldHasValueNode(node as ScanCriteria.DateSubFieldHasValueNode);
             case ScanCriteria.NodeTypeId.DateSubFieldEquals: return fromDateSubFieldEqualsNode(node as ScanCriteria.DateSubFieldEqualsNode);
             case ScanCriteria.NodeTypeId.DateSubFieldInRange: return fromDateSubFieldInRangeNode(node as ScanCriteria.DateSubFieldInRangeNode);
             case ScanCriteria.NodeTypeId.AltCodeSubFieldHasValue: return fromAltCodeSubFieldHasValueNode(node as ScanCriteria.AltCodeSubFieldHasValueNode);
@@ -100,7 +99,7 @@ export namespace ZenithScanCriteriaConvert {
         }
     }
 
-    export function parseBoolean(node: ZenithScanCriteria.BooleanTupleNodeUnion): Result<ParsedBoolean, ZenithScanCriteriaParseError> {
+    export function parseBoolean(node: ZenithScanCriteria.BooleanTupleNode): Result<ParsedBoolean, ZenithScanCriteriaParseError> {
         const parseProgress = new ParseProgress();
 
         const toResult = tryToExpectedBooleanNode(node, parseProgress);
@@ -232,18 +231,30 @@ export namespace ZenithScanCriteriaConvert {
         return [field, target];
     }
 
-    function fromNumericFieldHasValueNode(node: ScanCriteria.NumericFieldHasValueNode): ZenithScanCriteria.NumericRangeParams_FirstForm {
-        const field = Field.numericFromId(node.fieldId);
-        return [field];
+    function fromFieldHasValueNode(node: ScanCriteria.FieldHasValueNode):
+        ZenithScanCriteria.NumericRangeMatchingTupleNode |
+        ZenithScanCriteria.DateRangeMatchingTupleNode |
+        ZenithScanCriteria.TextMatchingTupleNode
+    {
+        const fieldId = node.fieldId;
+        const fieldDataTypeId = ScanCriteria.Field.idToDataTypeId(fieldId);
+        switch (fieldDataTypeId) {
+            case ScanCriteria.FieldDataTypeId.Numeric: return [Field.numericFromId(fieldId as ScanCriteria.NumericFieldId)];
+            case ScanCriteria.FieldDataTypeId.Text: return [Field.textFromId(fieldId as ScanCriteria.TextFieldId)];
+            case ScanCriteria.FieldDataTypeId.Date: return [Field.dateFromId(fieldId as ScanCriteria.DateFieldId)];
+            case ScanCriteria.FieldDataTypeId.Boolean: throw new AssertInternalError('ZSCCFFHVNB50916', `${fieldId}`); // No boolean field supports HasValue
+            default:
+                throw new UnreachableCaseError('ZSCCFFHVND50916', fieldDataTypeId);
+        }
     }
 
-    function fromNumericFieldEqualsNode(node: ScanCriteria.NumericFieldEqualsNode): ZenithScanCriteria.NumericRangeParams_SecondForm {
+    function fromNumericFieldEqualsNode(node: ScanCriteria.NumericFieldEqualsNode): ZenithScanCriteria.NumericRangeMatchingTupleNode {
         const field = Field.numericFromId(node.fieldId);
         const target = node.target;
         return [field, target];
     }
 
-    function fromNumericFieldInRangeNode(node: ScanCriteria.NumericFieldInRangeNode): ZenithScanCriteria.NumericRangeParams_FourthForm {
+    function fromNumericFieldInRangeNode(node: ScanCriteria.NumericFieldInRangeNode): ZenithScanCriteria.NumericRangeMatchingTupleNode {
         const field = Field.numericFromId(node.fieldId);
         const namedParameters: ZenithScanCriteria.NumericNamedParameters = {
             Min: node.min,
@@ -252,18 +263,13 @@ export namespace ZenithScanCriteriaConvert {
         return [field, namedParameters];
     }
 
-    function fromDateFieldHasValueNode(node: ScanCriteria.DateFieldHasValueNode): ZenithScanCriteria.DateRangeParams_FirstForm {
-        const field = Field.dateFromId(node.fieldId);
-        return [field];
-    }
-
-    function fromDateFieldEqualsNode(node: ScanCriteria.DateFieldEqualsNode): ZenithScanCriteria.DateRangeParams_SecondForm {
+    function fromDateFieldEqualsNode(node: ScanCriteria.DateFieldEqualsNode): ZenithScanCriteria.DateRangeMatchingTupleNode {
         const field = Field.dateFromId(node.fieldId);
         const target = DateValue.fromDate(node.target);
         return [field, target];
     }
 
-    function fromDateFieldInRangeNode(node: ScanCriteria.DateFieldInRangeNode): ZenithScanCriteria.DateRangeParams_FourthForm {
+    function fromDateFieldInRangeNode(node: ScanCriteria.DateFieldInRangeNode): ZenithScanCriteria.DateRangeMatchingTupleNode {
         const field = Field.dateFromId(node.fieldId);
         const nodeMin = node.min;
         const nodeMax = node.max;
@@ -274,15 +280,10 @@ export namespace ZenithScanCriteriaConvert {
         return [field, namedParameters];
     }
 
-    function fromTextFieldHasValueNode(node: ScanCriteria.TextFieldHasValueNode): ZenithScanCriteria.TextParams_FirstForm {
-        const field = Field.textFromId(node.fieldId);
-        return [field];
-    }
-
-    function fromTextFieldContainsNode(node: ScanCriteria.TextFieldContainsNode): ZenithScanCriteria.TextParams_FourthForm {
+    function fromTextFieldContainsNode(node: ScanCriteria.TextFieldContainsNode): ZenithScanCriteria.TextMatchingTupleNode {
         const field = Field.textFromId(node.fieldId);
         const value = node.value;
-        const as = TextContainsAs.fromId(node.as);
+        const as = TextContainsAs.fromId(node.asId);
         const namedParameters: ZenithScanCriteria.TextNamedParameters = {
             As: as,
             IgnoreCase: node.ignoreCase,
@@ -290,20 +291,40 @@ export namespace ZenithScanCriteriaConvert {
         return [field, value, namedParameters];
     }
 
-    function fromPriceSubHasValueNode(node: ScanCriteria.PriceSubFieldHasValueNode): ZenithScanCriteria.NumericNamedRangeParams_FirstForm {
+    function fromSubFieldHasValueNode(node: ScanCriteria.SubFieldHasValueNode):
+        ZenithScanCriteria.NumericNamedRangeMatchingTupleNode |
+        ZenithScanCriteria.DateNamedRangeMatchingTupleNode |
+        ZenithScanCriteria.NamedTextMatchingTupleNode
+    {
+        const fieldId = node.fieldId;
+        switch (fieldId) {
+            case ScanCriteria.FieldId.Price: return fromPriceSubFieldHasValue(node.subFieldId as ScanCriteria.PriceSubFieldId);
+            case ScanCriteria.FieldId.Date: return fromDateSubFieldHasValue(node.subFieldId as ScanCriteria.DateSubFieldId);
+            case ScanCriteria.FieldId.AltCode: return fromAltCodeSubFieldHasValue(node.subFieldId as ScanCriteria.AltCodeSubFieldId);
+            case ScanCriteria.FieldId.Attribute: return fromAttributeSubFieldHasValue(node.subFieldId as ScanCriteria.AttributeSubFieldId);
+            default:
+                throw new UnreachableCaseError('ZSCCFSFHVN55592', fieldId);
+        }
+    }
+
+    function fromPriceSubFieldHasValueNode(node: ScanCriteria.PriceSubFieldHasValueNode): ZenithScanCriteria.NumericNamedRangeMatchingTupleNode {
+        return fromPriceSubFieldHasValue(node.subFieldId);
+    }
+
+    function fromPriceSubFieldHasValue(subFieldId: ScanCriteria.PriceSubFieldId): ZenithScanCriteria.NumericNamedRangeMatchingTupleNode {
         const field = ZenithScanCriteria.PriceTupleNodeType;
-        const subField = PriceSubField.fromId(node.subFieldId);
+        const subField = PriceSubField.fromId(subFieldId);
         return [field, subField];
     }
 
-    function fromPriceSubFieldEqualsNode(node: ScanCriteria.PriceSubFieldEqualsNode): ZenithScanCriteria.NumericNamedRangeParams_SecondForm {
+    function fromPriceSubFieldEqualsNode(node: ScanCriteria.PriceSubFieldEqualsNode): ZenithScanCriteria.NumericNamedRangeMatchingTupleNode {
         const field = ZenithScanCriteria.PriceTupleNodeType;
         const subField = PriceSubField.fromId(node.subFieldId);
         const target = node.target;
         return [field, subField, target];
     }
 
-    function fromPriceSubFieldInRangeNode(node: ScanCriteria.PriceSubFieldInRangeNode): ZenithScanCriteria.NumericNamedRangeParams_FourthForm {
+    function fromPriceSubFieldInRangeNode(node: ScanCriteria.PriceSubFieldInRangeNode): ZenithScanCriteria.NumericNamedRangeMatchingTupleNode {
         const field = ZenithScanCriteria.PriceTupleNodeType;
         const subField = PriceSubField.fromId(node.subFieldId);
         const namedParameters: ZenithScanCriteria.NumericNamedParameters = {
@@ -313,20 +334,24 @@ export namespace ZenithScanCriteriaConvert {
         return [field, subField, namedParameters];
     }
 
-    function fromDateSubFieldHasValueNode(node: ScanCriteria.DateSubFieldHasValueNode): ZenithScanCriteria.DateNamedRangeParams_FirstForm {
+    function fromDateSubFieldHasValueNode(node: ScanCriteria.DateSubFieldHasValueNode): ZenithScanCriteria.DateNamedRangeMatchingTupleNode {
+        return fromDateSubFieldHasValue(node.subFieldId);
+    }
+
+    function fromDateSubFieldHasValue(subFieldId: ScanCriteria.DateSubFieldId): ZenithScanCriteria.DateNamedRangeMatchingTupleNode {
         const field = ZenithScanCriteria.DateTupleNodeType;
-        const subField = DateSubField.fromId(node.subFieldId);
+        const subField = DateSubField.fromId(subFieldId);
         return [field, subField];
     }
 
-    function fromDateSubFieldEqualsNode(node: ScanCriteria.DateSubFieldEqualsNode): ZenithScanCriteria.DateNamedRangeParams_SecondForm {
+    function fromDateSubFieldEqualsNode(node: ScanCriteria.DateSubFieldEqualsNode): ZenithScanCriteria.DateNamedRangeMatchingTupleNode {
         const field = ZenithScanCriteria.DateTupleNodeType;
         const subField = DateSubField.fromId(node.subFieldId);
         const target = DateValue.fromDate(node.target);
         return [field, subField, target];
     }
 
-    function fromDateSubFieldInRangeNode(node: ScanCriteria.DateSubFieldInRangeNode): ZenithScanCriteria.DateNamedRangeParams_FourthForm {
+    function fromDateSubFieldInRangeNode(node: ScanCriteria.DateSubFieldInRangeNode): ZenithScanCriteria.DateNamedRangeMatchingTupleNode {
         const field = ZenithScanCriteria.DateTupleNodeType;
         const subField = DateSubField.fromId(node.subFieldId);
         const nodeMin = node.min;
@@ -338,17 +363,21 @@ export namespace ZenithScanCriteriaConvert {
         return [field, subField, namedParameters];
     }
 
-    function fromAltCodeSubFieldHasValueNode(node: ScanCriteria.AltCodeSubFieldHasValueNode): ZenithScanCriteria.NamedTextParams_FirstForm {
+    function fromAltCodeSubFieldHasValueNode(node: ScanCriteria.AltCodeSubFieldHasValueNode): ZenithScanCriteria.NamedTextMatchingTupleNode {
+        return fromAltCodeSubFieldHasValue(node.subFieldId);
+    }
+
+    function fromAltCodeSubFieldHasValue(subFieldId: ScanCriteria.AltCodeSubFieldId): ZenithScanCriteria.NamedTextMatchingTupleNode {
         const field = ZenithScanCriteria.AltCodeTupleNodeType;
-        const subField = AltCodeSubField.fromId(node.subFieldId);
+        const subField = AltCodeSubField.fromId(subFieldId);
         return [field, subField];
     }
 
-    function fromAltCodeSubFieldContainsNode(node: ScanCriteria.AltCodeSubFieldContainsNode): ZenithScanCriteria.NamedTextParams_FourthForm {
+    function fromAltCodeSubFieldContainsNode(node: ScanCriteria.AltCodeSubFieldContainsNode): ZenithScanCriteria.NamedTextMatchingTupleNode {
         const field = ZenithScanCriteria.AltCodeTupleNodeType;
         const subField = AltCodeSubField.fromId(node.subFieldId);
         const value = node.value;
-        const as = TextContainsAs.fromId(node.as);
+        const as = TextContainsAs.fromId(node.asId);
         const namedParameters: ZenithScanCriteria.TextNamedParameters = {
             As: as,
             IgnoreCase: node.ignoreCase,
@@ -356,17 +385,21 @@ export namespace ZenithScanCriteriaConvert {
         return [field, subField, value, namedParameters];
     }
 
-    function fromAttributeSubFieldHasValueNode(node: ScanCriteria.AttributeSubFieldHasValueNode): ZenithScanCriteria.NamedTextParams_FirstForm {
+    function fromAttributeSubFieldHasValueNode(node: ScanCriteria.AttributeSubFieldHasValueNode): ZenithScanCriteria.NamedTextMatchingTupleNode {
+        return fromAttributeSubFieldHasValue(node.subFieldId);
+    }
+
+    function fromAttributeSubFieldHasValue(subFieldId: ScanCriteria.AttributeSubFieldId): ZenithScanCriteria.NamedTextMatchingTupleNode {
         const field = ZenithScanCriteria.AttributeTupleNodeType;
-        const subField = AttributeSubField.fromId(node.subFieldId);
+        const subField = AttributeSubField.fromId(subFieldId);
         return [field, subField];
     }
 
-    function fromAttributeSubFieldContainsNode(node: ScanCriteria.AttributeSubFieldContainsNode): ZenithScanCriteria.NamedTextParams_FourthForm {
+    function fromAttributeSubFieldContainsNode(node: ScanCriteria.AttributeSubFieldContainsNode): ZenithScanCriteria.NamedTextMatchingTupleNode {
         const field = ZenithScanCriteria.AttributeTupleNodeType;
         const subField = AttributeSubField.fromId(node.subFieldId);
         const value = node.value;
-        const as = TextContainsAs.fromId(node.as);
+        const as = TextContainsAs.fromId(node.asId);
         const namedParameters: ZenithScanCriteria.TextNamedParameters = {
             As: as,
             IgnoreCase: node.ignoreCase,
@@ -417,55 +450,55 @@ export namespace ZenithScanCriteriaConvert {
             case ZenithScanCriteria.NoneTupleNodeType: return new Ok(new ScanCriteria.NoneNode());
 
             // Matching
-            case ZenithScanCriteria.AltCodeTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.AttributeTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
+            case ZenithScanCriteria.AltCodeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.AltCode, toProgress);
+            case ZenithScanCriteria.AttributeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Attribute, toProgress);
             case ZenithScanCriteria.AuctionTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Auction, toProgress);
-            case ZenithScanCriteria.AuctionLastTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.AuctionQuantityTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.BestAskCountTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.BestAskPriceTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.BestAskQuantityTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.BestBidCountTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.BestBidPriceTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.BestBidQuantityTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.BoardTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.CallOrPutTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.CategoryTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.CfiTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.ClassTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.ClosePriceTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.CodeTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.ContractSizeTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.CurrencyTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.DataTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.DateTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.ExerciseTypeTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.ExchangeTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.ExpiryDateTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.HighPriceTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.IsIndexTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.LegTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.LastPriceTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.LotSizeTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.LowPriceTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.MarketTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.NameTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.OpenInterestTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.OpenPriceTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.PriceTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.PreviousCloseTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.QuotationBasisTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.RemainderTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.ShareIssueTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.StateTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.StateAllowsTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.StatusNoteTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.StrikePriceTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.TradesTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.TradingMarketTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.ValueTradedTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.VolumeTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.VwapTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
+            case ZenithScanCriteria.AuctionLastTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Auction, toProgress);
+            case ZenithScanCriteria.AuctionQuantityTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.AuctionQuantity, toProgress);
+            case ZenithScanCriteria.BestAskCountTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestAskCount, toProgress);
+            case ZenithScanCriteria.BestAskPriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestAskPrice, toProgress);
+            case ZenithScanCriteria.BestAskQuantityTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestAskQuantity, toProgress);
+            case ZenithScanCriteria.BestBidCountTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestBidCount, toProgress);
+            case ZenithScanCriteria.BestBidPriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestBidPrice, toProgress);
+            case ZenithScanCriteria.BestBidQuantityTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestBidQuantity, toProgress);
+            case ZenithScanCriteria.BoardTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Board, toProgress);
+            case ZenithScanCriteria.CallOrPutTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.CallOrPut, toProgress);
+            case ZenithScanCriteria.CategoryTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Category, toProgress);
+            case ZenithScanCriteria.CfiTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Cfi, toProgress);
+            case ZenithScanCriteria.ClassTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Class, toProgress);
+            case ZenithScanCriteria.ClosePriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ClosePrice, toProgress);
+            case ZenithScanCriteria.CodeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Code, toProgress);
+            case ZenithScanCriteria.ContractSizeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ContractSize, toProgress);
+            case ZenithScanCriteria.CurrencyTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Currency, toProgress);
+            case ZenithScanCriteria.DataTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Data, toProgress);
+            case ZenithScanCriteria.DateTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Date, toProgress);
+            case ZenithScanCriteria.ExerciseTypeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ExerciseType, toProgress);
+            case ZenithScanCriteria.ExchangeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Exchange, toProgress);
+            case ZenithScanCriteria.ExpiryDateTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ExpiryDate, toProgress);
+            case ZenithScanCriteria.HighPriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.HighPrice, toProgress);
+            case ZenithScanCriteria.IsIndexTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.IsIndex, toProgress);
+            case ZenithScanCriteria.LegTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Leg, toProgress);
+            case ZenithScanCriteria.LastPriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.LastPrice, toProgress);
+            case ZenithScanCriteria.LotSizeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.LotSize, toProgress);
+            case ZenithScanCriteria.LowPriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.LowPrice, toProgress);
+            case ZenithScanCriteria.MarketTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Market, toProgress);
+            case ZenithScanCriteria.NameTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Name, toProgress);
+            case ZenithScanCriteria.OpenInterestTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.OpenInterest, toProgress);
+            case ZenithScanCriteria.OpenPriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.OpenPrice, toProgress);
+            case ZenithScanCriteria.PriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Price, toProgress);
+            case ZenithScanCriteria.PreviousCloseTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.PreviousClose, toProgress);
+            case ZenithScanCriteria.QuotationBasisTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.QuotationBasis, toProgress);
+            case ZenithScanCriteria.RemainderTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Remainder, toProgress);
+            case ZenithScanCriteria.ShareIssueTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ShareIssue, toProgress);
+            case ZenithScanCriteria.StateTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.State, toProgress);
+            case ZenithScanCriteria.StateAllowsTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.StateAllows, toProgress);
+            case ZenithScanCriteria.StatusNoteTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.StatusNote, toProgress);
+            case ZenithScanCriteria.StrikePriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.StrikePrice, toProgress);
+            case ZenithScanCriteria.TradesTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Trades, toProgress);
+            case ZenithScanCriteria.TradingMarketTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.TradingMarket, toProgress);
+            case ZenithScanCriteria.ValueTradedTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ValueTraded, toProgress);
+            case ZenithScanCriteria.VolumeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Volume, toProgress);
+            case ZenithScanCriteria.VwapTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Vwap, toProgress);
 
             // Binary
             case ZenithScanCriteria.AddTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
@@ -547,7 +580,7 @@ export namespace ZenithScanCriteriaConvert {
                 if (fieldId === undefined) {
                     return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_UnknownFieldBooleanParam, `${param}`));
                 } else {
-                    return toFieldHasValueNode(fieldId);
+                    return new Ok(toFieldHasValueNode(fieldId));
                 }
             }
         }
@@ -566,27 +599,520 @@ export namespace ZenithScanCriteriaConvert {
     ): Result<ScanCriteria.FieldBooleanNode, ZenithScanCriteriaParseError> {
         const paramCount = node.length - 1;
         switch (paramCount) {
-            case 0: return toFieldHasValueNode(fieldId);
+            case 0: {
+                if (fieldId === ScanCriteria.FieldId.IsIndex) {
+                    return tryToBooleanFieldEqualsNode(fieldId, ZenithScanCriteria.SingleDefault_IsIndex);
+                } else {
+                    return new Ok(toFieldHasValueNode(fieldId));
+                }
+            }
             case 1: {
+                const param1 = node[1];
+                const fieldSubbed = ScanCriteria.Field.isSubbed(fieldId);
+                if (fieldSubbed) {
+                    return tryToSubFieldHasValueNode(fieldId as ScanCriteria.SubbedFieldId, param1);
+                } else {
+                    if (typeof param1 === 'object') {
+                        return tryNamedParametersToFieldEqualsOrInRange(fieldId, param1);
+                    } else {
+                        return tryToFieldEqualsOrContainsNode(fieldId, param1);
+                    }
+                }
+            }
+            case 2: {
+                const param1 = node[1];
+                const param2 = node[2];
+                const fieldSubbed = ScanCriteria.Field.isSubbed(fieldId);
+                if (fieldSubbed) {
+                    if (typeof param2 === 'object') {
+                        return tryNamedParametersToSubFieldEqualsOrInRange(fieldId as ScanCriteria.SubbedFieldId, param1, param2);
+                    } else {
+                        return tryToSubFieldEqualsOrContainsNode(fieldId as ScanCriteria.SubbedFieldId, param1, param2);
+                    }
+                } else {
+                }
+            }
+            case 3: {
+                const param1 = node[1];
+                const param2 = node[2];
+                const param3 = node[3];
 
+            }
+            case 4: {
+                const param1 = node[1];
+                const param2 = node[2];
+                const param3 = node[3];
+                const param4 = node[4];
+                return tryToTextSubFieldContainsNode(fieldId as ScanCriteria.SubbedFieldId, param1, param2, param3, param4);
+            }
+            default:
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_FieldBooleanNodeHasTooManyParameters, paramCount.toString()));
+        }
+    }
+
+    function toFieldHasValueNode(fieldId: ScanCriteria.FieldId): ScanCriteria.FieldHasValueNode {
+        const hasValueNode = new ScanCriteria.FieldHasValueNode();
+        hasValueNode.fieldId = fieldId;
+        return hasValueNode;
+    }
+
+    function tryToSubFieldHasValueNode(fieldId: ScanCriteria.SubbedFieldId, subField: unknown):
+        Result<
+            ScanCriteria.PriceSubFieldHasValueNode |
+            ScanCriteria.DateSubFieldHasValueNode |
+            ScanCriteria.AltCodeSubFieldHasValueNode |
+            ScanCriteria.AttributeSubFieldHasValueNode,
+            ZenithScanCriteriaParseError
+        >
+    {
+        if (typeof subField !== 'string') {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_SubFieldIsNotString, `${subField}`));
+        } else {
+            switch (fieldId) {
+                case ScanCriteria.FieldId.Price: {
+                    const subFieldId = PriceSubField.tryToId(subField as ZenithScanCriteria.PriceSubFieldEnum);
+                    if (subFieldId === undefined) {
+                        return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_PriceSubFieldHasValueSubFieldIsUnknown, `${subField}`));
+                    } else {
+                        const node = new ScanCriteria.PriceSubFieldHasValueNode();
+                        node.fieldId = fieldId;
+                        node.subFieldId = subFieldId;
+                        return new Ok(node);
+                    }
+                }
+                case ScanCriteria.FieldId.Date: {
+                    const subFieldId = DateSubField.tryToId(subField as ZenithScanCriteria.DateSubFieldEnum);
+                    if (subFieldId === undefined) {
+                        return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_PriceSubFieldHasValueSubFieldIsUnknown, `${subField}`));
+                    } else {
+                        const node = new ScanCriteria.DateSubFieldHasValueNode();
+                        node.fieldId = fieldId;
+                        node.subFieldId = subFieldId;
+                        return new Ok(node);
+                    }
+                }
+                case ScanCriteria.FieldId.AltCode: {
+                    const subFieldId = AltCodeSubField.tryToId(subField as ZenithScanCriteria.AltCodeSubField);
+                    if (subFieldId === undefined) {
+                        return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_AltCodeSubFieldHasValueSubFieldIsUnknown, `${subField}`));
+                    } else {
+                        const node = new ScanCriteria.AltCodeSubFieldHasValueNode();
+                        node.fieldId = fieldId;
+                        node.subFieldId = subFieldId;
+                        return new Ok(node);
+                    }
+                }
+                case ScanCriteria.FieldId.Attribute: {
+                    const subFieldId = AttributeSubField.tryToId(subField as ZenithScanCriteria.AttributeSubField);
+                    if (subFieldId === undefined) {
+                        return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_AttributeSubFieldHasValueSubFieldIsUnknown, `${subField}`));
+                    } else {
+                        const node = new ScanCriteria.AttributeSubFieldHasValueNode();
+                        node.fieldId = fieldId;
+                        node.subFieldId = subFieldId;
+                        return new Ok(node);
+                    }
+                }
+                default:
+                    throw new UnreachableCaseError('ZSCCTTSFHVN66674', fieldId);
             }
         }
     }
 
-    function toFieldHasValueNode(fieldId: ScanCriteria.FieldId): Result<ScanCriteria.NumericFieldHasValueNode | ScanCriteria.DateFieldHasValueNode | ScanCriteria.TextFieldHasValueNode, never> {
-        const hasValueNode = createFieldHasValueNode(fieldId);
-        return new Ok(hasValueNode);
-    }
-
-    function createFieldHasValueNode(fieldId: ScanCriteria.FieldId): ScanCriteria.NumericFieldHasValueNode | ScanCriteria.DateFieldHasValueNode | ScanCriteria.TextFieldHasValueNode {
+    function tryToFieldEqualsOrContainsNode(fieldId: ScanCriteria.FieldId, param1: unknown) {
         const fieldDataTypeId = ScanCriteria.Field.idToDataTypeId(fieldId);
         switch (fieldDataTypeId) {
-            case ScanCriteria.FieldDataTypeId.Numeric: return new ScanCriteria.NumericFieldHasValueNode();
-            case ScanCriteria.FieldDataTypeId.Date: return new ScanCriteria.DateFieldHasValueNode();
-            case ScanCriteria.FieldDataTypeId.Text: return new ScanCriteria.TextFieldHasValueNode();
-            case ScanCriteria.FieldDataTypeId.Boolean: throw new AssertInternalError('ZSCCCFHVNB30091', `${fieldId}`); // return new ScanCriteria.BooleanFieldHasValueNode();
+            case ScanCriteria.FieldDataTypeId.Numeric: return tryToNumericFieldEqualsNode(fieldId as ScanCriteria.NumericFieldId, param1);
+            case ScanCriteria.FieldDataTypeId.Date: return tryToDateFieldEqualsNode(fieldId as ScanCriteria.DateFieldId, param1);
+            case ScanCriteria.FieldDataTypeId.Text: { return tryToTextFieldContainsNode(fieldId as ScanCriteria.TextFieldId, param1, undefined, undefined);
+            }
+            case ScanCriteria.FieldDataTypeId.Boolean: {
+                return tryToBooleanFieldEqualsNode(fieldId as ScanCriteria.BooleanFieldId, param1);
+            }
             default:
-                throw new UnreachableCaseError('ZSCCCFHVND30091', fieldDataTypeId);
+                throw new UnreachableCaseError('ZSCCTTFEOCN10008', fieldDataTypeId);
+        }
+    }
+
+    function tryNamedParametersToFieldEqualsOrInRange(fieldId: ScanCriteria.FieldId, namedParameters: object | null) {
+        const fieldDataTypeId = ScanCriteria.Field.idToDataTypeId(fieldId);
+        switch (fieldDataTypeId) {
+            case ScanCriteria.FieldDataTypeId.Numeric: {
+                if (namedParameters === null) {
+                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_NamedParametersCannotBeNull, `${namedParameters}`));
+                } else {
+                    const numericFieldId = fieldId as ScanCriteria.NumericFieldId;
+                    const { At: at, Min: min, Max: max } = namedParameters as ZenithScanCriteria.NumericNamedParameters;
+                    if (at !== undefined) {
+                        return tryToNumericFieldEqualsNode(numericFieldId, at);
+                    } else {
+                        return tryToNumericFieldInRangeNode(numericFieldId, min, max);
+                    }
+                }
+            }
+            case ScanCriteria.FieldDataTypeId.Date: {
+                if (namedParameters === null) {
+                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_NamedParametersCannotBeNull, `${namedParameters}`));
+                } else {
+                    const dateFieldId = fieldId as ScanCriteria.DateFieldId;
+                    const { At: at, Min: min, Max: max } = namedParameters as ZenithScanCriteria.DateNamedParameters;
+                    if (at !== undefined) {
+                        return tryToDateFieldEqualsNode(dateFieldId, at);
+                    } else {
+                        return tryToDateFieldInRangeNode(dateFieldId, min, max);
+                    }
+                }
+            }
+            case ScanCriteria.FieldDataTypeId.Text: {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_FirstParameterCannotBeObjectOrNull, `${namedParameters}`));
+            }
+            case ScanCriteria.FieldDataTypeId.Boolean: {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_FirstParameterCannotBeObjectOrNull, `${namedParameters}`));
+            }
+            default:
+                throw new UnreachableCaseError('ZSCCTTFEOCN10008', fieldDataTypeId);
+        }
+    }
+
+    function tryToNumericFieldEqualsNode(fieldId: ScanCriteria.NumericFieldId, target: unknown): Result<ScanCriteria.NumericFieldEqualsNode, ZenithScanCriteriaParseError> {
+        if (typeof target !== 'number') {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_TargetIsNotNumber, `${target}`));
+        } else {
+            const node = new ScanCriteria.NumericFieldEqualsNode();
+            node.fieldId = fieldId;
+            node.target = target;
+            return new Ok(node);
+        }
+    }
+
+    function tryToNumericFieldInRangeNode(fieldId: ScanCriteria.NumericFieldId, min: unknown, max: unknown): Result<ScanCriteria.NumericFieldInRangeNode, ZenithScanCriteriaParseError> {
+        const minUndefined = min === undefined;
+        if (!minUndefined && typeof min !== 'number') {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMinIsDefinedButNotNumber, `${min}`));
+        } else {
+            const maxUndefined = max === undefined;
+            if (!maxUndefined && typeof max !== 'number') {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMaxIsDefinedButNotNumber, `${max}`));
+            } else {
+                if (minUndefined && maxUndefined) {
+                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMinAndMaxAreBothUndefined, ''));
+                } else {
+                    const node = new ScanCriteria.NumericFieldInRangeNode();
+                    node.fieldId = fieldId;
+                    node.min = min;
+                    node.max = max;
+                    return new Ok(node);
+                }
+            }
+        }
+    }
+
+    function tryToDateFieldEqualsNode(fieldId: ScanCriteria.DateFieldId, targetAsString: unknown): Result<ScanCriteria.DateFieldEqualsNode, ZenithScanCriteriaParseError> {
+        if (typeof targetAsString !== 'string') {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_DateFieldEqualsTargetIsNotString, `${targetAsString}`));
+        } else {
+            const target = DateValue.tryToDate(targetAsString);
+            if (target === undefined) {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_TargetHasInvalidDateFormat, `${targetAsString}`));
+            } else {
+                const node = new ScanCriteria.DateFieldEqualsNode();
+                node.fieldId = fieldId;
+                node.target = target;
+                return new Ok(node);
+            }
+        }
+    }
+
+    function tryToDateFieldInRangeNode(fieldId: ScanCriteria.DateFieldId, min: unknown, max: unknown): Result<ScanCriteria.DateFieldInRangeNode, ZenithScanCriteriaParseError> {
+        let minDate: Date | undefined;
+        if (min === undefined) {
+            minDate = undefined;
+        } else {
+            if (typeof min !== 'string') {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMinIsDefinedButNotString, `${min}`));
+            } else {
+                minDate = DateValue.tryToDate(min);
+                if (minDate === undefined) {
+                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMinHasInvalidDateFormat, `${min}`));
+                }
+            }
+        }
+
+        let maxDate: Date | undefined;
+        if (max === undefined) {
+            maxDate = undefined;
+        } else {
+            if (typeof max !== 'string') {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMaxIsDefinedButNotString, `${max}`));
+            } else {
+                maxDate = DateValue.tryToDate(max);
+                if (maxDate === undefined) {
+                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMaxHasInvalidDateFormat, `${max}`));
+                }
+            }
+        }
+
+        if (minDate === undefined && maxDate === undefined) {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMinAndMaxAreBothUndefined, ''));
+        } else {
+            const node = new ScanCriteria.DateFieldInRangeNode();
+            node.fieldId = fieldId;
+            node.min = minDate;
+            node.max = maxDate;
+            return new Ok(node);
+        }
+    }
+
+    function tryToTextFieldContainsNode(fieldId: ScanCriteria.TextFieldId, value: unknown, as: unknown, ignoreCase: unknown):
+        Result<ScanCriteria.TextFieldContainsNode, ZenithScanCriteriaParseError>
+    {
+        const propertiesResult = TextFieldContainsProperties.resolveFromUnknown(value, as, ignoreCase);
+        if (propertiesResult.isErr()) {
+            return new Err(propertiesResult.error);
+        } else {
+            const properties = propertiesResult.value;
+            const node = new ScanCriteria.TextFieldContainsNode();
+            node.fieldId = fieldId;
+            node.value = properties.value;
+            node.asId = properties.asId;
+            node.ignoreCase = properties.ignoreCase;
+            return new Ok(node);
+        }
+    }
+
+    function tryToBooleanFieldEqualsNode(fieldId: ScanCriteria.BooleanFieldId, param1: unknown): Result<ScanCriteria.BooleanFieldEqualsNode, ZenithScanCriteriaParseError> {
+        if (typeof param1 !== 'boolean') {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_BooleanFieldEqualsTargetIsNotBoolean, `${param1}`));
+        } else {
+            const node = new ScanCriteria.BooleanFieldEqualsNode();
+            node.fieldId = fieldId;
+            node.target = param1;
+            return new Ok(node);
+        }
+    }
+
+    function tryToSubFieldEqualsOrContainsNode(fieldId: ScanCriteria.SubbedFieldId, subField: unknown, param2: unknown) {
+        switch (fieldId) {
+            case ScanCriteria.FieldId.Price: return tryToPriceSubFieldEqualsNode(subField, param2);
+            case ScanCriteria.FieldId.Date: return tryToDateSubFieldEqualsNode(subField, param2);
+            case ScanCriteria.FieldId.AltCode: return tryToAltCodeSubFieldContains(subField, param2, undefined, undefined);
+            case ScanCriteria.FieldId.Attribute: return tryToAttributeSubFieldContains(subField, param2, undefined, undefined);
+            default:
+                throw new UnreachableCaseError('ZSCCTTFEOCN10008', fieldId);
+        }
+    }
+
+    function tryNamedParametersToSubFieldEqualsOrInRange(fieldId: ScanCriteria.SubbedFieldId, subField: unknown, namedParameters: object | null) {
+        switch (fieldId) {
+            case ScanCriteria.FieldId.Price: {
+                if (namedParameters === null) {
+                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_NamedParametersCannotBeNull, `${namedParameters}`));
+                } else {
+                    const numericFieldId = fieldId as ScanCriteria.NumericFieldId;
+                    const { At: at, Min: min, Max: max } = namedParameters as ZenithScanCriteria.NumericNamedParameters;
+                    if (at !== undefined) {
+                        return tryToPriceSubFieldEqualsNode(subField, at);
+                    } else {
+                        return tryToPriceSubFieldInRangeNode(subField, min, max);
+                    }
+                }
+            }
+            case ScanCriteria.FieldId.Date: {
+                if (namedParameters === null) {
+                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_NamedParametersCannotBeNull, `${namedParameters}`));
+                } else {
+                    const dateFieldId = fieldId as ScanCriteria.DateFieldId;
+                    const { At: at, Min: min, Max: max } = namedParameters as ZenithScanCriteria.DateNamedParameters;
+                    if (at !== undefined) {
+                        return tryToDateSubFieldEqualsNode(subField, at);
+                    } else {
+                        return tryToDateSubFieldInRangeNode(subField, min, max);
+                    }
+                }
+            }
+            case ScanCriteria.FieldId.AltCode: {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_SecondParameterCannotBeObjectOrNull, `${namedParameters}`));
+            }
+            case ScanCriteria.FieldId.Attribute: {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_SecondParameterCannotBeObjectOrNull, `${namedParameters}`));
+            }
+            default:
+                throw new UnreachableCaseError('ZSCCTNPTSFEOIE10008', fieldId);
+        }
+    }
+
+    function tryToPriceSubFieldEqualsNode(subField: unknown, target: unknown): Result<ScanCriteria.PriceSubFieldEqualsNode, ZenithScanCriteriaParseError> {
+        if (typeof subField !== 'string') {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_SubFieldIsNotString, `${subField}`));
+        } else {
+            const subFieldId = PriceSubField.tryToId(subField as ZenithScanCriteria.PriceSubFieldEnum);
+            if (subFieldId === undefined) {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_PriceSubFieldEqualsSubFieldIsUnknown, `${subField}`));
+            } else {
+                if (typeof target !== 'number') {
+                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_TargetIsNotNumber, `${target}`));
+                } else {
+                    const node = new ScanCriteria.PriceSubFieldEqualsNode();
+                    node.fieldId = ScanCriteria.FieldId.Price;
+                    node.subFieldId = subFieldId;
+                    node.target = target;
+                    return new Ok(node);
+                }
+            }
+        }
+    }
+
+    function tryToPriceSubFieldInRangeNode(subField: unknown, min: unknown, max: unknown): Result<ScanCriteria.PriceSubFieldInRangeNode, ZenithScanCriteriaParseError> {
+        if (typeof subField !== 'string') {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_SubFieldIsNotString, `${subField}`));
+        } else {
+            const subFieldId = PriceSubField.tryToId(subField as ZenithScanCriteria.PriceSubFieldEnum);
+            if (subFieldId === undefined) {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_PriceSubFieldEqualsSubFieldIsUnknown, `${subField}`));
+            } else {
+                const minUndefined = min === undefined;
+                if (!minUndefined && typeof min !== 'number') {
+                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMinIsDefinedButNotNumber, `${min}`));
+                } else {
+                    const maxUndefined = max === undefined;
+                    if (!maxUndefined && typeof max !== 'number') {
+                        return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMaxIsDefinedButNotNumber, `${max}`));
+                    } else {
+                        if (minUndefined && maxUndefined) {
+                            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMinAndMaxAreBothUndefined, ''));
+                        } else {
+                            const node = new ScanCriteria.PriceSubFieldInRangeNode();
+                            node.fieldId = ScanCriteria.FieldId.Price;
+                            node.subFieldId = subFieldId;
+                            node.min = min;
+                            node.max = max;
+                            return new Ok(node);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function tryToDateSubFieldEqualsNode(subField: unknown, target: unknown): Result<ScanCriteria.DateSubFieldEqualsNode, ZenithScanCriteriaParseError> {
+        if (typeof subField !== 'string') {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_SubFieldIsNotString, `${subField}`));
+        } else {
+            const subFieldId = DateSubField.tryToId(subField as ZenithScanCriteria.DateSubFieldEnum);
+            if (subFieldId === undefined) {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_DateSubFieldEqualsSubFieldIsUnknown, `${subField}`));
+            } else {
+                if (typeof target !== 'string') {
+                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_DateSubFieldEqualsTargetIsNotString, `${target}`));
+                } else {
+                    const targetAsDate = DateValue.tryToDate(target);
+                    if (targetAsDate === undefined) {
+                        return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_TargetHasInvalidDateFormat, `${target}`));
+                    } else {
+                        const node = new ScanCriteria.DateSubFieldEqualsNode();
+                        node.fieldId = ScanCriteria.FieldId.Date;
+                        node.subFieldId = subFieldId;
+                        node.target = targetAsDate;
+                        return new Ok(node);
+                    }
+                }
+            }
+        }
+    }
+
+    function tryToDateSubFieldInRangeNode(subField: unknown, min: unknown, max: unknown): Result<ScanCriteria.DateSubFieldInRangeNode, ZenithScanCriteriaParseError> {
+        if (typeof subField !== 'string') {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_SubFieldIsNotString, `${subField}`));
+        } else {
+            let minDate: Date | undefined;
+            if (min === undefined) {
+                minDate = undefined;
+            } else {
+                if (typeof min !== 'string') {
+                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMinIsDefinedButNotString, `${min}`));
+                } else {
+                    minDate = DateValue.tryToDate(min);
+                    if (minDate === undefined) {
+                        return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMinHasInvalidDateFormat, `${min}`));
+                    }
+                }
+            }
+
+            let maxDate: Date | undefined;
+            if (max === undefined) {
+                maxDate = undefined;
+            } else {
+                if (typeof max !== 'string') {
+                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMaxIsDefinedButNotString, `${max}`));
+                } else {
+                    maxDate = DateValue.tryToDate(max);
+                    if (maxDate === undefined) {
+                        return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMaxHasInvalidDateFormat, `${max}`));
+                    }
+                }
+            }
+
+            if (minDate === undefined && maxDate === undefined) {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_RangeMinAndMaxAreBothUndefined, ''));
+            } else {
+                const node = new ScanCriteria.DateSubFieldInRangeNode();
+                node.fieldId = ScanCriteria.FieldId.Date;
+                node.min = minDate;
+                node.max = maxDate;
+                return new Ok(node);
+            }
+        }
+    }
+
+
+
+    function tryToAltCodeSubFieldContains(subField: unknown, value: unknown, as: unknown, ignoreCase: unknown): Result<ScanCriteria.AltCodeSubFieldContainsNode, ZenithScanCriteriaParseError> {
+        if (typeof subField !== 'string') {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_SubFieldIsNotString, `${subField}`));
+        } else {
+            const subFieldId = AltCodeSubField.tryToId(subField as ZenithScanCriteria.AltCodeSubField);
+            if (subFieldId === undefined) {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_AltCodeSubFieldContainsSubFieldIsUnknown, `${subField}`));
+            } else {
+                const propertiesResult = TextFieldContainsProperties.resolveFromUnknown(value, as, ignoreCase);
+                if (propertiesResult.isErr()) {
+                    return propertiesResult;
+                } else {
+                    const properties = propertiesResult.value;
+                    const node = new ScanCriteria.AltCodeSubFieldContainsNode();
+                    node.fieldId = ScanCriteria.FieldId.AltCode;
+                    node.subFieldId = subFieldId;
+                    node.value = properties.value;
+                    node.asId = properties.asId;
+                    node.ignoreCase = properties.ignoreCase;
+                    return new Ok(node);
+                }
+            }
+        }
+    }
+
+    function tryToAttributeSubFieldContains(subField: unknown, value: unknown, as: unknown, ignoreCase: unknown): Result<ScanCriteria.AttributeSubFieldContainsNode, ZenithScanCriteriaParseError> {
+        if (typeof subField !== 'string') {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_SubFieldIsNotString, `${subField}`));
+        } else {
+            const subFieldId = AttributeSubField.tryToId(subField as ZenithScanCriteria.AttributeSubField);
+            if (subFieldId === undefined) {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_AttributeSubFieldContainsSubFieldIsUnknown, `${subField}`));
+            } else {
+                const propertiesResult = TextFieldContainsProperties.resolveFromUnknown(value, as, ignoreCase);
+                if (propertiesResult.isErr()) {
+                    return propertiesResult;
+                } else {
+                    const properties = propertiesResult.value;
+                    const node = new ScanCriteria.AttributeSubFieldContainsNode();
+                    node.fieldId = ScanCriteria.FieldId.Attribute;
+                    node.subFieldId = subFieldId;
+                    node.value = properties.value;
+                    node.asId = properties.asId;
+                    node.ignoreCase = properties.ignoreCase;
+                    return new Ok(node);
+                }
+            }
         }
     }
 
@@ -649,219 +1175,53 @@ export namespace ZenithScanCriteriaConvert {
         }
     }
 
-    function fromNumericNodeParam(node: ScanCriteria.NumericNode): ZenithScanCriteria.NumericParam {
-        switch (node.typeId) {
-            case ScanCriteria.NodeTypeId.NumericAdd: return fromLeftRightArithmeticNumericNodeParam(ZenithScanCriteria.AddTupleNodeType, node as ScanCriteria.LeftRightArithmeticNumericNode);
-            case ScanCriteria.NodeTypeId.NumericDiv: return fromLeftRightArithmeticNumericNodeParam(ZenithScanCriteria.DivTupleNodeType, node as ScanCriteria.LeftRightArithmeticNumericNode);
-            case ScanCriteria.NodeTypeId.NumericMod: return fromLeftRightArithmeticNumericNodeParam(ZenithScanCriteria.ModTupleNodeType, node as ScanCriteria.LeftRightArithmeticNumericNode);
-            case ScanCriteria.NodeTypeId.NumericMul: return fromLeftRightArithmeticNumericNodeParam(ZenithScanCriteria.MulTupleNodeType, node as ScanCriteria.LeftRightArithmeticNumericNode);
-            case ScanCriteria.NodeTypeId.NumericSub: return fromLeftRightArithmeticNumericNodeParam(ZenithScanCriteria.SubTupleNodeType, node as ScanCriteria.LeftRightArithmeticNumericNode);
-            case ScanCriteria.NodeTypeId.NumericNeg: return fromUnaryArithmeticNumericNodeParam(ZenithScanCriteria.NegTupleNodeType, node as ScanCriteria.UnaryArithmeticNumericNode);
-            case ScanCriteria.NodeTypeId.NumericPos: return fromUnaryArithmeticNumericNodeParam(ZenithScanCriteria.PosTupleNodeType, node as ScanCriteria.UnaryArithmeticNumericNode);
-            case ScanCriteria.NodeTypeId.NumericAbs: return fromUnaryArithmeticNumericNodeParam(ZenithScanCriteria.AbsTupleNodeType, node as ScanCriteria.UnaryArithmeticNumericNode);
-            case ScanCriteria.NodeTypeId.NumericFieldValueGet: return fromNumericFieldValueGetNode(node as ScanCriteria.NumericFieldValueGetNode);
-            default:
-                throw new UnreachableCaseError('ZSCCFNNPU', node.typeId);
+    interface TextFieldContainsProperties {
+        readonly value: string;
+        readonly asId: ScanCriteria.TextContainsAsId;
+        readonly ignoreCase: boolean;
+    }
+
+    namespace TextFieldContainsProperties {
+        export function resolveFromUnknown(value: unknown, as: unknown, ignoreCase: unknown): Result<TextFieldContainsProperties, ZenithScanCriteriaParseError> {
+            if (typeof value !== 'string') {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_TextFieldContainsValueIsNotString, `${value}`));
+            } else {
+                let resolvedAsId: ScanCriteria.TextContainsAsId;
+                if (as === undefined) {
+                    resolvedAsId = ScanCriteria.TextContainsAsId.None;
+                } else {
+                    if (typeof as !== 'string') {
+                        return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_TextFieldContainsAsIsNotString, `${as}`));
+                    } else {
+                        const asId = TextContainsAs.tryToId(as as ZenithScanCriteria.TextContainsAsEnum);
+                        if (asId === undefined) {
+                            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_TextFieldContainsAsHasInvalidFormat, `${as}`));
+                        } else {
+                            resolvedAsId = asId;
+                        }
+                    }
+                }
+
+                let resolvedIgnoreCase: boolean;
+                if (ignoreCase === undefined) {
+                    resolvedIgnoreCase = false;
+                } else {
+                    if (typeof ignoreCase !== 'boolean') {
+                        return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_TextFieldContainsAsIsNotBoolean, `${ignoreCase}`));
+                    } else {
+                        resolvedIgnoreCase = ignoreCase;
+                    }
+                }
+
+                const properties: TextFieldContainsProperties = {
+                    value,
+                    asId: resolvedAsId,
+                    ignoreCase: resolvedIgnoreCase,
+                }
+                return new Ok(properties);
+            }
         }
     }
-
-    function fromUnaryArithmeticNumericNodeParam(
-        type:
-            typeof ZenithScanCriteria.NegTupleNodeType |
-            typeof ZenithScanCriteria.PosTupleNodeType |
-            typeof ZenithScanCriteria.AbsTupleNodeType,
-        node: ScanCriteria.UnaryArithmeticNumericNode
-    ): ZenithScanCriteria.UnaryExpressionTupleNode {
-        const operand = node.operand;
-        let param: ZenithScanCriteria.NumericParam;
-        if (operand instanceof ScanCriteria.NumericNode) {
-            param = fromNumericNodeParam(operand);
-        } else {
-            param = operand;
-        }
-
-        return [type, param];
-    }
-
-    function fromLeftRightArithmeticNumericNodeParam(
-        type:
-            typeof ZenithScanCriteria.AddTupleNodeType |
-            typeof ZenithScanCriteria.DivTupleNodeType |
-            typeof ZenithScanCriteria.ModTupleNodeType |
-            typeof ZenithScanCriteria.MulTupleNodeType |
-            typeof ZenithScanCriteria.SubTupleNodeType,
-        node: ScanCriteria.LeftRightArithmeticNumericNode
-    ): ZenithScanCriteria.BinaryExpressionTupleNode {
-        const leftOperand = node.leftOperand;
-        let leftParam: ZenithScanCriteria.NumericParam;
-        if (leftOperand instanceof ScanCriteria.NumericNode) {
-            leftParam = fromNumericNodeParam(leftOperand);
-        } else {
-            leftParam = leftOperand;
-        }
-
-        const rightOperand = node.rightOperand;
-        let rightParam: ZenithScanCriteria.NumericParam;
-        if (rightOperand instanceof ScanCriteria.NumericNode) {
-            rightParam = fromNumericNodeParam(rightOperand);
-        } else {
-            rightParam = rightOperand;
-        }
-
-        return [type, leftParam, rightParam];
-    }
-
-    function fromNumericFieldValueGetNode(node: ScanCriteria.NumericFieldValueGetNode): ZenithScanCriteria.NumericField {
-        return Field.numericFromId(node.fieldId);
-    }
-
-    function fromBooleanFieldEqualsNode(node: ScanCriteria.BooleanFieldEqualsNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = Field.booleanFromId(node.fieldId);
-        const target = node.target;
-        return [field, target];
-    }
-
-    function fromNumericFieldHasValueNode(node: ScanCriteria.NumericFieldHasValueNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = Field.numericFromId(node.fieldId);
-        return [field];
-    }
-
-    function fromNumericFieldEqualsNode(node: ScanCriteria.NumericFieldEqualsNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = Field.numericFromId(node.fieldId);
-        const target = node.target;
-        return [field, target];
-    }
-
-    function fromNumericFieldInRangeNode(node: ScanCriteria.NumericFieldInRangeNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = Field.numericFromId(node.fieldId);
-        const namedParameters: ZenithScanCriteria.NumericNamedParameters = {
-            Min: node.min,
-            Max: node.max,
-        }
-        return [field, namedParameters];
-    }
-
-    function fromDateFieldHasValueNode(node: ScanCriteria.DateFieldHasValueNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = Field.dateFromId(node.fieldId);
-        return [field];
-    }
-
-    function fromDateFieldEqualsNode(node: ScanCriteria.DateFieldEqualsNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = Field.dateFromId(node.fieldId);
-        const target = DateValue.fromDate(node.target);
-        return [field, target];
-    }
-
-    function fromDateFieldInRangeNode(node: ScanCriteria.DateFieldInRangeNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = Field.dateFromId(node.fieldId);
-        const nodeMin = node.min;
-        const nodeMax = node.max;
-        const namedParameters: ZenithScanCriteria.DateNamedParameters = {
-            Min: nodeMin === undefined ? undefined: DateValue.fromDate(nodeMin),
-            Max: nodeMax === undefined ? undefined: DateValue.fromDate(nodeMax),
-        }
-        return [field, namedParameters];
-    }
-
-    function fromTextFieldHasValueNode(node: ScanCriteria.TextFieldHasValueNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = Field.textFromId(node.fieldId);
-        return [field];
-    }
-
-    function fromTextFieldContainsNode(node: ScanCriteria.TextFieldContainsNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = Field.textFromId(node.fieldId);
-        const value = node.value;
-        const as = TextContainsAs.fromId(node.as);
-        const namedParameters: ZenithScanCriteria.TextNamedParameters = {
-            As: as,
-            IgnoreCase: node.ignoreCase,
-        }
-        return [field, value, namedParameters];
-    }
-
-    function fromPriceSubHasValueNode(node: ScanCriteria.PriceSubFieldHasValueNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = ZenithScanCriteria.PriceTupleNodeType;
-        const subField = PriceSubField.fromId(node.subFieldId);
-        return [field, subField];
-    }
-
-    function fromPriceSubFieldEqualsNode(node: ScanCriteria.PriceSubFieldEqualsNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = ZenithScanCriteria.PriceTupleNodeType;
-        const subField = PriceSubField.fromId(node.subFieldId);
-        const target = node.target;
-        return [field, subField, target];
-    }
-
-    function fromPriceSubFieldInRangeNode(node: ScanCriteria.PriceSubFieldInRangeNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = ZenithScanCriteria.PriceTupleNodeType;
-        const subField = PriceSubField.fromId(node.subFieldId);
-        const namedParameters: ZenithScanCriteria.NumericNamedParameters = {
-            Min: node.min,
-            Max: node.max,
-        }
-        return [field, subField, namedParameters];
-    }
-
-    function fromDateSubFieldHasValueNode(node: ScanCriteria.DateSubFieldHasValueNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = ZenithScanCriteria.DateTupleNodeType;
-        const subField = DateSubField.fromId(node.subFieldId);
-        return [field, subField];
-    }
-
-    function fromDateSubFieldEqualsNode(node: ScanCriteria.DateSubFieldEqualsNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = ZenithScanCriteria.DateTupleNodeType;
-        const subField = DateSubField.fromId(node.subFieldId);
-        const target = DateValue.fromDate(node.target);
-        return [field, subField, target];
-    }
-
-    function fromDateSubFieldInRangeNode(node: ScanCriteria.DateSubFieldInRangeNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = ZenithScanCriteria.DateTupleNodeType;
-        const subField = DateSubField.fromId(node.subFieldId);
-        const nodeMin = node.min;
-        const nodeMax = node.max;
-        const namedParameters: ZenithScanCriteria.DateNamedParameters = {
-            Min: nodeMin === undefined ? undefined: DateValue.fromDate(nodeMin),
-            Max: nodeMax === undefined ? undefined: DateValue.fromDate(nodeMax),
-        }
-        return [field, subField, namedParameters];
-    }
-
-    function fromAltCodeSubFieldHasValueNode(node: ScanCriteria.AltCodeSubFieldHasValueNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = ZenithScanCriteria.AltCodeTupleNodeType;
-        const subField = AltCodeSubField.fromId(node.subFieldId);
-        return [field, subField];
-    }
-
-    function fromAltCodeSubFieldContainsNode(node: ScanCriteria.AltCodeSubFieldContainsNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = ZenithScanCriteria.AltCodeTupleNodeType;
-        const subField = AltCodeSubField.fromId(node.subFieldId);
-        const as = TextContainsAs.fromId(node.as);
-        const namedParameters: ZenithScanCriteria.TextNamedParameters = {
-            As: as,
-            IgnoreCase: node.ignoreCase,
-        }
-        return [field, subField, namedParameters];
-    }
-
-    function fromAttributeSubFieldHasValueNode(node: ScanCriteria.AttributeSubFieldHasValueNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = ZenithScanCriteria.AttributeTupleNodeType;
-        const subField = AttributeSubField.fromId(node.subFieldId);
-        return [field, subField];
-    }
-
-    function fromAttributeSubFieldContainsNode(node: ScanCriteria.AttributeSubFieldContainsNode): ZenithScanCriteria.MatchingTupleNode {
-        const field = ZenithScanCriteria.AttributeTupleNodeType;
-        const subField = AttributeSubField.fromId(node.subFieldId);
-        const as = TextContainsAs.fromId(node.as);
-        const namedParameters: ZenithScanCriteria.TextNamedParameters = {
-            As: as,
-            IgnoreCase: node.ignoreCase,
-        }
-        return [field, subField, namedParameters];
-    }
-
-
     namespace Field {
         export function tryMatchingToId(value: ZenithScanCriteria.MatchingField): ScanCriteria.FieldId | undefined {
             let fieldId: ScanCriteria.FieldId | undefined = tryNumericToId(value);
@@ -870,7 +1230,7 @@ export namespace ZenithScanCriteriaConvert {
                 if (fieldId === undefined) {
                     fieldId = tryDateToId(value);
                     if (fieldId === undefined) {
-                        fieldId = tryBooleanToId(value);
+                        fieldId = tryBooleanToId(value); // fieldId is left undefined if this try fails
                     }
                 }
             }
@@ -878,22 +1238,51 @@ export namespace ZenithScanCriteriaConvert {
             return fieldId;
         }
 
-        export function tryDateToId(value: ZenithScanCriteria.MatchingField): ScanCriteria.DateFieldId | undefined {
+        export function matchingFromId(value: ScanCriteria.FieldId): ZenithScanCriteria.MatchingField {
+            let field: ZenithScanCriteria.MatchingField | undefined = tryNumericFromId(value as ScanCriteria.NumericFieldId);
+            if (field === undefined) {
+                field = tryTextFromId(value as ScanCriteria.TextFieldId);
+                if (field === undefined) {
+                    field = tryDateFromId(value as ScanCriteria.DateFieldId);
+                    if (field === undefined) {
+                        field = tryBooleanFromId(value as ScanCriteria.BooleanFieldId);
+                        if (field === undefined) {
+                            throw new AssertInternalError('ZSCCFMFI16179', `${value}`)
+                        }
+                    }
+                }
+            }
+
+            return field;
+        }
+
+        export function tryDateToId(value: ZenithScanCriteria.DateField): ScanCriteria.DateFieldId | undefined {
             switch (value) {
                 case ZenithScanCriteria.ExpiryDateTupleNodeType: return ScanCriteria.FieldId.ExpiryDate;
-                default: return undefined;
+                default:
+                    return undefined;
             }
         }
 
-        export function dateFromId(value: ScanCriteria.DateFieldId): ZenithScanCriteria.MatchingField {
+        export function dateFromId(value: ScanCriteria.DateFieldId): ZenithScanCriteria.DateField {
+            const result = tryDateFromId(value);
+            if (result === undefined) {
+                throw new AssertInternalError('ZSCCFDFI16179', `${value}`);
+            } else {
+                return result;
+            }
+        }
+
+        function tryDateFromId(value: ScanCriteria.DateFieldId): ZenithScanCriteria.DateField | undefined {
             switch (value) {
                 case ScanCriteria.FieldId.ExpiryDate: return ZenithScanCriteria.ExpiryDateTupleNodeType;
                 default:
-                    throw new UnexpectedCaseError('ZSCCDFFI16179', `${value}`);
+                    const neverValueIgnored: never = value;
+                    return undefined;
             }
         }
 
-        export function tryNumericToId(value: ZenithScanCriteria.MatchingField): ScanCriteria.NumericFieldId | undefined {
+        export function tryNumericToId(value: ZenithScanCriteria.NumericField): ScanCriteria.NumericFieldId | undefined {
             switch (value) {
                 case ZenithScanCriteria.AuctionTupleNodeType: return ScanCriteria.FieldId.Auction;
                 case ZenithScanCriteria.AuctionLastTupleNodeType: return ScanCriteria.FieldId.AuctionLast;
@@ -920,11 +1309,21 @@ export namespace ZenithScanCriteriaConvert {
                 case ZenithScanCriteria.ValueTradedTupleNodeType: return ScanCriteria.FieldId.ValueTraded;
                 case ZenithScanCriteria.VolumeTupleNodeType: return ScanCriteria.FieldId.Volume;
                 case ZenithScanCriteria.VwapTupleNodeType: return ScanCriteria.FieldId.Vwap;
-                default: return undefined;
+                default:
+                    return undefined;
             }
         }
 
-        export function numericFromId(value: ScanCriteria.NumericFieldId): ZenithScanCriteria.MatchingField {
+        export function numericFromId(value: ScanCriteria.NumericFieldId): ZenithScanCriteria.NumericField {
+            const result = tryNumericFromId(value);
+            if (result === undefined) {
+                throw new AssertInternalError('ZSCCFNFI16179', `${value}`);
+            } else {
+                return result;
+            }
+        }
+
+        function tryNumericFromId(value: ScanCriteria.NumericFieldId): ZenithScanCriteria.NumericField | undefined {
             switch (value) {
                 case ScanCriteria.FieldId.Auction: return ZenithScanCriteria.AuctionTupleNodeType;
                 case ScanCriteria.FieldId.AuctionLast: return ZenithScanCriteria.AuctionLastTupleNodeType;
@@ -952,11 +1351,12 @@ export namespace ZenithScanCriteriaConvert {
                 case ScanCriteria.FieldId.Volume: return ZenithScanCriteria.VolumeTupleNodeType;
                 case ScanCriteria.FieldId.Vwap: return ZenithScanCriteria.VwapTupleNodeType;
                 default:
-                    throw new UnreachableCaseError('ZSCCFNFI16179', value);
+                    const neverValueIgnored: never = value;
+                    return undefined;
             }
         }
 
-        export function tryTextToId(value: ZenithScanCriteria.MatchingField): ScanCriteria.TextFieldId | undefined {
+        export function tryTextToId(value: ZenithScanCriteria.TextField): ScanCriteria.TextFieldId | undefined {
             switch (value) {
                 case ZenithScanCriteria.BoardTupleNodeType: return ScanCriteria.FieldId.Board;
                 case ZenithScanCriteria.CallOrPutTupleNodeType: return ScanCriteria.FieldId.CallOrPut;
@@ -981,7 +1381,16 @@ export namespace ZenithScanCriteriaConvert {
             }
         }
 
-        export function textFromId(value: ScanCriteria.TextFieldId): ZenithScanCriteria.MatchingField {
+        export function textFromId(value: ScanCriteria.TextFieldId): ZenithScanCriteria.TextField {
+            const result = tryTextFromId(value);
+            if (result === undefined) {
+                throw new AssertInternalError('ZSCCFTFI16179', `${value}`);
+            } else {
+                return result;
+            }
+        }
+
+        function tryTextFromId(value: ScanCriteria.TextFieldId): ZenithScanCriteria.TextField | undefined {
             switch (value) {
                 case ScanCriteria.FieldId.Board: return ZenithScanCriteria.BoardTupleNodeType;
                 case ScanCriteria.FieldId.CallOrPut: return ZenithScanCriteria.CallOrPutTupleNodeType;
@@ -1002,39 +1411,60 @@ export namespace ZenithScanCriteriaConvert {
                 case ScanCriteria.FieldId.StatusNote: return ZenithScanCriteria.StatusNoteTupleNodeType;
                 case ScanCriteria.FieldId.TradingMarket: return ZenithScanCriteria.TradingMarketTupleNodeType;
                 default:
-                    throw new UnreachableCaseError('ZSCCFBFI16179', value);
+                    const neverValueIgnored: never = value;
+                    return undefined;
             }
         }
 
-        export function booleanFromId(value: ScanCriteria.BooleanFieldId): ZenithScanCriteria.MatchingField {
-            switch (value) {
-                case ScanCriteria.FieldId.IsIndex: return ZenithScanCriteria.IsIndexTupleNodeType;
-                default:
-                    throw new UnreachableCaseError('ZSCCFBFI16179', value);
-            }
-        }
-
-        export function tryBooleanToId(value: ZenithScanCriteria.MatchingField): ScanCriteria.BooleanFieldId | undefined {
+        export function tryBooleanToId(value: ZenithScanCriteria.BooleanField): ScanCriteria.BooleanFieldId | undefined {
             switch (value) {
                 case ZenithScanCriteria.IsIndexTupleNodeType: return ScanCriteria.FieldId.IsIndex;
                 default:
                     return undefined;
             }
         }
-    }
 
-    namespace PriceSubField {
-        export function toId(value: ZenithScanCriteria.MatchingPriceSubFieldEnum): ScanCriteria.PriceSubFieldId {
-            switch (value) {
-                case ZenithScanCriteria.MatchingPriceSubFieldEnum.LastPrice: return ScanCriteria.PriceSubFieldId.Last;
-                default:
-                    throw new UnreachableCaseError('ZSCCPSFTI16179', value);
+        export function booleanFromId(value: ScanCriteria.BooleanFieldId): ZenithScanCriteria.BooleanField {
+            const result = tryBooleanFromId(value);
+            if (result === undefined) {
+                throw new AssertInternalError('ZSCCFBFI16179', `${value}`);
+            } else {
+                return result;
             }
         }
 
-        export function fromId(value: ScanCriteria.PriceSubFieldId): ZenithScanCriteria.MatchingPriceSubFieldEnum {
+        function tryBooleanFromId(value: ScanCriteria.BooleanFieldId): ZenithScanCriteria.BooleanField | undefined {
             switch (value) {
-                case ScanCriteria.PriceSubFieldId.Last: return ZenithScanCriteria.MatchingPriceSubFieldEnum.LastPrice;
+                case ScanCriteria.FieldId.IsIndex: return ZenithScanCriteria.IsIndexTupleNodeType;
+                default:
+                    const neverValueIgnored: never = value;
+                    return undefined;
+            }
+        }
+    }
+
+    namespace PriceSubField {
+        export function toId(value: ZenithScanCriteria.PriceSubFieldEnum): ScanCriteria.PriceSubFieldId {
+            const fieldId = tryToId(value);
+            if (fieldId === undefined) {
+                throw new AssertInternalError('ZSCCPSFTI16179', value);
+            } else {
+                return fieldId;
+            }
+        }
+
+        export function tryToId(value: ZenithScanCriteria.PriceSubFieldEnum): ScanCriteria.PriceSubFieldId | undefined {
+            switch (value) {
+                case ZenithScanCriteria.PriceSubFieldEnum.LastPrice: return ScanCriteria.PriceSubFieldId.Last;
+                default:
+                    const neverValueIgnored: never = value;
+                    return undefined;
+            }
+        }
+
+        export function fromId(value: ScanCriteria.PriceSubFieldId): ZenithScanCriteria.PriceSubFieldEnum {
+            switch (value) {
+                case ScanCriteria.PriceSubFieldId.Last: return ZenithScanCriteria.PriceSubFieldEnum.LastPrice;
                 default:
                     throw new UnreachableCaseError('ZSCCPSFFI16179', value);
             }
@@ -1042,17 +1472,27 @@ export namespace ZenithScanCriteriaConvert {
     }
 
     namespace DateSubField {
-        export function toId(value: ZenithScanCriteria.MatchingDateSubFieldEnum): ScanCriteria.DateSubFieldId {
-            switch (value) {
-                case ZenithScanCriteria.MatchingDateSubFieldEnum.Dividend: return ScanCriteria.DateSubFieldId.Dividend;
-                default:
-                    throw new UnreachableCaseError('ZSCCDSFTI16179', value);
+        export function toId(value: ZenithScanCriteria.DateSubFieldEnum): ScanCriteria.DateSubFieldId {
+            const fieldId = tryToId(value);
+            if (fieldId === undefined) {
+                throw new AssertInternalError('ZSCCDSFTI16179', value);
+            } else {
+                return fieldId;
             }
         }
 
-        export function fromId(value: ScanCriteria.DateSubFieldId): ZenithScanCriteria.MatchingDateSubFieldEnum {
+        export function tryToId(value: ZenithScanCriteria.DateSubFieldEnum): ScanCriteria.DateSubFieldId | undefined {
             switch (value) {
-                case ScanCriteria.DateSubFieldId.Dividend: return ZenithScanCriteria.MatchingDateSubFieldEnum.Dividend;
+                case ZenithScanCriteria.DateSubFieldEnum.Dividend: return ScanCriteria.DateSubFieldId.Dividend;
+                default:
+                    const neverValueIgnored: never = value;
+                    return undefined;
+            }
+        }
+
+        export function fromId(value: ScanCriteria.DateSubFieldId): ZenithScanCriteria.DateSubFieldEnum {
+            switch (value) {
+                case ScanCriteria.DateSubFieldId.Dividend: return ZenithScanCriteria.DateSubFieldEnum.Dividend;
                 default:
                     throw new UnreachableCaseError('ZSCCDSFFI16179', value);
             }
@@ -1061,6 +1501,15 @@ export namespace ZenithScanCriteriaConvert {
 
     namespace AltCodeSubField {
         export function toId(value: Zenith.MarketController.SearchSymbols.AlternateKey): ScanCriteria.AltCodeSubFieldId {
+            const fieldId = tryToId(value);
+            if (fieldId === undefined) {
+                throw new AssertInternalError('ZSCCACSFTI16179', value);
+            } else {
+                return fieldId;
+            }
+        }
+
+        export function tryToId(value: Zenith.MarketController.SearchSymbols.AlternateKey): ScanCriteria.AltCodeSubFieldId | undefined {
             switch (value) {
                 case Zenith.MarketController.SearchSymbols.AlternateKey.Ticker: return ScanCriteria.AltCodeSubFieldId.Ticker;
                 case Zenith.MarketController.SearchSymbols.AlternateKey.Isin: return ScanCriteria.AltCodeSubFieldId.Isin;
@@ -1071,7 +1520,8 @@ export namespace ZenithScanCriteriaConvert {
                 case Zenith.MarketController.SearchSymbols.AlternateKey.Long: return ScanCriteria.AltCodeSubFieldId.Long;
                 case Zenith.MarketController.SearchSymbols.AlternateKey.Uid: return ScanCriteria.AltCodeSubFieldId.Uid;
                 default:
-                    throw new UnreachableCaseError('ZSCCACSFTI16179', value);
+                    const neverValueIgnored: never = value;
+                    return undefined;
             }
         }
 
@@ -1093,6 +1543,15 @@ export namespace ZenithScanCriteriaConvert {
 
     namespace AttributeSubField {
         export function toId(value: Zenith.MarketController.SearchSymbols.KnownAttributeKey): ScanCriteria.AttributeSubFieldId {
+            const fieldId = tryToId(value);
+            if (fieldId === undefined) {
+                throw new AssertInternalError('ZSCCATSFTI16179', value);
+            } else {
+                return fieldId;
+            }
+        }
+
+        export function tryToId(value: Zenith.MarketController.SearchSymbols.KnownAttributeKey): ScanCriteria.AttributeSubFieldId | undefined {
             switch (value) {
                 case Zenith.MarketController.SearchSymbols.KnownAttributeKey.Category: return ScanCriteria.AttributeSubFieldId.Category;
                 case Zenith.MarketController.SearchSymbols.KnownAttributeKey.Class: return ScanCriteria.AttributeSubFieldId.Class;
@@ -1102,9 +1561,9 @@ export namespace ZenithScanCriteriaConvert {
                 case Zenith.MarketController.SearchSymbols.KnownAttributeKey.ShortSuspended: return ScanCriteria.AttributeSubFieldId.ShortSuspended;
                 case Zenith.MarketController.SearchSymbols.KnownAttributeKey.SubSector: return ScanCriteria.AttributeSubFieldId.SubSector;
                 case Zenith.MarketController.SearchSymbols.KnownAttributeKey.MaxRss: return ScanCriteria.AttributeSubFieldId.MaxRss;
-
                 default:
-                    throw new UnreachableCaseError('ZSCCATSFTI16179', value);
+                    const neverValueIgnored: never = value;
+                    return undefined;
             }
         }
 
@@ -1128,10 +1587,13 @@ export namespace ZenithScanCriteriaConvert {
         export function fromDate(value: Date): ZenithScanCriteria.DateString {
             return ZenithConvert.Date.DateTimeIso8601.fromDate(value);
         }
+        export function tryToDate(value: ZenithScanCriteria.DateString): Date | undefined {
+            return ZenithConvert.Date.DateTimeIso8601.fromDate(value);
+        }
     }
 
     namespace TextContainsAs {
-        export function fromId(value: ScanCriteria.TextContainsAsId) {
+        export function fromId(value: ScanCriteria.TextContainsAsId): ZenithScanCriteria.TextContainsAsEnum {
             switch (value) {
                 case ScanCriteria.TextContainsAsId.None: return ZenithScanCriteria.TextContainsAsEnum.None;
                 case ScanCriteria.TextContainsAsId.FromStart: return ZenithScanCriteria.TextContainsAsEnum.FromStart;
@@ -1139,6 +1601,17 @@ export namespace ZenithScanCriteriaConvert {
                 case ScanCriteria.TextContainsAsId.Exact: return ZenithScanCriteria.TextContainsAsEnum.Exact;
                 default:
                     throw new UnreachableCaseError('ZSCCTCAFI51423', value);
+            }
+        }
+
+        export function tryToId(value: ZenithScanCriteria.TextContainsAsEnum): ScanCriteria.TextContainsAsId | undefined {
+            switch (value) {
+                case ZenithScanCriteria.TextContainsAsEnum.None: return ScanCriteria.TextContainsAsId.None;
+                case ZenithScanCriteria.TextContainsAsEnum.FromStart: return ScanCriteria.TextContainsAsId.FromStart;
+                case ZenithScanCriteria.TextContainsAsEnum.FromEnd: return ScanCriteria.TextContainsAsId.FromEnd;
+                case ZenithScanCriteria.TextContainsAsEnum.Exact: return ScanCriteria.TextContainsAsId.Exact;
+                default:
+                    return undefined;
             }
         }
     }

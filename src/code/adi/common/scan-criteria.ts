@@ -39,16 +39,14 @@ export namespace ScanCriteria {
         // DateFieldValueGet,
 
         // Field Comparison
-        // BooleanFieldHasValue,
+        FieldHasValue,
         BooleanFieldEquals,
-        NumericFieldHasValue,
         NumericFieldEquals,
         NumericFieldInRange,
-        DateFieldHasValue,
         DateFieldEquals,
         DateFieldInRange,
-        TextFieldHasValue,
         TextFieldContains,
+        SubFieldHasValue,
         PriceSubFieldHasValue,
         PriceSubFieldEquals,
         PriceSubFieldInRange,
@@ -72,16 +70,14 @@ export namespace ScanCriteria {
         NodeTypeId.NumericLessThanOrEqual |
         NodeTypeId.All |
         NodeTypeId.None |
-        // NodeTypeId.BooleanFieldHasValue |
+        NodeTypeId.FieldHasValue |
         NodeTypeId.BooleanFieldEquals |
-        NodeTypeId.NumericFieldHasValue |
         NodeTypeId.NumericFieldEquals |
         NodeTypeId.NumericFieldInRange |
-        NodeTypeId.DateFieldHasValue |
         NodeTypeId.DateFieldEquals |
         NodeTypeId.DateFieldInRange |
-        NodeTypeId.TextFieldHasValue |
         NodeTypeId.TextFieldContains |
+        NodeTypeId.SubFieldHasValue |
         NodeTypeId.PriceSubFieldHasValue |
         NodeTypeId.PriceSubFieldEquals |
         NodeTypeId.PriceSubFieldInRange |
@@ -184,6 +180,14 @@ export namespace ScanCriteria {
         fieldId: FieldId;
     }
 
+    export class FieldHasValueNode extends FieldBooleanNode {
+        override readonly typeId: NodeTypeId.FieldHasValue;
+
+        constructor() {
+            super(NodeTypeId.FieldHasValue);
+        }
+    }
+
     export abstract class BooleanFieldNode extends FieldBooleanNode {
         override fieldId: BooleanFieldId;
     }
@@ -199,14 +203,6 @@ export namespace ScanCriteria {
 
     export abstract class NumericFieldNode extends FieldBooleanNode {
         override fieldId: NumericFieldId;
-    }
-
-    export class NumericFieldHasValueNode extends NumericFieldNode {
-        override readonly typeId: NodeTypeId.NumericFieldHasValue;
-
-        constructor() {
-            super(NodeTypeId.NumericFieldHasValue);
-        }
     }
 
     export class NumericFieldEqualsNode extends NumericFieldNode {
@@ -232,14 +228,6 @@ export namespace ScanCriteria {
         override fieldId: DateFieldId;
     }
 
-    export class DateFieldHasValueNode extends DateFieldNode {
-        override readonly typeId: NodeTypeId.DateFieldHasValue;
-
-        constructor() {
-            super(NodeTypeId.DateFieldHasValue);
-        }
-    }
-
     export class DateFieldEqualsNode extends DateFieldNode {
         override readonly typeId: NodeTypeId.DateFieldEquals;
         target: Date;
@@ -263,18 +251,10 @@ export namespace ScanCriteria {
         override fieldId: TextFieldId;
     }
 
-    export class TextFieldHasValueNode extends TextFieldNode {
-        override readonly typeId: NodeTypeId.TextFieldHasValue;
-
-        constructor() {
-            super(NodeTypeId.TextFieldHasValue);
-        }
-    }
-
     export class TextFieldContainsNode extends TextFieldNode {
         override readonly typeId: NodeTypeId.TextFieldContains;
         value: string;
-        as: TextContainsAsId;
+        asId: TextContainsAsId;
         ignoreCase: boolean;
 
         constructor() {
@@ -282,10 +262,19 @@ export namespace ScanCriteria {
         }
     }
 
-    export abstract class SubFieldNode<TypeId extends BooleanNodeTypeId, SubbedFieldId extends FieldId, SubFieldId> extends FieldBooleanNode {
+    export abstract class SubFieldNode<TypeId extends BooleanNodeTypeId, MySubbedFieldId extends SubbedFieldId, SubFieldId> extends FieldBooleanNode {
         override typeId: TypeId;
-        override fieldId: SubbedFieldId;
+        override fieldId: MySubbedFieldId;
         subFieldId: SubFieldId;
+    }
+
+    export class SubFieldHasValueNode extends SubFieldNode<NodeTypeId.SubFieldHasValue,
+        FieldId.AltCode | FieldId.Attribute | FieldId.Date | FieldId.Price,
+        AltCodeSubFieldId | AttributeSubFieldId | DateSubFieldId | PriceSubFieldId
+    > {
+        constructor() {
+            super(NodeTypeId.SubFieldHasValue);
+        }
     }
 
     export abstract class PriceSubFieldNode<TypeId extends BooleanNodeTypeId> extends SubFieldNode<TypeId, FieldId.Price, PriceSubFieldId> {
@@ -319,7 +308,6 @@ export namespace ScanCriteria {
     }
 
     export class DateSubFieldHasValueNode extends DateSubFieldNode<NodeTypeId.DateSubFieldHasValue> {
-
         constructor() {
             super(NodeTypeId.DateSubFieldHasValue);
         }
@@ -353,7 +341,7 @@ export namespace ScanCriteria {
 
     export class AltCodeSubFieldContainsNode extends AltCodeSubFieldNode<NodeTypeId.AltCodeSubFieldContains> {
         value: string;
-        as: TextContainsAsId;
+        asId: TextContainsAsId;
         ignoreCase: boolean;
 
         constructor() {
@@ -372,7 +360,7 @@ export namespace ScanCriteria {
 
     export class AttributeSubFieldContainsNode extends AttributeSubFieldNode<NodeTypeId.AttributeSubFieldContains> {
         value: string;
-        as: TextContainsAsId;
+        asId: TextContainsAsId;
         ignoreCase: boolean;
 
         constructor() {
@@ -951,6 +939,13 @@ export namespace ScanCriteria {
         FieldId.ValueTraded |
         FieldId.Volume |
         FieldId.Vwap
+    >;
+
+    export type SubbedFieldId = PickEnum<FieldId,
+        FieldId.Price |
+        FieldId.Date |
+        FieldId.AltCode |
+        FieldId.Attribute
     >;
 
     export type DateFieldId = PickEnum<FieldId,
