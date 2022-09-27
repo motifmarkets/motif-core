@@ -4,7 +4,7 @@
  * License: motionite.trade/license/motif
  */
 
-import { EnumInfoOutOfOrderError, PickEnum } from '../../sys/sys-internal-api';
+import { EnumInfoOutOfOrderError, PickEnum, SourceTzOffsetDateTime } from '../../sys/sys-internal-api';
 
 export namespace ScanCriteria {
     export const enum NodeTypeId {
@@ -230,7 +230,7 @@ export namespace ScanCriteria {
 
     export class DateFieldEqualsNode extends DateFieldNode {
         override readonly typeId: NodeTypeId.DateFieldEquals;
-        target: Date;
+        target: SourceTzOffsetDateTime;
 
         constructor() {
             super(NodeTypeId.DateFieldEquals);
@@ -239,8 +239,8 @@ export namespace ScanCriteria {
 
     export class DateFieldInRangeNode extends DateFieldNode {
         override readonly typeId: NodeTypeId.DateFieldInRange;
-        min: Date | undefined;
-        max: Date | undefined;
+        min: SourceTzOffsetDateTime | undefined;
+        max: SourceTzOffsetDateTime | undefined;
 
         constructor() {
             super(NodeTypeId.DateFieldInRange);
@@ -314,7 +314,7 @@ export namespace ScanCriteria {
     }
 
     export class DateSubFieldEqualsNode extends DateSubFieldNode<NodeTypeId.DateSubFieldEquals> {
-        target: Date;
+        target: SourceTzOffsetDateTime;
 
         constructor() {
             super(NodeTypeId.DateSubFieldEquals);
@@ -322,8 +322,8 @@ export namespace ScanCriteria {
     }
 
     export class DateSubFieldInRangeNode extends DateSubFieldNode<NodeTypeId.DateSubFieldInRange> {
-        min: Date | undefined; // | DateNode;
-        max: Date | undefined; // | DateNode;
+        min: SourceTzOffsetDateTime | undefined; // | DateNode;
+        max: SourceTzOffsetDateTime | undefined; // | DateNode;
 
         constructor() {
             super(NodeTypeId.DateSubFieldInRange);
@@ -478,7 +478,7 @@ export namespace ScanCriteria {
         }
     }
 
-    export class SubNode extends LeftRightArithmeticNumericNode {
+    export class NumericSubNode extends LeftRightArithmeticNumericNode {
         override readonly typeId: NodeTypeId.NumericSub;
 
         constructor() {

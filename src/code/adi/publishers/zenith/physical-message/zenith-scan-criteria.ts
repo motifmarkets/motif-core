@@ -120,6 +120,7 @@ export namespace ZenithScanCriteria {
         typeof LowPriceTupleNodeType |
         typeof OpenInterestTupleNodeType |
         typeof OpenPriceTupleNodeType |
+        typeof PriceTupleNodeType |
         typeof PreviousCloseTupleNodeType |
         typeof RemainderTupleNodeType |
         typeof ShareIssueTupleNodeType |
@@ -131,6 +132,7 @@ export namespace ZenithScanCriteria {
     >;
 
     export type DateField = PickEnum<TupleNodeType,
+        typeof DateTupleNodeType |
         typeof ExpiryDateTupleNodeType
     >;
 
@@ -139,6 +141,8 @@ export namespace ZenithScanCriteria {
     >;
 
     export type TextField = PickEnum<TupleNodeType,
+        typeof AltCodeTupleNodeType |
+        typeof AttributeTupleNodeType |
         typeof BoardTupleNodeType |
         typeof CallOrPutTupleNodeType |
         typeof CategoryTupleNodeType |
@@ -189,6 +193,41 @@ export namespace ZenithScanCriteria {
     export type AttributeSubField = Zenith.MarketController.SearchSymbols.KnownAttributeKey;
     export type TextSubField = AltCodeSubField | AttributeSubField;
     // export type MatchingSubField = MatchingPriceSubField | MatchingDateSubField | MatchingTextSubField;
+
+    export type ComparisonTupleNodeType = PickEnum<TupleNodeType,
+        typeof EqualTupleNodeType |
+        typeof GreaterThanTupleNodeType |
+        typeof GreaterThanOrEqualTupleNodeType |
+        typeof LessThanTupleNodeType |
+        typeof LessThanOrEqualTupleNodeType |
+        typeof AllTupleNodeType |
+        typeof NoneTupleNodeType
+    >;
+
+    export type BinaryTupleNodeType = PickEnum<TupleNodeType,
+        typeof AddTupleNodeType |
+        typeof DivSymbolTupleNodeType |
+        typeof DivTupleNodeType |
+        typeof ModSymbolTupleNodeType |
+        typeof ModTupleNodeType |
+        typeof MulSymbolTupleNodeType |
+        typeof MulTupleNodeType |
+        typeof SubTupleNodeType
+    >;
+
+    export type UnaryTupleNodeType = PickEnum<TupleNodeType,
+        typeof NegTupleNodeType |
+        typeof PosTupleNodeType |
+        typeof AbsTupleNodeType
+    >;
+
+    export type UnaryOrBinaryTupleNodeType = PickEnum<TupleNodeType,
+        typeof SubOrNegSymbolTupleNodeType |
+        typeof AddOrPosSymbolTupleNodeType
+    >;
+
+    export type BooleanTupleNodeType = LogicalTupleNodeType | MatchingField | ComparisonTupleNodeType;
+    export type ExpressionTupleNodeType = BinaryTupleNodeType | UnaryTupleNodeType | UnaryOrBinaryTupleNodeType;
 
     export type LogicalTupleNodeUnion = AndTupleNode | OrTupleNode | NotTupleNode;
     export type LogicalTupleNode = [nodeType: LogicalTupleNodeType, ...params: BooleanParam[]];
@@ -302,20 +341,20 @@ export namespace ZenithScanCriteria {
         MulTupleNode |
         SubTupleNode;
 
-    export type BinaryExpressionTupleNode = [nodeType: TupleNodeType, leftParam: unknown, rightParam: unknown];
+    export type BinaryExpressionTupleNode = [nodeType: BinaryTupleNodeType, leftParam: unknown, rightParam: unknown];
 
     export type UnaryExpressionTupleNodeUnion =
         NegTupleNode |
         PosTupleNode |
         AbsTupleNode;
 
-    export type UnaryExpressionTupleNode = [nodeType: TupleNodeType, param: unknown];
+    export type UnaryExpressionTupleNode = [nodeType: UnaryTupleNodeType, param: unknown];
 
     export type UnaryOrBinaryExpressionTupleNodeUnion =
         SubOrNegSymbolTupleNode |
         AddOrPosSymbolTupleNode;
 
-    export type UnaryOrBinaryExpressionTupleNode = [nodeType: TupleNodeType, leftOrUnaryparam: unknown, rightParam?: unknown];
+    export type UnaryOrBinaryExpressionTupleNode = [nodeType: UnaryOrBinaryTupleNodeType, leftOrUnaryparam: unknown, rightParam?: unknown];
 
     export type BooleanTupleNodeUnion = LogicalTupleNodeUnion | MatchingTupleNodeUnion | ComparisonTupleNodeUnion | AllNoneTupleNodeUnion;
     export type BooleanTupleNode = LogicalTupleNode | MatchingTupleNode | ComparisonTupleNode | AllNoneTupleNode;
@@ -421,78 +460,78 @@ export namespace ZenithScanCriteria {
 
     export const SingleDefault_IsIndex = true;
 
-    export const AndTupleNodeType: TupleNodeType = 'And';
-    export const NotTupleNodeType: TupleNodeType = 'Not';
-    export const OrTupleNodeType: TupleNodeType = 'Or';
-    export const AltCodeTupleNodeType: TupleNodeType = 'AltCode';
-    export const AttributeTupleNodeType: TupleNodeType = 'Attribute';
-    export const AuctionTupleNodeType: TupleNodeType = 'Auction';
-    export const AuctionLastTupleNodeType: TupleNodeType = 'AuctionLast';
-    export const AuctionQuantityTupleNodeType: TupleNodeType = 'AuctionQuantity';
-    export const BestAskCountTupleNodeType: TupleNodeType = 'BestAskCount';
-    export const BestAskPriceTupleNodeType: TupleNodeType = 'BestAskPrice';
-    export const BestAskQuantityTupleNodeType: TupleNodeType = 'BestAskQuantity';
-    export const BestBidCountTupleNodeType: TupleNodeType = 'BestBidCount';
-    export const BestBidPriceTupleNodeType: TupleNodeType = 'BestBidPrice';
-    export const BestBidQuantityTupleNodeType: TupleNodeType = 'BestBidQuantity';
-    export const BoardTupleNodeType: TupleNodeType = 'Board';
-    export const CallOrPutTupleNodeType: TupleNodeType = 'CallOrPut';
-    export const CategoryTupleNodeType: TupleNodeType = 'Category';
-    export const CfiTupleNodeType: TupleNodeType = 'CFI';
-    export const ClassTupleNodeType: TupleNodeType = 'Class';
-    export const ClosePriceTupleNodeType: TupleNodeType = 'ClosePrice';
-    export const CodeTupleNodeType: TupleNodeType = 'Code';
-    export const ContractSizeTupleNodeType: TupleNodeType = 'ContractSize';
-    export const CurrencyTupleNodeType: TupleNodeType = 'Currency';
-    export const DataTupleNodeType: TupleNodeType = 'Data';
-    export const DateTupleNodeType: TupleNodeType = 'Date';
-    export const ExerciseTypeTupleNodeType: TupleNodeType = 'ExerciseType';
-    export const ExchangeTupleNodeType: TupleNodeType = 'Exchange';
-    export const ExpiryDateTupleNodeType: TupleNodeType = 'ExpiryDate';
-    export const HighPriceTupleNodeType: TupleNodeType = 'HighPrice';
-    export const IsIndexTupleNodeType: TupleNodeType = 'IsIndex';
-    export const LegTupleNodeType: TupleNodeType = 'Leg';
-    export const LastPriceTupleNodeType: TupleNodeType = 'LastPrice';
-    export const LotSizeTupleNodeType: TupleNodeType = 'LotSize';
-    export const LowPriceTupleNodeType: TupleNodeType = 'LowPrice';
-    export const MarketTupleNodeType: TupleNodeType = 'Market';
-    export const NameTupleNodeType: TupleNodeType = 'Name';
-    export const OpenInterestTupleNodeType: TupleNodeType = 'OpenInterest';
-    export const OpenPriceTupleNodeType: TupleNodeType = 'OpenPrice';
-    export const PriceTupleNodeType: TupleNodeType = 'Price';
-    export const PreviousCloseTupleNodeType: TupleNodeType = 'PreviousClose';
-    export const QuotationBasisTupleNodeType: TupleNodeType = 'QuotationBasis';
-    export const RemainderTupleNodeType: TupleNodeType = 'Remainder';
-    export const ShareIssueTupleNodeType: TupleNodeType = 'ShareIssue';
-    export const StateTupleNodeType: TupleNodeType = 'State';
-    export const StateAllowsTupleNodeType: TupleNodeType = 'StateAllows';
-    export const StatusNoteTupleNodeType: TupleNodeType = 'StatusNote';
-    export const StrikePriceTupleNodeType: TupleNodeType = 'StrikePrice';
-    export const TradesTupleNodeType: TupleNodeType = 'Trades';
-    export const TradingMarketTupleNodeType: TupleNodeType = 'TradingMarket';
-    export const ValueTradedTupleNodeType: TupleNodeType = 'ValueTraded';
-    export const VolumeTupleNodeType: TupleNodeType = 'Volume';
-    export const VwapTupleNodeType: TupleNodeType = 'VWAP';
-    export const EqualTupleNodeType: TupleNodeType =  '=';
-    export const GreaterThanTupleNodeType: TupleNodeType =  '>';
-    export const GreaterThanOrEqualTupleNodeType: TupleNodeType =  '>=';
-    export const LessThanTupleNodeType: TupleNodeType =  '<';
-    export const LessThanOrEqualTupleNodeType: TupleNodeType =  '<=';
-    export const AllTupleNodeType: TupleNodeType = 'All';
-    export const NoneTupleNodeType: TupleNodeType = 'None';
-    export const AddTupleNodeType: TupleNodeType = 'Add';
-    export const DivSymbolTupleNodeType: TupleNodeType =  '/';
-    export const DivTupleNodeType: TupleNodeType = 'Div';
-    export const ModSymbolTupleNodeType: TupleNodeType =  '%';
-    export const ModTupleNodeType: TupleNodeType = 'Mod';
-    export const MulSymbolTupleNodeType: TupleNodeType =  '*';
-    export const MulTupleNodeType: TupleNodeType = 'Mul';
-    export const SubTupleNodeType: TupleNodeType = 'Sub';
-    export const NegTupleNodeType: TupleNodeType = 'Neg';
-    export const PosTupleNodeType: TupleNodeType = 'Pos';
-    export const AbsTupleNodeType: TupleNodeType = 'Abs';
-    export const SubOrNegSymbolTupleNodeType: TupleNodeType =  '-';
-    export const AddOrPosSymbolTupleNodeType: TupleNodeType =  '+';
+    export const AndTupleNodeType = 'And';
+    export const NotTupleNodeType = 'Not';
+    export const OrTupleNodeType = 'Or';
+    export const AltCodeTupleNodeType = 'AltCode';
+    export const AttributeTupleNodeType = 'Attribute';
+    export const AuctionTupleNodeType = 'Auction';
+    export const AuctionLastTupleNodeType = 'AuctionLast';
+    export const AuctionQuantityTupleNodeType = 'AuctionQuantity';
+    export const BestAskCountTupleNodeType = 'BestAskCount';
+    export const BestAskPriceTupleNodeType = 'BestAskPrice';
+    export const BestAskQuantityTupleNodeType = 'BestAskQuantity';
+    export const BestBidCountTupleNodeType = 'BestBidCount';
+    export const BestBidPriceTupleNodeType = 'BestBidPrice';
+    export const BestBidQuantityTupleNodeType = 'BestBidQuantity';
+    export const BoardTupleNodeType = 'Board';
+    export const CallOrPutTupleNodeType = 'CallOrPut';
+    export const CategoryTupleNodeType = 'Category';
+    export const CfiTupleNodeType = 'CFI';
+    export const ClassTupleNodeType = 'Class';
+    export const ClosePriceTupleNodeType = 'ClosePrice';
+    export const CodeTupleNodeType = 'Code';
+    export const ContractSizeTupleNodeType = 'ContractSize';
+    export const CurrencyTupleNodeType = 'Currency';
+    export const DataTupleNodeType = 'Data';
+    export const DateTupleNodeType = 'Date';
+    export const ExerciseTypeTupleNodeType = 'ExerciseType';
+    export const ExchangeTupleNodeType = 'Exchange';
+    export const ExpiryDateTupleNodeType = 'ExpiryDate';
+    export const HighPriceTupleNodeType = 'HighPrice';
+    export const IsIndexTupleNodeType = 'IsIndex';
+    export const LegTupleNodeType = 'Leg';
+    export const LastPriceTupleNodeType = 'LastPrice';
+    export const LotSizeTupleNodeType = 'LotSize';
+    export const LowPriceTupleNodeType = 'LowPrice';
+    export const MarketTupleNodeType = 'Market';
+    export const NameTupleNodeType = 'Name';
+    export const OpenInterestTupleNodeType = 'OpenInterest';
+    export const OpenPriceTupleNodeType = 'OpenPrice';
+    export const PriceTupleNodeType = 'Price';
+    export const PreviousCloseTupleNodeType = 'PreviousClose';
+    export const QuotationBasisTupleNodeType = 'QuotationBasis';
+    export const RemainderTupleNodeType = 'Remainder';
+    export const ShareIssueTupleNodeType = 'ShareIssue';
+    export const StateTupleNodeType = 'State';
+    export const StateAllowsTupleNodeType = 'StateAllows';
+    export const StatusNoteTupleNodeType = 'StatusNote';
+    export const StrikePriceTupleNodeType = 'StrikePrice';
+    export const TradesTupleNodeType = 'Trades';
+    export const TradingMarketTupleNodeType = 'TradingMarket';
+    export const ValueTradedTupleNodeType = 'ValueTraded';
+    export const VolumeTupleNodeType = 'Volume';
+    export const VwapTupleNodeType = 'VWAP';
+    export const EqualTupleNodeType =  '=';
+    export const GreaterThanTupleNodeType =  '>';
+    export const GreaterThanOrEqualTupleNodeType =  '>=';
+    export const LessThanTupleNodeType =  '<';
+    export const LessThanOrEqualTupleNodeType =  '<=';
+    export const AllTupleNodeType = 'All';
+    export const NoneTupleNodeType = 'None';
+    export const AddTupleNodeType = 'Add';
+    export const DivSymbolTupleNodeType =  '/';
+    export const DivTupleNodeType = 'Div';
+    export const ModSymbolTupleNodeType =  '%';
+    export const ModTupleNodeType = 'Mod';
+    export const MulSymbolTupleNodeType =  '*';
+    export const MulTupleNodeType = 'Mul';
+    export const SubTupleNodeType = 'Sub';
+    export const NegTupleNodeType = 'Neg';
+    export const PosTupleNodeType = 'Pos';
+    export const AbsTupleNodeType = 'Abs';
+    export const SubOrNegSymbolTupleNodeType =  '-';
+    export const AddOrPosSymbolTupleNodeType =  '+';
 
 
     export interface ParamTupleMap {

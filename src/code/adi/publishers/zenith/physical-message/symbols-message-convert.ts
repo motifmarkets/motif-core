@@ -422,7 +422,7 @@ export namespace SymbolsMessageConvert {
                     exchangeId,
                     name: detail.Name,
                     // ShowFull fields are only included if specified in request
-                    cfi: detail.Cfi,
+                    cfi: detail.CFI,
                     depthDirectionId: ifDefined(detail.DepthDirection, x => ZenithConvert.DepthDirection.toId(x)),
                     isIndex: detail.IsIndex,
                     expiryDate: ifDefined(detail.ExpiryDate, x => ZenithConvert.Date.DateYYYYMMDD.toSourceTzOffsetDate(x)),

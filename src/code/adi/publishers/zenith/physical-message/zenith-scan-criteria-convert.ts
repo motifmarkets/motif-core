@@ -5,7 +5,7 @@
  */
 
 import { StringId, Strings } from '../../../../res/res-internal-api';
-import { AssertInternalError, BaseZenithDataError, Err, ExternalError, Ok, Result, UnreachableCaseError } from '../../../../sys/sys-internal-api';
+import { AssertInternalError, BaseZenithDataError, Err, ExternalError, Ok, Result, SourceTzOffsetDateTime, UnreachableCaseError } from '../../../../sys/sys-internal-api';
 import { ScanCriteria } from '../../../common/scan-criteria';
 import { Zenith } from './zenith';
 import { ZenithConvert } from './zenith-convert';
@@ -232,10 +232,10 @@ export namespace ZenithScanCriteriaConvert {
     }
 
     function fromFieldHasValueNode(node: ScanCriteria.FieldHasValueNode):
-        ZenithScanCriteria.NumericRangeMatchingTupleNode |
-        ZenithScanCriteria.DateRangeMatchingTupleNode |
-        ZenithScanCriteria.TextMatchingTupleNode
-    {
+            ZenithScanCriteria.NumericRangeMatchingTupleNode |
+            ZenithScanCriteria.DateRangeMatchingTupleNode |
+            ZenithScanCriteria.TextMatchingTupleNode {
+
         const fieldId = node.fieldId;
         const fieldDataTypeId = ScanCriteria.Field.idToDataTypeId(fieldId);
         switch (fieldDataTypeId) {
@@ -265,7 +265,7 @@ export namespace ZenithScanCriteriaConvert {
 
     function fromDateFieldEqualsNode(node: ScanCriteria.DateFieldEqualsNode): ZenithScanCriteria.DateRangeMatchingTupleNode {
         const field = Field.dateFromId(node.fieldId);
-        const target = DateValue.fromDate(node.target);
+        const target = DateValue.fromDate(node.target.utcDate);
         return [field, target];
     }
 
@@ -274,8 +274,8 @@ export namespace ZenithScanCriteriaConvert {
         const nodeMin = node.min;
         const nodeMax = node.max;
         const namedParameters: ZenithScanCriteria.DateNamedParameters = {
-            Min: nodeMin === undefined ? undefined: DateValue.fromDate(nodeMin),
-            Max: nodeMax === undefined ? undefined: DateValue.fromDate(nodeMax),
+            Min: nodeMin === undefined ? undefined: DateValue.fromDate(nodeMin.utcDate),
+            Max: nodeMax === undefined ? undefined: DateValue.fromDate(nodeMax.utcDate),
         }
         return [field, namedParameters];
     }
@@ -292,10 +292,9 @@ export namespace ZenithScanCriteriaConvert {
     }
 
     function fromSubFieldHasValueNode(node: ScanCriteria.SubFieldHasValueNode):
-        ZenithScanCriteria.NumericNamedRangeMatchingTupleNode |
-        ZenithScanCriteria.DateNamedRangeMatchingTupleNode |
-        ZenithScanCriteria.NamedTextMatchingTupleNode
-    {
+            ZenithScanCriteria.NumericNamedRangeMatchingTupleNode |
+            ZenithScanCriteria.DateNamedRangeMatchingTupleNode |
+            ZenithScanCriteria.NamedTextMatchingTupleNode {
         const fieldId = node.fieldId;
         switch (fieldId) {
             case ScanCriteria.FieldId.Price: return fromPriceSubFieldHasValue(node.subFieldId as ScanCriteria.PriceSubFieldId);
@@ -347,7 +346,7 @@ export namespace ZenithScanCriteriaConvert {
     function fromDateSubFieldEqualsNode(node: ScanCriteria.DateSubFieldEqualsNode): ZenithScanCriteria.DateNamedRangeMatchingTupleNode {
         const field = ZenithScanCriteria.DateTupleNodeType;
         const subField = DateSubField.fromId(node.subFieldId);
-        const target = DateValue.fromDate(node.target);
+        const target = DateValue.fromDate(node.target.utcDate);
         return [field, subField, target];
     }
 
@@ -357,8 +356,8 @@ export namespace ZenithScanCriteriaConvert {
         const nodeMin = node.min;
         const nodeMax = node.max;
         const namedParameters: ZenithScanCriteria.DateNamedParameters = {
-            Min: nodeMin === undefined ? undefined: DateValue.fromDate(nodeMin),
-            Max: nodeMax === undefined ? undefined: DateValue.fromDate(nodeMax),
+            Min: nodeMin === undefined ? undefined: DateValue.fromDate(nodeMin.utcDate),
+            Max: nodeMax === undefined ? undefined: DateValue.fromDate(nodeMax.utcDate),
         }
         return [field, subField, namedParameters];
     }
@@ -410,14 +409,14 @@ export namespace ZenithScanCriteriaConvert {
     function tryToExpectedBooleanNode(node: ZenithScanCriteria.BooleanTupleNode, toProgress: ParseProgress): Result<ScanCriteria.BooleanNode, ZenithScanCriteriaParseError> {
         toProgress.enterTupleNode();
         if (!Array.isArray(node)) {
-            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_BooleanNodeIsNotAnArray, ''))
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_BooleanTupleNodeIsNotAnArray, ''))
         } else {
             if (node.length === 0) {
-                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_BooleanNodeArrayIsZeroLength, ''))
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_BooleanTupleNodeArrayIsZeroLength, ''))
             } else {
                 const nodeType = node[0];
                 if (typeof nodeType !== 'string') {
-                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_BooleanNodeTypeIsNotString, `${nodeType}`));
+                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_BooleanTupleNodeTypeIsNotString, `${nodeType}`));
                 } else {
                     const parsedNode = toProgress.addParsedNode(nodeType);
 
@@ -433,91 +432,78 @@ export namespace ZenithScanCriteriaConvert {
         }
     }
 
-    function tryToBooleanNode(node: ZenithScanCriteria.BooleanTupleNode, toProgress: ParseProgress): Result<ScanCriteria.BooleanNode, ZenithScanCriteriaParseError> {
-        switch (node[0]) {
+    function tryToBooleanNode(typleNode: ZenithScanCriteria.BooleanTupleNode, toProgress: ParseProgress): Result<ScanCriteria.BooleanNode, ZenithScanCriteriaParseError> {
+        const nodeType = typleNode[0] as ZenithScanCriteria.BooleanTupleNodeType;
+
+        switch (nodeType) {
             // Logical
-            case ZenithScanCriteria.AndTupleNodeType: return tryToMultiOperandLogicalBooleanNode(node as ZenithScanCriteria.LogicalTupleNode, ScanCriteria.AndNode, toProgress);
-            case ZenithScanCriteria.OrTupleNodeType: return tryToMultiOperandLogicalBooleanNode(node as ZenithScanCriteria.LogicalTupleNode, ScanCriteria.OrNode, toProgress);
-            case ZenithScanCriteria.NotTupleNodeType: return tryToSingleOperandLogicalBooleanNode(node as ZenithScanCriteria.LogicalTupleNode, ScanCriteria.NotNode, toProgress);
+            case ZenithScanCriteria.AndTupleNodeType: return tryToMultiOperandLogicalBooleanNode(typleNode as ZenithScanCriteria.LogicalTupleNode, ScanCriteria.AndNode, toProgress);
+            case ZenithScanCriteria.OrTupleNodeType: return tryToMultiOperandLogicalBooleanNode(typleNode as ZenithScanCriteria.LogicalTupleNode, ScanCriteria.OrNode, toProgress);
+            case ZenithScanCriteria.NotTupleNodeType: return tryToSingleOperandLogicalBooleanNode(typleNode as ZenithScanCriteria.LogicalTupleNode, ScanCriteria.NotNode, toProgress);
 
             // Comparison
-            case ZenithScanCriteria.EqualTupleNodeType: return tryToNumericComparisonNode(node as ZenithScanCriteria.ComparisonTupleNode, ScanCriteria.NumericEqualsNode, toProgress);
-            case ZenithScanCriteria.GreaterThanTupleNodeType: return tryToNumericComparisonNode(node as ZenithScanCriteria.ComparisonTupleNode, ScanCriteria.NumericGreaterThanNode, toProgress);
-            case ZenithScanCriteria.GreaterThanOrEqualTupleNodeType: return tryToNumericComparisonNode(node as ZenithScanCriteria.ComparisonTupleNode, ScanCriteria.NumericGreaterThanOrEqualNode, toProgress);
-            case ZenithScanCriteria.LessThanTupleNodeType: return tryToNumericComparisonNode(node as ZenithScanCriteria.ComparisonTupleNode, ScanCriteria.NumericLessThanNode, toProgress);
-            case ZenithScanCriteria.LessThanOrEqualTupleNodeType: return tryToNumericComparisonNode(node as ZenithScanCriteria.ComparisonTupleNode, ScanCriteria.NumericLessThanOrEqualNode, toProgress);
+            case ZenithScanCriteria.EqualTupleNodeType: return tryToNumericComparisonNode(typleNode as ZenithScanCriteria.ComparisonTupleNode, ScanCriteria.NumericEqualsNode, toProgress);
+            case ZenithScanCriteria.GreaterThanTupleNodeType: return tryToNumericComparisonNode(typleNode as ZenithScanCriteria.ComparisonTupleNode, ScanCriteria.NumericGreaterThanNode, toProgress);
+            case ZenithScanCriteria.GreaterThanOrEqualTupleNodeType: return tryToNumericComparisonNode(typleNode as ZenithScanCriteria.ComparisonTupleNode, ScanCriteria.NumericGreaterThanOrEqualNode, toProgress);
+            case ZenithScanCriteria.LessThanTupleNodeType: return tryToNumericComparisonNode(typleNode as ZenithScanCriteria.ComparisonTupleNode, ScanCriteria.NumericLessThanNode, toProgress);
+            case ZenithScanCriteria.LessThanOrEqualTupleNodeType: return tryToNumericComparisonNode(typleNode as ZenithScanCriteria.ComparisonTupleNode, ScanCriteria.NumericLessThanOrEqualNode, toProgress);
             case ZenithScanCriteria.AllTupleNodeType: return new Ok(new ScanCriteria.AllNode());
             case ZenithScanCriteria.NoneTupleNodeType: return new Ok(new ScanCriteria.NoneNode());
 
             // Matching
-            case ZenithScanCriteria.AltCodeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.AltCode, toProgress);
-            case ZenithScanCriteria.AttributeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Attribute, toProgress);
-            case ZenithScanCriteria.AuctionTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Auction, toProgress);
-            case ZenithScanCriteria.AuctionLastTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Auction, toProgress);
-            case ZenithScanCriteria.AuctionQuantityTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.AuctionQuantity, toProgress);
-            case ZenithScanCriteria.BestAskCountTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestAskCount, toProgress);
-            case ZenithScanCriteria.BestAskPriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestAskPrice, toProgress);
-            case ZenithScanCriteria.BestAskQuantityTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestAskQuantity, toProgress);
-            case ZenithScanCriteria.BestBidCountTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestBidCount, toProgress);
-            case ZenithScanCriteria.BestBidPriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestBidPrice, toProgress);
-            case ZenithScanCriteria.BestBidQuantityTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestBidQuantity, toProgress);
-            case ZenithScanCriteria.BoardTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Board, toProgress);
-            case ZenithScanCriteria.CallOrPutTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.CallOrPut, toProgress);
-            case ZenithScanCriteria.CategoryTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Category, toProgress);
-            case ZenithScanCriteria.CfiTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Cfi, toProgress);
-            case ZenithScanCriteria.ClassTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Class, toProgress);
-            case ZenithScanCriteria.ClosePriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ClosePrice, toProgress);
-            case ZenithScanCriteria.CodeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Code, toProgress);
-            case ZenithScanCriteria.ContractSizeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ContractSize, toProgress);
-            case ZenithScanCriteria.CurrencyTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Currency, toProgress);
-            case ZenithScanCriteria.DataTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Data, toProgress);
-            case ZenithScanCriteria.DateTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Date, toProgress);
-            case ZenithScanCriteria.ExerciseTypeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ExerciseType, toProgress);
-            case ZenithScanCriteria.ExchangeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Exchange, toProgress);
-            case ZenithScanCriteria.ExpiryDateTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ExpiryDate, toProgress);
-            case ZenithScanCriteria.HighPriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.HighPrice, toProgress);
-            case ZenithScanCriteria.IsIndexTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.IsIndex, toProgress);
-            case ZenithScanCriteria.LegTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Leg, toProgress);
-            case ZenithScanCriteria.LastPriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.LastPrice, toProgress);
-            case ZenithScanCriteria.LotSizeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.LotSize, toProgress);
-            case ZenithScanCriteria.LowPriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.LowPrice, toProgress);
-            case ZenithScanCriteria.MarketTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Market, toProgress);
-            case ZenithScanCriteria.NameTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Name, toProgress);
-            case ZenithScanCriteria.OpenInterestTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.OpenInterest, toProgress);
-            case ZenithScanCriteria.OpenPriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.OpenPrice, toProgress);
-            case ZenithScanCriteria.PriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Price, toProgress);
-            case ZenithScanCriteria.PreviousCloseTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.PreviousClose, toProgress);
-            case ZenithScanCriteria.QuotationBasisTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.QuotationBasis, toProgress);
-            case ZenithScanCriteria.RemainderTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Remainder, toProgress);
-            case ZenithScanCriteria.ShareIssueTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ShareIssue, toProgress);
-            case ZenithScanCriteria.StateTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.State, toProgress);
-            case ZenithScanCriteria.StateAllowsTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.StateAllows, toProgress);
-            case ZenithScanCriteria.StatusNoteTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.StatusNote, toProgress);
-            case ZenithScanCriteria.StrikePriceTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.StrikePrice, toProgress);
-            case ZenithScanCriteria.TradesTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Trades, toProgress);
-            case ZenithScanCriteria.TradingMarketTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.TradingMarket, toProgress);
-            case ZenithScanCriteria.ValueTradedTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ValueTraded, toProgress);
-            case ZenithScanCriteria.VolumeTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Volume, toProgress);
-            case ZenithScanCriteria.VwapTupleNodeType: return tryToFieldBooleanNode(node as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Vwap, toProgress);
+            case ZenithScanCriteria.AltCodeTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.AltCode, toProgress);
+            case ZenithScanCriteria.AttributeTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Attribute, toProgress);
+            case ZenithScanCriteria.AuctionTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Auction, toProgress);
+            case ZenithScanCriteria.AuctionLastTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Auction, toProgress);
+            case ZenithScanCriteria.AuctionQuantityTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.AuctionQuantity, toProgress);
+            case ZenithScanCriteria.BestAskCountTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestAskCount, toProgress);
+            case ZenithScanCriteria.BestAskPriceTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestAskPrice, toProgress);
+            case ZenithScanCriteria.BestAskQuantityTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestAskQuantity, toProgress);
+            case ZenithScanCriteria.BestBidCountTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestBidCount, toProgress);
+            case ZenithScanCriteria.BestBidPriceTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestBidPrice, toProgress);
+            case ZenithScanCriteria.BestBidQuantityTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.BestBidQuantity, toProgress);
+            case ZenithScanCriteria.BoardTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Board, toProgress);
+            case ZenithScanCriteria.CallOrPutTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.CallOrPut, toProgress);
+            case ZenithScanCriteria.CategoryTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Category, toProgress);
+            case ZenithScanCriteria.CfiTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Cfi, toProgress);
+            case ZenithScanCriteria.ClassTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Class, toProgress);
+            case ZenithScanCriteria.ClosePriceTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ClosePrice, toProgress);
+            case ZenithScanCriteria.CodeTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Code, toProgress);
+            case ZenithScanCriteria.ContractSizeTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ContractSize, toProgress);
+            case ZenithScanCriteria.CurrencyTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Currency, toProgress);
+            case ZenithScanCriteria.DataTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Data, toProgress);
+            case ZenithScanCriteria.DateTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Date, toProgress);
+            case ZenithScanCriteria.ExerciseTypeTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ExerciseType, toProgress);
+            case ZenithScanCriteria.ExchangeTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Exchange, toProgress);
+            case ZenithScanCriteria.ExpiryDateTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ExpiryDate, toProgress);
+            case ZenithScanCriteria.HighPriceTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.HighPrice, toProgress);
+            case ZenithScanCriteria.IsIndexTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.IsIndex, toProgress);
+            case ZenithScanCriteria.LegTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Leg, toProgress);
+            case ZenithScanCriteria.LastPriceTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.LastPrice, toProgress);
+            case ZenithScanCriteria.LotSizeTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.LotSize, toProgress);
+            case ZenithScanCriteria.LowPriceTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.LowPrice, toProgress);
+            case ZenithScanCriteria.MarketTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Market, toProgress);
+            case ZenithScanCriteria.NameTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Name, toProgress);
+            case ZenithScanCriteria.OpenInterestTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.OpenInterest, toProgress);
+            case ZenithScanCriteria.OpenPriceTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.OpenPrice, toProgress);
+            case ZenithScanCriteria.PriceTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Price, toProgress);
+            case ZenithScanCriteria.PreviousCloseTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.PreviousClose, toProgress);
+            case ZenithScanCriteria.QuotationBasisTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.QuotationBasis, toProgress);
+            case ZenithScanCriteria.RemainderTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Remainder, toProgress);
+            case ZenithScanCriteria.ShareIssueTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ShareIssue, toProgress);
+            case ZenithScanCriteria.StateTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.State, toProgress);
+            case ZenithScanCriteria.StateAllowsTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.StateAllows, toProgress);
+            case ZenithScanCriteria.StatusNoteTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.StatusNote, toProgress);
+            case ZenithScanCriteria.StrikePriceTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.StrikePrice, toProgress);
+            case ZenithScanCriteria.TradesTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Trades, toProgress);
+            case ZenithScanCriteria.TradingMarketTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.TradingMarket, toProgress);
+            case ZenithScanCriteria.ValueTradedTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.ValueTraded, toProgress);
+            case ZenithScanCriteria.VolumeTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Volume, toProgress);
+            case ZenithScanCriteria.VwapTupleNodeType: return tryToFieldBooleanNode(typleNode as ZenithScanCriteria.MatchingTupleNode, ScanCriteria.FieldId.Vwap, toProgress);
 
-            // Binary
-            case ZenithScanCriteria.AddTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.DivSymbolTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.DivTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.ModSymbolTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.ModTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.MulSymbolTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.MulTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.SubTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-
-            // Unary
-            case ZenithScanCriteria.NegTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.PosTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.AbsTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-
-            // Unary or Binary (depending on number of params)
-            case ZenithScanCriteria.SubOrNegSymbolTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
-            case ZenithScanCriteria.AddOrPosSymbolTupleNodeType: return tryToNode(node as ZenithScanCriteria.Node);
+            default:
+                const neverTupleNodeType: never = nodeType;
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_UnknownBooleanTupleNodeType, `${neverTupleNodeType}`));
         }
     }
 
@@ -532,7 +518,7 @@ export namespace ZenithScanCriteriaConvert {
         } else {
             const operands = new Array<ScanCriteria.BooleanNode>(tulipNodeLength - 1);
             for (let i = 1; i < tulipNodeLength; i++) {
-                const tulipParam = tulipNode[i];
+                const tulipParam = tulipNode[i] as ZenithScanCriteria.BooleanParam; // Need to cast as (skipped) first element in array is LogicalTupleNodeType
                 const operandResult = tryToExpectedBooleanOperand(tulipParam, toProgress);
                 if (operandResult.isErr()) {
                     return operandResult;
@@ -613,7 +599,7 @@ export namespace ZenithScanCriteriaConvert {
                     return tryToSubFieldHasValueNode(fieldId as ScanCriteria.SubbedFieldId, param1);
                 } else {
                     if (typeof param1 === 'object') {
-                        return tryNamedParametersToFieldEqualsOrInRange(fieldId, param1);
+                        return tryNamedParametersToFieldEqualsOrInRangeNode(fieldId, param1);
                     } else {
                         return tryToFieldEqualsOrContainsNode(fieldId, param1);
                     }
@@ -625,25 +611,40 @@ export namespace ZenithScanCriteriaConvert {
                 const fieldSubbed = ScanCriteria.Field.isSubbed(fieldId);
                 if (fieldSubbed) {
                     if (typeof param2 === 'object') {
-                        return tryNamedParametersToSubFieldEqualsOrInRange(fieldId as ScanCriteria.SubbedFieldId, param1, param2);
+                        return tryNamedParametersToSubFieldEqualsOrInRangeNode(fieldId as ScanCriteria.SubbedFieldId, param1, param2);
                     } else {
                         return tryToSubFieldEqualsOrContainsNode(fieldId as ScanCriteria.SubbedFieldId, param1, param2);
                     }
                 } else {
+                    return tryToFieldContainsOrInRangeNode(fieldId as ScanCriteria.SubbedFieldId, param1, param2);
                 }
             }
             case 3: {
                 const param1 = node[1];
                 const param2 = node[2];
                 const param3 = node[3];
-
+                const fieldSubbed = ScanCriteria.Field.isSubbed(fieldId);
+                if (fieldSubbed) {
+                    return tryToSubFieldContainsOrInRangeNode(fieldId as ScanCriteria.SubbedFieldId, param1, param2, param3);
+                } else {
+                    if (ScanCriteria.Field.idToDataTypeId(fieldId) === ScanCriteria.FieldDataTypeId.Text) {
+                        return tryToTextFieldContainsNode(fieldId as ScanCriteria.TextFieldId, param1, param2, param3);
+                    } else {
+                        return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_OnlySubFieldOrTextFieldNodesCanHave3Parameters, paramCount.toString()));
+                    }
+                }
+                break;
             }
             case 4: {
-                const param1 = node[1];
-                const param2 = node[2];
-                const param3 = node[3];
-                const param4 = node[4];
-                return tryToTextSubFieldContainsNode(fieldId as ScanCriteria.SubbedFieldId, param1, param2, param3, param4);
+                if (!ScanCriteria.Field.isSubbed(fieldId)) {
+                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_OnlySubFieldNodeCanHave4Parameters, paramCount.toString()));
+                } else {
+                    const param1 = node[1];
+                    const param2 = node[2];
+                    const param3 = node[3];
+                    const param4 = node[4];
+                    return tryToTextSubFieldContainsNode(fieldId as ScanCriteria.SubbedFieldId, param1, param2, param3, param4);
+                }
             }
             default:
                 return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_FieldBooleanNodeHasTooManyParameters, paramCount.toString()));
@@ -657,14 +658,13 @@ export namespace ZenithScanCriteriaConvert {
     }
 
     function tryToSubFieldHasValueNode(fieldId: ScanCriteria.SubbedFieldId, subField: unknown):
-        Result<
-            ScanCriteria.PriceSubFieldHasValueNode |
-            ScanCriteria.DateSubFieldHasValueNode |
-            ScanCriteria.AltCodeSubFieldHasValueNode |
-            ScanCriteria.AttributeSubFieldHasValueNode,
-            ZenithScanCriteriaParseError
-        >
-    {
+            Result<
+                ScanCriteria.PriceSubFieldHasValueNode |
+                ScanCriteria.DateSubFieldHasValueNode |
+                ScanCriteria.AltCodeSubFieldHasValueNode |
+                ScanCriteria.AttributeSubFieldHasValueNode,
+                ZenithScanCriteriaParseError
+            > {
         if (typeof subField !== 'string') {
             return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_SubFieldIsNotString, `${subField}`));
         } else {
@@ -734,7 +734,7 @@ export namespace ZenithScanCriteriaConvert {
         }
     }
 
-    function tryNamedParametersToFieldEqualsOrInRange(fieldId: ScanCriteria.FieldId, namedParameters: object | null) {
+    function tryNamedParametersToFieldEqualsOrInRangeNode(fieldId: ScanCriteria.FieldId, namedParameters: object | null) {
         const fieldDataTypeId = ScanCriteria.Field.idToDataTypeId(fieldId);
         switch (fieldDataTypeId) {
             case ScanCriteria.FieldDataTypeId.Numeric: {
@@ -770,7 +770,36 @@ export namespace ZenithScanCriteriaConvert {
                 return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_FirstParameterCannotBeObjectOrNull, `${namedParameters}`));
             }
             default:
-                throw new UnreachableCaseError('ZSCCTTFEOCN10008', fieldDataTypeId);
+                throw new UnreachableCaseError('ZSCCTNPTFEOIRN10008', fieldDataTypeId);
+        }
+    }
+
+    function tryToFieldContainsOrInRangeNode(fieldId: ScanCriteria.FieldId, param1: unknown, param2: unknown) {
+        const fieldDataTypeId = ScanCriteria.Field.idToDataTypeId(fieldId);
+        switch (fieldDataTypeId) {
+            case ScanCriteria.FieldDataTypeId.Numeric: return tryToNumericFieldInRangeNode(fieldId as ScanCriteria.NumericFieldId, param1, param2);
+            case ScanCriteria.FieldDataTypeId.Date: return tryToDateFieldInRangeNode(fieldId as ScanCriteria.DateFieldId, param1, param2);
+            case ScanCriteria.FieldDataTypeId.Text: {
+                if (typeof param2 === 'object') {
+                    if (param2 === null) {
+                        return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_NamedParametersCannotBeNull, `${param2}`));
+                    } else {
+                        const { As: as, IgnoreCase: ignoreCase } = param2 as ZenithScanCriteria.TextNamedParameters;
+                        return tryToTextFieldContainsNode(fieldId as ScanCriteria.TextFieldId, param1, as, ignoreCase);
+                    }
+                } else {
+                    return tryToTextFieldContainsNode(fieldId as ScanCriteria.TextFieldId, param1, param2, undefined);
+                }
+            }
+            case ScanCriteria.FieldDataTypeId.Boolean: {
+                return new Err(
+                    new ZenithScanCriteriaParseError(
+                        ExternalError.Code.ZenithScanCriteriaParse_BooleanFieldCanOnlyHaveOneParameter,
+                        Field.booleanFromId(fieldId as ScanCriteria.BooleanFieldId))
+                );
+            }
+            default:
+                throw new UnreachableCaseError('ZSCCTTFCOIRN10008', fieldDataTypeId);
         }
     }
 
@@ -824,7 +853,7 @@ export namespace ZenithScanCriteriaConvert {
     }
 
     function tryToDateFieldInRangeNode(fieldId: ScanCriteria.DateFieldId, min: unknown, max: unknown): Result<ScanCriteria.DateFieldInRangeNode, ZenithScanCriteriaParseError> {
-        let minDate: Date | undefined;
+        let minDate: SourceTzOffsetDateTime | undefined;
         if (min === undefined) {
             minDate = undefined;
         } else {
@@ -838,7 +867,7 @@ export namespace ZenithScanCriteriaConvert {
             }
         }
 
-        let maxDate: Date | undefined;
+        let maxDate: SourceTzOffsetDateTime | undefined;
         if (max === undefined) {
             maxDate = undefined;
         } else {
@@ -864,8 +893,7 @@ export namespace ZenithScanCriteriaConvert {
     }
 
     function tryToTextFieldContainsNode(fieldId: ScanCriteria.TextFieldId, value: unknown, as: unknown, ignoreCase: unknown):
-        Result<ScanCriteria.TextFieldContainsNode, ZenithScanCriteriaParseError>
-    {
+            Result<ScanCriteria.TextFieldContainsNode, ZenithScanCriteriaParseError> {
         const propertiesResult = TextFieldContainsProperties.resolveFromUnknown(value, as, ignoreCase);
         if (propertiesResult.isErr()) {
             return new Err(propertiesResult.error);
@@ -898,17 +926,40 @@ export namespace ZenithScanCriteriaConvert {
             case ScanCriteria.FieldId.AltCode: return tryToAltCodeSubFieldContains(subField, param2, undefined, undefined);
             case ScanCriteria.FieldId.Attribute: return tryToAttributeSubFieldContains(subField, param2, undefined, undefined);
             default:
-                throw new UnreachableCaseError('ZSCCTTFEOCN10008', fieldId);
+                throw new UnreachableCaseError('ZSCCTTSFEOCN10008', fieldId);
         }
     }
 
-    function tryNamedParametersToSubFieldEqualsOrInRange(fieldId: ScanCriteria.SubbedFieldId, subField: unknown, namedParameters: object | null) {
+    function tryToSubFieldContainsOrInRangeNode(fieldId: ScanCriteria.SubbedFieldId, subField: unknown, param2: unknown, param3: unknown) {
+        switch (fieldId) {
+            case ScanCriteria.FieldId.Price: return tryToPriceSubFieldInRangeNode(subField, param2, param3);
+            case ScanCriteria.FieldId.Date: return tryToDateSubFieldInRangeNode(subField, param2, param3);
+            case ScanCriteria.FieldId.AltCode: return tryToAltCodeSubFieldContains(subField, param2, param3, undefined);
+            case ScanCriteria.FieldId.Attribute: return tryToAttributeSubFieldContains(subField, param2, param3, undefined);
+            default:
+                throw new UnreachableCaseError('ZSCCTTSFCOIRN10008', fieldId);
+        }
+    }
+
+    function tryToTextSubFieldContainsNode(fieldId: ScanCriteria.SubbedFieldId, subField: unknown, value: unknown, as: unknown, ignoreCase: unknown) {
+        switch (fieldId) {
+            case ScanCriteria.FieldId.Price:
+            case ScanCriteria.FieldId.Date: {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_OnlyTextSubFieldContainsNodeCanHave4Parameters, Field.matchingFromId(fieldId)));
+            }
+            case ScanCriteria.FieldId.AltCode: return tryToAltCodeSubFieldContains(subField, value, as, ignoreCase);
+            case ScanCriteria.FieldId.Attribute: return tryToAttributeSubFieldContains(subField, value, as, ignoreCase);
+            default:
+                throw new UnreachableCaseError('ZSCCTTTSFCN10008', fieldId);
+        }
+    }
+
+    function tryNamedParametersToSubFieldEqualsOrInRangeNode(fieldId: ScanCriteria.SubbedFieldId, subField: unknown, namedParameters: object | null) {
         switch (fieldId) {
             case ScanCriteria.FieldId.Price: {
                 if (namedParameters === null) {
                     return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_NamedParametersCannotBeNull, `${namedParameters}`));
                 } else {
-                    const numericFieldId = fieldId as ScanCriteria.NumericFieldId;
                     const { At: at, Min: min, Max: max } = namedParameters as ZenithScanCriteria.NumericNamedParameters;
                     if (at !== undefined) {
                         return tryToPriceSubFieldEqualsNode(subField, at);
@@ -921,7 +972,6 @@ export namespace ZenithScanCriteriaConvert {
                 if (namedParameters === null) {
                     return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_NamedParametersCannotBeNull, `${namedParameters}`));
                 } else {
-                    const dateFieldId = fieldId as ScanCriteria.DateFieldId;
                     const { At: at, Min: min, Max: max } = namedParameters as ZenithScanCriteria.DateNamedParameters;
                     if (at !== undefined) {
                         return tryToDateSubFieldEqualsNode(subField, at);
@@ -1024,7 +1074,7 @@ export namespace ZenithScanCriteriaConvert {
         if (typeof subField !== 'string') {
             return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_SubFieldIsNotString, `${subField}`));
         } else {
-            let minDate: Date | undefined;
+            let minDate: SourceTzOffsetDateTime | undefined;
             if (min === undefined) {
                 minDate = undefined;
             } else {
@@ -1038,7 +1088,7 @@ export namespace ZenithScanCriteriaConvert {
                 }
             }
 
-            let maxDate: Date | undefined;
+            let maxDate: SourceTzOffsetDateTime | undefined;
             if (max === undefined) {
                 maxDate = undefined;
             } else {
@@ -1145,33 +1195,173 @@ export namespace ZenithScanCriteriaConvert {
     }
 
     function tryToExpectedNumericOperand(
-        param: ZenithScanCriteria.NumericParam,
+        numericParam: unknown, // ZenithScanCriteria.NumericParam,
         paramId: string,
         toProgress: ParseProgress,
     ): Result<ScanCriteria.NumericNode | number, ZenithScanCriteriaParseError> {
-        const paramType = typeof param;
-        if (typeof param === 'number') {
-            return new Ok(param);
+        if (typeof numericParam === 'number') {
+            return new Ok(numericParam);
         } else {
-            if (typeof param === 'string') {
-                return tryToExpectedNumericFieldValueGet(param, toProgress);
+            if (typeof numericParam === 'string') {
+                return tryToNumericFieldValueGet(numericParam as ZenithScanCriteria.NumericField);
             } else {
-                if (!Array.isArray(param)) {
-                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_NumericParameterIsNotNumberOrComparableFieldOrArray, paramId));
+                if (Array.isArray(numericParam)) {
+                    return tryToExpectedArithmeticNumericNode(numericParam as ZenithScanCriteria.NumericTupleNode, toProgress);
                 } else {
-                    if
-                    return new Ok(param);
+                    return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_NumericParameterIsNotNumberOrComparableFieldOrArray, `${paramId}`));
                 }
             }
+        }
+    }
 
-        }
-        switch (paramType) {
-            case 'number':
-        }
-        if (operand instanceof ScanCriteria.NumericNode) {
-            return fromNumericNodeParam(operand)
+    function tryToExpectedArithmeticNumericNode(
+        numericTupleNode: ZenithScanCriteria.NumericTupleNode,
+        toProgress: ParseProgress
+    ): Result<ScanCriteria.NumericNode, ZenithScanCriteriaParseError> {
+        const tupleNodeLength = numericTupleNode.length;
+        if (tupleNodeLength < 1 ) {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_NumericTupleNodeIsZeroLength, ''));
         } else {
-            return operand;
+            const nodeType = numericTupleNode[0];
+            if (typeof nodeType !== 'string') {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_NumericTupleNodeTypeIsNotString, `${nodeType}`));
+            } else {
+                const parsedNode = toProgress.addParsedNode(nodeType);
+
+                const result = tryToArithmeticNumericNode(numericTupleNode, toProgress)
+
+                if (result.isOk()) {
+                    toProgress.exitTupleNode(parsedNode, result.value.typeId);
+                }
+
+                return result;
+            }
+        }
+    }
+
+    function tryToArithmeticNumericNode(
+        numericTupleNode: ZenithScanCriteria.NumericTupleNode,
+        toProgress: ParseProgress
+    ): Result<ScanCriteria.NumericNode, ZenithScanCriteriaParseError> {
+        const tupleNodetype = numericTupleNode[0] as ZenithScanCriteria.ExpressionTupleNodeType;
+        switch (tupleNodetype) {
+            // Binary
+            case ZenithScanCriteria.AddTupleNodeType:
+                return tryToLeftRightArithmeticNumericNode(numericTupleNode as ZenithScanCriteria.BinaryExpressionTupleNode, ScanCriteria.NumericAddNode, toProgress);
+            case ZenithScanCriteria.DivSymbolTupleNodeType:
+                return tryToLeftRightArithmeticNumericNode(numericTupleNode as ZenithScanCriteria.BinaryExpressionTupleNode, ScanCriteria.NumericDivNode, toProgress);
+            case ZenithScanCriteria.DivTupleNodeType:
+                return tryToLeftRightArithmeticNumericNode(numericTupleNode as ZenithScanCriteria.BinaryExpressionTupleNode, ScanCriteria.NumericDivNode, toProgress);
+            case ZenithScanCriteria.ModSymbolTupleNodeType:
+                return tryToLeftRightArithmeticNumericNode(numericTupleNode as ZenithScanCriteria.BinaryExpressionTupleNode, ScanCriteria.NumericModNode, toProgress);
+            case ZenithScanCriteria.ModTupleNodeType:
+                return tryToLeftRightArithmeticNumericNode(numericTupleNode as ZenithScanCriteria.BinaryExpressionTupleNode, ScanCriteria.NumericModNode, toProgress);
+            case ZenithScanCriteria.MulSymbolTupleNodeType:
+                return tryToLeftRightArithmeticNumericNode(numericTupleNode as ZenithScanCriteria.BinaryExpressionTupleNode, ScanCriteria.NumericMulNode, toProgress);
+            case ZenithScanCriteria.MulTupleNodeType:
+                return tryToLeftRightArithmeticNumericNode(numericTupleNode as ZenithScanCriteria.BinaryExpressionTupleNode, ScanCriteria.NumericMulNode, toProgress);
+            case ZenithScanCriteria.SubTupleNodeType:
+                return tryToLeftRightArithmeticNumericNode(numericTupleNode as ZenithScanCriteria.BinaryExpressionTupleNode, ScanCriteria.NumericSubNode, toProgress);
+
+            // Unary
+            case ZenithScanCriteria.NegTupleNodeType:
+                return tryToUnaryArithmeticNumericNode(numericTupleNode as ZenithScanCriteria.UnaryExpressionTupleNode, ScanCriteria.NumericNegNode, toProgress);
+            case ZenithScanCriteria.PosTupleNodeType:
+                return tryToUnaryArithmeticNumericNode(numericTupleNode as ZenithScanCriteria.UnaryExpressionTupleNode, ScanCriteria.NumericPosNode, toProgress);
+            case ZenithScanCriteria.AbsTupleNodeType:
+                return tryToUnaryArithmeticNumericNode(numericTupleNode as ZenithScanCriteria.UnaryExpressionTupleNode, ScanCriteria.NumericAbsNode, toProgress);
+
+            // Unary or Binary (depending on number of params)
+            case ZenithScanCriteria.SubOrNegSymbolTupleNodeType:
+                return tryToUnaryOrLeftRightArithmeticNumericNode(
+                    numericTupleNode as ZenithScanCriteria.UnaryExpressionTupleNode | ZenithScanCriteria.BinaryExpressionTupleNode,
+                    ScanCriteria.NumericNegNode,
+                    ScanCriteria.NumericSubNode,
+                    toProgress);
+            case ZenithScanCriteria.AddOrPosSymbolTupleNodeType:
+                return tryToUnaryOrLeftRightArithmeticNumericNode(
+                    numericTupleNode as ZenithScanCriteria.UnaryExpressionTupleNode | ZenithScanCriteria.BinaryExpressionTupleNode,
+                    ScanCriteria.NumericPosNode,
+                    ScanCriteria.NumericAddNode,
+                    toProgress);
+            default:
+                const neverTupleNodeType: never = tupleNodetype;
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_UnknownNumericTupleNodeType, `${neverTupleNodeType}`));
+            }
+    }
+
+    function tryToUnaryArithmeticNumericNode(
+        numericTupleNode: ZenithScanCriteria.UnaryExpressionTupleNode,
+        nodeConstructor: new() => ScanCriteria.UnaryArithmeticNumericNode,
+        toProgress: ParseProgress
+    ): Result<ScanCriteria.NumericNode, ZenithScanCriteriaParseError> {
+        const nodeLength = numericTupleNode.length;
+        if (nodeLength !== 2) {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_UnaryArithmeticNumericTupleNodeRequires2Parameters, `${numericTupleNode}`));
+        } else {
+            const param = numericTupleNode[1];
+            const operandResult = tryToExpectedNumericOperand(param, '', toProgress);
+            if (operandResult.isErr()) {
+                return operandResult;
+            } else {
+                const node = new nodeConstructor();
+                node.operand = operandResult.value;
+                return new Ok(node);
+            }
+        }
+    }
+
+    function tryToLeftRightArithmeticNumericNode(
+        numericTupleNode: ZenithScanCriteria.BinaryExpressionTupleNode,
+        nodeConstructor: new() => ScanCriteria.LeftRightArithmeticNumericNode,
+        toProgress: ParseProgress
+    ): Result<ScanCriteria.NumericNode, ZenithScanCriteriaParseError> {
+        const nodeLength = numericTupleNode.length;
+        if (nodeLength !== 3) {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_LeftRightArithmeticNumericTupleNodeRequires3Parameters, `${numericTupleNode}`));
+        } else {
+            const leftParam = numericTupleNode[1];
+            const leftResult = tryToExpectedNumericOperand(leftParam, Strings[StringId.Left], toProgress);
+            if (leftResult.isErr()) {
+                return leftResult;
+            } else {
+                const rightParam = numericTupleNode[1];
+                const rightResult = tryToExpectedNumericOperand(rightParam, Strings[StringId.Right], toProgress);
+                if (rightResult.isErr()) {
+                    return rightResult;
+                } else {
+                    const node = new nodeConstructor();
+                    node.leftOperand = leftResult.value;
+                    node.rightOperand = rightResult.value;
+                    return new Ok(node);
+                }
+            }
+        }
+    }
+
+    function tryToUnaryOrLeftRightArithmeticNumericNode(
+        numericTupleNode: ZenithScanCriteria.UnaryExpressionTupleNode | ZenithScanCriteria.BinaryExpressionTupleNode,
+        unaryNodeConstructor: new() => ScanCriteria.UnaryArithmeticNumericNode,
+        leftRightNodeConstructor: new() => ScanCriteria.LeftRightArithmeticNumericNode,
+        toProgress: ParseProgress
+    ): Result<ScanCriteria.NumericNode, ZenithScanCriteriaParseError> {
+        const nodeLength = numericTupleNode.length;
+        switch (nodeLength) {
+            case 2: return tryToUnaryArithmeticNumericNode(numericTupleNode as ZenithScanCriteria.UnaryExpressionTupleNode, unaryNodeConstructor, toProgress);
+            case 3: return tryToLeftRightArithmeticNumericNode(numericTupleNode as ZenithScanCriteria.BinaryExpressionTupleNode, leftRightNodeConstructor, toProgress);
+            default:
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_NumericTupleNodeRequires2Or3Parameters, `${numericTupleNode}`));
+        }
+    }
+
+    function tryToNumericFieldValueGet(field: ZenithScanCriteria.NumericField): Result<ScanCriteria.NumericFieldValueGetNode, ZenithScanCriteriaParseError> {
+        const fieldId = Field.tryNumericToId(field);
+        if (fieldId === undefined) {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_UnknownNumericField, field));
+        } else {
+            const node = new ScanCriteria.NumericFieldValueGetNode();
+            node.fieldId = fieldId;
+            return new Ok(node);
         }
     }
 
@@ -1224,13 +1414,13 @@ export namespace ZenithScanCriteriaConvert {
     }
     namespace Field {
         export function tryMatchingToId(value: ZenithScanCriteria.MatchingField): ScanCriteria.FieldId | undefined {
-            let fieldId: ScanCriteria.FieldId | undefined = tryNumericToId(value);
+            let fieldId: ScanCriteria.FieldId | undefined = tryNumericToId(value as ZenithScanCriteria.NumericField);
             if (fieldId === undefined) {
-                fieldId = tryTextToId(value);
+                fieldId = tryTextToId(value as ZenithScanCriteria.TextField);
                 if (fieldId === undefined) {
-                    fieldId = tryDateToId(value);
+                    fieldId = tryDateToId(value as ZenithScanCriteria.DateField);
                     if (fieldId === undefined) {
-                        fieldId = tryBooleanToId(value); // fieldId is left undefined if this try fails
+                        fieldId = tryBooleanToId(value as ZenithScanCriteria.BooleanField); // fieldId is left undefined if this try fails
                     }
                 }
             }
@@ -1587,8 +1777,9 @@ export namespace ZenithScanCriteriaConvert {
         export function fromDate(value: Date): ZenithScanCriteria.DateString {
             return ZenithConvert.Date.DateTimeIso8601.fromDate(value);
         }
-        export function tryToDate(value: ZenithScanCriteria.DateString): Date | undefined {
-            return ZenithConvert.Date.DateTimeIso8601.fromDate(value);
+
+        export function tryToDate(value: ZenithScanCriteria.DateString): SourceTzOffsetDateTime | undefined {
+            return ZenithConvert.Date.DateTimeIso8601.toSourceTzOffsetDateTime(value);
         }
     }
 
