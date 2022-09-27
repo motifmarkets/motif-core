@@ -5,7 +5,7 @@
  */
 
 import { StringId, Strings } from '../../../../res/res-internal-api';
-import { AssertInternalError, BaseZenithDataError, Err, ExternalError, Ok, Result, SourceTzOffsetDateTime, UnreachableCaseError } from '../../../../sys/sys-internal-api';
+import { AssertInternalError, BaseZenithDataError, Err, ExternalError, Integer, Ok, Result, SourceTzOffsetDateTime, UnreachableCaseError } from '../../../../sys/sys-internal-api';
 import { ScanCriteria } from '../../../common/scan-criteria';
 import { Zenith } from './zenith';
 import { ZenithConvert } from './zenith-convert';
@@ -170,6 +170,7 @@ export namespace ZenithScanCriteriaConvert {
             case ScanCriteria.NodeTypeId.NumericPos: return fromUnaryArithmeticNumericNodeParam(ZenithScanCriteria.PosTupleNodeType, node as ScanCriteria.UnaryArithmeticNumericNode);
             case ScanCriteria.NodeTypeId.NumericAbs: return fromUnaryArithmeticNumericNodeParam(ZenithScanCriteria.AbsTupleNodeType, node as ScanCriteria.UnaryArithmeticNumericNode);
             case ScanCriteria.NodeTypeId.NumericFieldValueGet: return fromNumericFieldValueGetNode(node as ScanCriteria.NumericFieldValueGetNode);
+            case ScanCriteria.NodeTypeId.NumericIf: return fromNumericIfNode(node as ScanCriteria.NumericIfNode);
             default:
                 throw new UnreachableCaseError('ZSCCFNNPU', node.typeId);
         }
@@ -223,6 +224,23 @@ export namespace ZenithScanCriteriaConvert {
 
     function fromNumericFieldValueGetNode(node: ScanCriteria.NumericFieldValueGetNode): ZenithScanCriteria.NumericField {
         return Field.numericFromId(node.fieldId);
+    }
+
+    function fromNumericIfNode(node: ScanCriteria.NumericIfNode): ZenithScanCriteria.NumericIfTupleNode {
+        const tupleLength = 3 + node.trueArms.length * 2; // 1 (type) + 2 * trueArms + 2 (falseArm)
+        const tupleNode = new Array<unknown>(tupleLength);
+        tupleNode[0] = ZenithScanCriteria.IfTupleNodeType;
+
+        let index = 1;
+        for (const arm of node.trueArms) {
+            tupleNode[index++] = fromBooleanNode(arm.condition);
+            tupleNode[index++] = fromNumericOperand(arm.value);
+        }
+
+        tupleNode[index++] = fromBooleanNode(node.falseArm.condition);
+        tupleNode[index] = fromNumericOperand(node.falseArm.value);
+
+        return tupleNode as ZenithScanCriteria.NumericIfTupleNode;
     }
 
     function fromBooleanFieldEqualsNode(node: ScanCriteria.BooleanFieldEqualsNode): ZenithScanCriteria.BooleanSingleMatchingTupleNode {
@@ -1228,7 +1246,7 @@ export namespace ZenithScanCriteriaConvert {
             } else {
                 const parsedNode = toProgress.addParsedNode(nodeType);
 
-                const result = tryToArithmeticNumericNode(numericTupleNode, toProgress)
+                const result = tryToNumericNode(numericTupleNode, toProgress)
 
                 if (result.isOk()) {
                     toProgress.exitTupleNode(parsedNode, result.value.typeId);
@@ -1239,7 +1257,7 @@ export namespace ZenithScanCriteriaConvert {
         }
     }
 
-    function tryToArithmeticNumericNode(
+    function tryToNumericNode(
         numericTupleNode: ZenithScanCriteria.NumericTupleNode,
         toProgress: ParseProgress
     ): Result<ScanCriteria.NumericNode, ZenithScanCriteriaParseError> {
@@ -1284,6 +1302,10 @@ export namespace ZenithScanCriteriaConvert {
                     ScanCriteria.NumericPosNode,
                     ScanCriteria.NumericAddNode,
                     toProgress);
+
+            case ZenithScanCriteria.IfTupleNodeType:
+                return tryToNumericIfNode(numericTupleNode as ZenithScanCriteria.IfTupleNode, toProgress);
+
             default:
                 const neverTupleNodeType: never = tupleNodetype;
                 return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_UnknownNumericTupleNodeType, `${neverTupleNodeType}`));
@@ -1351,6 +1373,65 @@ export namespace ZenithScanCriteriaConvert {
             case 3: return tryToLeftRightArithmeticNumericNode(numericTupleNode as ZenithScanCriteria.BinaryExpressionTupleNode, leftRightNodeConstructor, toProgress);
             default:
                 return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_NumericTupleNodeRequires2Or3Parameters, `${numericTupleNode}`));
+        }
+    }
+
+    function tryToNumericIfNode(tupleNode: ZenithScanCriteria.IfTupleNode, toProgress: ParseProgress): Result<ScanCriteria.NumericIfNode, ZenithScanCriteriaParseError> {
+        const tupleLength = tupleNode.length;
+        if (tupleLength < 5) {
+            return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_IfTupleNodeRequiresAtLeast4Parameters, `${tupleNode}`));
+        } else {
+            const armParameters = tupleLength - 1;
+            const armsRemainder = armParameters % 2;
+            if (armsRemainder !== 0) {
+                return new Err(new ZenithScanCriteriaParseError(ExternalError.Code.ZenithScanCriteriaParse_IfTupleNodeRequiresAnEvenNumberOfParameters, `${tupleNode}`));
+            } else {
+                const armCount = armParameters / 2;
+                const trueArmCount = armCount - 1;
+                const trueArms = new Array<ScanCriteria.NumericIfNode.Arm>(trueArmCount);
+                let tupleIndex = 1;
+                for (let i = 0; i < trueArmCount; i++) {
+                    const armResult = tryToNumericIfArm(tupleNode, tupleIndex, toProgress);
+                    if (armResult.isErr()) {
+                        return new Err(armResult.error);
+                    } else {
+                        trueArms[i] = armResult.value;
+                    }
+                    tupleIndex += 2;
+                }
+
+                const armResult = tryToNumericIfArm(tupleNode, tupleIndex, toProgress);
+                if (armResult.isErr()) {
+                    return new Err(armResult.error);
+                } else {
+                    const falseArm = armResult.value;
+
+                    const node = new ScanCriteria.NumericIfNode();
+                    node.trueArms = trueArms;
+                    node.falseArm = falseArm;
+                    return new Ok(node);
+                }
+            }
+        }
+    }
+
+    function tryToNumericIfArm(tupleNode: ZenithScanCriteria.IfTupleNode, tupleIndex: Integer, toProgress: ParseProgress): Result<ScanCriteria.NumericIfNode.Arm, ZenithScanCriteriaParseError> {
+        const conditionElement = tupleNode[tupleIndex++] as ZenithScanCriteria.BooleanParam;
+        const conditionResult = tryToExpectedBooleanOperand(conditionElement, toProgress);
+        if (conditionResult.isErr()) {
+            return new Err(conditionResult.error);
+        } else {
+            const valueElement = tupleNode[tupleIndex++] as ZenithScanCriteria.NumericParam;
+            const valueResult = tryToExpectedNumericOperand(valueElement, tupleIndex.toString(), toProgress);
+            if (valueResult.isErr()) {
+                return new Err(valueResult.error);
+            } else {
+                const arm: ScanCriteria.NumericIfNode.Arm = {
+                    condition: conditionResult.value,
+                    value: valueResult.value,
+                };
+                return new Ok(arm);
+            }
         }
     }
 

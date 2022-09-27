@@ -34,6 +34,8 @@ export namespace ScanCriteria {
         NumericPos,
         NumericAbs,
 
+        NumericIf,
+
         // Get Field Value
         NumericFieldValueGet,
         // DateFieldValueGet,
@@ -99,6 +101,7 @@ export namespace ScanCriteria {
         NodeTypeId.NumericNeg |
         NodeTypeId.NumericPos |
         NodeTypeId.NumericAbs |
+        NodeTypeId.NumericIf |
         NodeTypeId.NumericFieldValueGet
     >;
 
@@ -483,6 +486,23 @@ export namespace ScanCriteria {
 
         constructor() {
             super(NodeTypeId.NumericSub);
+        }
+    }
+
+    export class NumericIfNode extends NumericNode {
+        override readonly typeId: NodeTypeId.NumericIf;
+        trueArms: NumericIfNode.Arm[];
+        falseArm: NumericIfNode.Arm;
+
+        constructor() {
+            super(NodeTypeId.NumericIf);
+        }
+    }
+
+    export namespace NumericIfNode {
+        export interface Arm {
+            condition: BooleanNode,
+            value: number | NumericNode,
         }
     }
 

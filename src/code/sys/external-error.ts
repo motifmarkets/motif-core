@@ -368,5 +368,7 @@ export namespace ExternalError {
         ZenithScanCriteriaParse_UnknownBooleanTupleNodeType = 'ZenithScanCriteriaParse_UnknownBooleanTupleNodeType',
         ZenithScanCriteriaParse_UnknownNumericTupleNodeType = 'ZenithScanCriteriaParse_UnknownNumericTupleNodeType',
         ZenithScanCriteriaParse_UnknownNumericField = 'ZenithScanCriteriaParse_UnknownNumericField',
+        ZenithScanCriteriaParse_IfTupleNodeRequiresAtLeast4Parameters = 'ZenithScanCriteriaParse_IfTupleNodeRequiresAtLeast4Parameters',
+        ZenithScanCriteriaParse_IfTupleNodeRequiresAnEvenNumberOfParameters = 'ZenithScanCriteriaParse_IfTupleNodeRequiresAnEvenNumberOfParameters',
     }
 }

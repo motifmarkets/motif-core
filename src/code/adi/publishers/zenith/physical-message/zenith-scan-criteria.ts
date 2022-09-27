@@ -96,6 +96,9 @@ export namespace ZenithScanCriteria {
     export type SubOrNegSymbolTupleNode = TupleNode<typeof SubOrNegSymbolTupleNodeType>;
     export type AddOrPosSymbolTupleNode = TupleNode<typeof AddOrPosSymbolTupleNodeType>;
 
+    // If
+    export type IfTupleNode = TupleNode<typeof IfTupleNodeType>;
+
     export type LogicalTupleNodeType = PickEnum<TupleNodeType,
         typeof AndTupleNodeType |
         typeof OrTupleNodeType |
@@ -227,7 +230,7 @@ export namespace ZenithScanCriteria {
     >;
 
     export type BooleanTupleNodeType = LogicalTupleNodeType | MatchingField | ComparisonTupleNodeType;
-    export type ExpressionTupleNodeType = BinaryTupleNodeType | UnaryTupleNodeType | UnaryOrBinaryTupleNodeType;
+    export type ExpressionTupleNodeType = BinaryTupleNodeType | UnaryTupleNodeType | UnaryOrBinaryTupleNodeType | typeof IfTupleNodeType;
 
     export type LogicalTupleNodeUnion = AndTupleNode | OrTupleNode | NotTupleNode;
     export type LogicalTupleNode = [nodeType: LogicalTupleNodeType, ...params: BooleanParam[]];
@@ -356,11 +359,14 @@ export namespace ZenithScanCriteria {
 
     export type UnaryOrBinaryExpressionTupleNode = [nodeType: UnaryOrBinaryTupleNodeType, leftOrUnaryparam: unknown, rightParam?: unknown];
 
+    export type NumericIfTupleArm = [condition: unknown, value: unknown];
+    export type NumericIfTupleNode = [nodeType: typeof IfTupleNodeType, ...conditionAndValues: unknown[]];
+
     export type BooleanTupleNodeUnion = LogicalTupleNodeUnion | MatchingTupleNodeUnion | ComparisonTupleNodeUnion | AllNoneTupleNodeUnion;
     export type BooleanTupleNode = LogicalTupleNode | MatchingTupleNode | ComparisonTupleNode | AllNoneTupleNode;
 
     export type NumericTupleNodeUnion = UnaryExpressionTupleNodeUnion | BinaryExpressionTupleNodeUnion | UnaryOrBinaryExpressionTupleNodeUnion;
-    export type NumericTupleNode = UnaryExpressionTupleNode | BinaryExpressionTupleNode | UnaryOrBinaryExpressionTupleNode;
+    export type NumericTupleNode = UnaryExpressionTupleNode | BinaryExpressionTupleNode | UnaryOrBinaryExpressionTupleNode | NumericIfTupleNode;
 
     export interface TextNamedParameters {
         As?: TextContainsAsEnum;
@@ -458,6 +464,15 @@ export namespace ZenithScanCriteria {
     export type TextSingleParam_Default = TextSingleParam_EqualsValue | SingleParam_EqualsDefault; // equals value or equals default
     export type TextSingleParam_Exists = TextSingleParam_EqualsValue | SingleParam_IsSet; // equals value or is set
 
+    export type ConditionalArm = [condition: BooleanParam, value: NumericParam];
+    // It is not possible to nest rest operators to properly represent If parameters as follows:
+    // export type ConditionalParams = [...trueArms: (...ConditionalArm)[], ...falseArm: ConditionalArm]
+    // Instead, approximate with up to 3 true arms.
+    export type ConditionalParams_1True = [...trueArm1: ConditionalArm, ...falseArm: ConditionalArm];
+    export type ConditionalParams_2True = [...trueArm1: ConditionalArm, ...trueArm2: ConditionalArm, ...falseArm: ConditionalArm];
+    export type ConditionalParams_3True = [...trueArm1: ConditionalArm, ...trueArm2: ConditionalArm, ...trueArm3: ConditionalArm, ...falseArm: ConditionalArm];
+    export type ConditionalParams = ConditionalParams_1True | ConditionalParams_2True | ConditionalParams_3True;
+
     export const SingleDefault_IsIndex = true;
 
     export const AndTupleNodeType = 'And';
@@ -532,6 +547,7 @@ export namespace ZenithScanCriteria {
     export const AbsTupleNodeType = 'Abs';
     export const SubOrNegSymbolTupleNodeType =  '-';
     export const AddOrPosSymbolTupleNodeType =  '+';
+    export const IfTupleNodeType = 'If';
 
 
     export interface ParamTupleMap {
@@ -618,6 +634,9 @@ export namespace ZenithScanCriteria {
         // Unary or Binary (depending on number of params)
         '-': SingleOrLeftRightNumericParams;
         '+': SingleOrLeftRightNumericParams;
+
+        // Conditional
+        'If': ConditionalParams;
     }
 
     // export const enum ComparableFieldEnum {
