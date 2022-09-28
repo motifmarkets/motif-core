@@ -5,11 +5,11 @@
  */
 
 import { LitIvemId, MarketId, ScanTargetTypeId } from '../adi/adi-internal-api';
-import { ScanCriteria } from '../adi/common/scan-criteria';
 import { StringId, Strings } from '../res/res-internal-api';
 import { EnumRenderValue, RenderValue } from '../services/services-internal-api';
 import { EnumInfoOutOfOrderError } from '../sys/sys-internal-api';
 import { Integer } from '../sys/types';
+import { ScanCriteria } from './scan-criteria';
 
 
 export class EditableScan {

@@ -4,12 +4,20 @@
  * License: motionite.trade/license/motif
  */
 
-import { StringId, Strings } from '../../../../res/res-internal-api';
-import { AssertInternalError, BaseZenithDataError, Err, ExternalError, Integer, Ok, Result, SourceTzOffsetDateTime, UnreachableCaseError } from '../../../../sys/sys-internal-api';
-import { ScanCriteria } from '../../../common/scan-criteria';
-import { Zenith } from './zenith';
-import { ZenithConvert } from './zenith-convert';
-import { ZenithScanCriteria } from './zenith-scan-criteria';
+import { Zenith, ZenithConvert, ZenithScanCriteria } from '../adi/adi-internal-api';
+import { StringId, Strings } from '../res/res-internal-api';
+import {
+    AssertInternalError,
+    BaseZenithDataError,
+    Err,
+    ExternalError,
+    Integer,
+    Ok,
+    Result,
+    SourceTzOffsetDateTime,
+    UnreachableCaseError
+} from "../sys/sys-internal-api";
+import { ScanCriteria } from './scan-criteria';
 
 export namespace ZenithScanCriteriaConvert {
     export class ParseProgress {

@@ -15,7 +15,6 @@ import { Zenith } from './zenith';
 import { ZenithConvert } from './zenith-convert';
 import { ZenithNotifyConvert } from './zenith-notify-convert';
 import { ZenithOrderConvert } from './zenith-order-convert';
-import { ZenithScanCriteriaConvert } from './zenith-scan-criteria-convert';
 
 export namespace CreateScanMessageConvert {
 
@@ -36,7 +35,7 @@ export namespace CreateScanMessageConvert {
         }
 
         const parameters: Zenith.NotifyController.ScanParameters = {
-            Criteria: ZenithScanCriteriaConvert.fromBooleanNode(definition.criteria),
+            Criteria: definition.criteria,
             Type: ZenithNotifyConvert.ScanType.fromId(definition.targetTypeId),
             Target: ZenithNotifyConvert.Target.fromId(definition.targetTypeId, definition.targetLitIvemIds, definition.targetMarketIds),
         }

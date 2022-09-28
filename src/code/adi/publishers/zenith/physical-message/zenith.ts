@@ -7,8 +7,7 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 // Version 3
 
-import { Integer } from '../../../../sys/sys-internal-api';
-import { ZenithScanCriteria } from './zenith-scan-criteria';
+import { Integer, Json } from '../../../../sys/sys-internal-api';
 
 export namespace Zenith {
 
@@ -2037,7 +2036,7 @@ export namespace Zenith {
 
         export interface ScanParameters {
             readonly Type: ScanType;
-            readonly Criteria: ZenithScanCriteria.BooleanTupleNode;
+            readonly Criteria: Json;
             readonly Target: Target;
             readonly Notifications?: [unknown];
         }
@@ -2134,7 +2133,7 @@ export namespace Zenith {
         export namespace ExecuteScan {
             export interface QueryRequest {
                 readonly Type: ScanType;
-                readonly Criteria: ZenithScanCriteria.BooleanTupleNode;
+                readonly Criteria: Json;
                 readonly Target: Target;
             }
 

@@ -8191,6 +8191,10 @@ export namespace ExternalError {
         // (undocumented)
         ZenithScanCriteriaParse_FirstParameterCannotBeObjectOrNull = "ZenithScanCriteriaParse_FirstParameterCannotBeObjectOrNull",
         // (undocumented)
+        ZenithScanCriteriaParse_IfTupleNodeRequiresAnEvenNumberOfParameters = "ZenithScanCriteriaParse_IfTupleNodeRequiresAnEvenNumberOfParameters",
+        // (undocumented)
+        ZenithScanCriteriaParse_IfTupleNodeRequiresAtLeast4Parameters = "ZenithScanCriteriaParse_IfTupleNodeRequiresAtLeast4Parameters",
+        // (undocumented)
         ZenithScanCriteriaParse_LeftRightArithmeticNumericTupleNodeRequires3Parameters = "ZenithScanCriteriaParse_LeftRightArithmeticNumericTupleNodeRequires3Parameters",
         // (undocumented)
         ZenithScanCriteriaParse_LogicalBooleanMissingOperand = "ZenithScanCriteriaParse_LogicalBooleanMissingOperand",
@@ -19349,29 +19353,29 @@ export namespace ScanCriteria {
         // (undocumented)
         All = 8,
         // (undocumented)
-        AltCodeSubFieldContains = 34,
+        AltCodeSubFieldContains = 35,
         // (undocumented)
-        AltCodeSubFieldHasValue = 33,
+        AltCodeSubFieldHasValue = 34,
         // (undocumented)
         And = 0,
         // (undocumented)
-        AttributeSubFieldContains = 36,
+        AttributeSubFieldContains = 37,
         // (undocumented)
-        AttributeSubFieldHasValue = 35,
+        AttributeSubFieldHasValue = 36,
         // (undocumented)
-        BooleanFieldEquals = 20,
+        BooleanFieldEquals = 21,
         // (undocumented)
-        DateFieldEquals = 23,
+        DateFieldEquals = 24,
         // (undocumented)
-        DateFieldInRange = 24,
+        DateFieldInRange = 25,
         // (undocumented)
-        DateSubFieldEquals = 31,
+        DateSubFieldEquals = 32,
         // (undocumented)
-        DateSubFieldHasValue = 30,
+        DateSubFieldHasValue = 31,
         // (undocumented)
-        DateSubFieldInRange = 32,
+        DateSubFieldInRange = 33,
         // (undocumented)
-        FieldHasValue = 19,
+        FieldHasValue = 20,
         // (undocumented)
         None = 9,
         // (undocumented)
@@ -19385,15 +19389,17 @@ export namespace ScanCriteria {
         // (undocumented)
         NumericEquals = 3,
         // (undocumented)
-        NumericFieldEquals = 21,
+        NumericFieldEquals = 22,
         // (undocumented)
-        NumericFieldInRange = 22,
+        NumericFieldInRange = 23,
         // (undocumented)
-        NumericFieldValueGet = 18,
+        NumericFieldValueGet = 19,
         // (undocumented)
         NumericGreaterThan = 4,
         // (undocumented)
         NumericGreaterThanOrEqual = 5,
+        // (undocumented)
+        NumericIf = 18,
         // (undocumented)
         NumericLessThan = 6,
         // (undocumented)
@@ -19411,15 +19417,15 @@ export namespace ScanCriteria {
         // (undocumented)
         Or = 1,
         // (undocumented)
-        PriceSubFieldEquals = 28,
+        PriceSubFieldEquals = 29,
         // (undocumented)
-        PriceSubFieldHasValue = 27,
+        PriceSubFieldHasValue = 28,
         // (undocumented)
-        PriceSubFieldInRange = 29,
+        PriceSubFieldInRange = 30,
         // (undocumented)
-        SubFieldHasValue = 26,
+        SubFieldHasValue = 27,
         // (undocumented)
-        TextFieldContains = 25
+        TextFieldContains = 26
     }
     // (undocumented)
     export class NoneNode extends ZeroOperandBooleanNode {
@@ -19510,6 +19516,26 @@ export namespace ScanCriteria {
         readonly typeId: NodeTypeId.NumericGreaterThanOrEqual;
     }
     // (undocumented)
+    export class NumericIfNode extends NumericNode {
+        constructor();
+        // (undocumented)
+        falseArm: NumericIfNode.Arm;
+        // (undocumented)
+        trueArms: NumericIfNode.Arm[];
+        // (undocumented)
+        readonly typeId: NodeTypeId.NumericIf;
+    }
+    // (undocumented)
+    export namespace NumericIfNode {
+        // (undocumented)
+        export interface Arm {
+            // (undocumented)
+            condition: BooleanNode;
+            // (undocumented)
+            value: number | NumericNode;
+        }
+    }
+    // (undocumented)
     export class NumericLessThanNode extends NumericComparisonBooleanNode {
         constructor();
         // (undocumented)
@@ -19545,7 +19571,7 @@ export namespace ScanCriteria {
         typeId: NumericNodeTypeId;
     }
     // (undocumented)
-    export type NumericNodeTypeId = PickEnum<NodeTypeId, NodeTypeId.NumericAdd | NodeTypeId.NumericDiv | NodeTypeId.NumericMod | NodeTypeId.NumericMul | NodeTypeId.NumericSub | NodeTypeId.NumericNeg | NodeTypeId.NumericPos | NodeTypeId.NumericAbs | NodeTypeId.NumericFieldValueGet>;
+    export type NumericNodeTypeId = PickEnum<NodeTypeId, NodeTypeId.NumericAdd | NodeTypeId.NumericDiv | NodeTypeId.NumericMod | NodeTypeId.NumericMul | NodeTypeId.NumericSub | NodeTypeId.NumericNeg | NodeTypeId.NumericPos | NodeTypeId.NumericAbs | NodeTypeId.NumericIf | NodeTypeId.NumericFieldValueGet>;
     // (undocumented)
     export class NumericPosNode extends UnaryArithmeticNumericNode {
         constructor();

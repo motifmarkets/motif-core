@@ -4,7 +4,7 @@
  * License: motionite.trade/license/motif
  */
 
-import { EnumInfoOutOfOrderError, PickEnum, SourceTzOffsetDateTime } from '../../sys/sys-internal-api';
+import { EnumInfoOutOfOrderError, PickEnum, SourceTzOffsetDateTime } from '../sys/sys-internal-api';
 
 export namespace ScanCriteria {
     export const enum NodeTypeId {
