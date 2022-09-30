@@ -22,10 +22,14 @@ export namespace UpdateScanMessageConvert {
     }
 
     export function createPublishMessage(definition: UpdateScanDataDefinition) {
+        const convertMetaData: ZenithNotifyConvert.ScanMetaData = {
+            versionId: definition.versionId,
+        }
+
         const details: Zenith.NotifyController.ScanDetails = {
             Name: definition.name,
             Description: definition.description,
-            // Include MetaData here
+            MetaData: ZenithNotifyConvert.ScanMetaType.from(convertMetaData),
         }
 
         const parameters: Zenith.NotifyController.ScanParameters = {

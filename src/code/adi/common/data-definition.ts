@@ -1162,6 +1162,7 @@ export class MoveOrderRequestDataDefinition extends OrderRequestDataDefinition {
 export class CreateScanDataDefinition extends FeedSubscriptionDataDefinition {
     name: string;
     scanDescription?: string;
+    versionId: string;
     criteria: Json;
     targetTypeId: ScanTargetTypeId;
     targetMarketIds: readonly MarketId[] | undefined;
@@ -1199,6 +1200,7 @@ export class UpdateScanDataDefinition extends FeedSubscriptionDataDefinition {
     id: string;
     name: string;
     scanDescription?: string;
+    versionId: string;
     criteria: Json;
     targetTypeId: ScanTargetTypeId;
     targetMarketIds: readonly MarketId[] | undefined;
@@ -1241,21 +1243,25 @@ export class QueryScansDataDefinition extends FeedSubscriptionDataDefinition {
     }
 }
 
-export class MatchesDataDefinition extends FeedSubscriptionDataDefinition {
+export abstract class MatchesDataDefinition extends FeedSubscriptionDataDefinition {
     scanId: string;
 
     get referencable(): boolean { return true; }
+}
 
+export abstract class LitIvemIdMatchesDataDefinition extends MatchesDataDefinition {
     constructor() {
         super(DataChannelId.LitIvemIdMatches);
     }
 }
 
-export class QueryMatchesDataDefinition extends FeedSubscriptionDataDefinition {
+export abstract class QueryMatchesDataDefinition extends FeedSubscriptionDataDefinition {
     scanId: string;
 
     get referencable(): boolean { return false; }
+}
 
+export class LitIvemIdQueryMatchesDataDefinition extends QueryMatchesDataDefinition {
     constructor() {
         super(DataChannelId.LitIvemIdMatches);
     }

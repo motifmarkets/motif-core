@@ -2017,12 +2017,13 @@ export namespace Zenith {
         export interface ScanDetails {
             readonly Name: string;
             readonly Description?: string;
-            readonly MetaData?: MetaData;
+            readonly MetaData: MetaData;
         }
 
         export interface ScanState extends ScanDetails {
             readonly ID: ScanID;
             readonly IsWritable?: boolean;
+            readonly Type: ScanType;
         }
 
         export const enum ScanType {
@@ -2032,7 +2033,7 @@ export namespace Zenith {
 
         export type TargetSymbol = string;
         export type TargetMarket = string;
-        export type Target = readonly TargetSymbol[] | readonly TargetSymbol[];
+        export type Target = readonly TargetSymbol[] | readonly TargetMarket[];
 
         export interface ScanParameters {
             readonly Type: ScanType;
@@ -2083,13 +2084,13 @@ export namespace Zenith {
             }
 
             export interface Response {
-                readonly ScanID: string;
+                readonly ScanID: ScanID;
             }
         }
 
         export namespace QueryScan {
             export interface QueryRequest {
-                readonly ScanID: string;
+                readonly ScanID: ScanID;
             }
 
             export interface PublishMessageContainer extends RequestMessageContainer {
@@ -2102,7 +2103,7 @@ export namespace Zenith {
             }
 
             export interface Response {
-                readonly ScanState: ScanState;
+                readonly ScanID: ScanID;
                 readonly Details: ScanDetails;
                 readonly Parameters: ScanParameters;
             }
@@ -2110,7 +2111,7 @@ export namespace Zenith {
 
         export namespace DeleteScan {
             export interface QueryRequest {
-                readonly ScanID: string;
+                readonly ScanID: ScanID;
             }
 
             export interface PublishMessageContainer extends RequestMessageContainer {
@@ -2147,6 +2148,7 @@ export namespace Zenith {
             }
         }
 
+        // Also applies to QueryScans
         export namespace Scans {
             export type PublishMessageContainer = RequestMessageContainer;
 
@@ -2156,6 +2158,7 @@ export namespace Zenith {
             }
         }
 
+        // Also applies to QueryMatches
         export namespace Matches {
             export type PublishMessageContainer = RequestMessageContainer;
 
