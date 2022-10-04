@@ -549,8 +549,6 @@ export class AmendOrderDataItem extends OrderRequestDataItem {
 export namespace AmendOrderMessageConvert {
     // (undocumented)
     export function createPublishMessage(definition: AmendOrderRequestDataDefinition): Zenith.TradingController.AmendOrder.PublishMessageContainer;
-    // Warning: (ae-forgotten-export) The symbol "Zenith" needs to be exported by the entry point public-api.d.ts
-    //
     // (undocumented)
     export function createRequestMessage(request: PublisherRequest): Zenith.TradingController.AmendOrder.PublishMessageContainer;
     // (undocumented)
@@ -4805,24 +4803,13 @@ export class CreateOrCopyWatchlist extends DataMessage {
 // @public (undocumented)
 export function createRandomUrlSearch(): string;
 
-// Warning: (ae-missing-release-tag) "CreateScan" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export class CreateScan extends DataMessage {
-    constructor();
-    // (undocumented)
-    id: string;
-    // (undocumented)
-    static readonly typeId = DataMessageTypeId.CreateScan;
-}
-
 // Warning: (ae-missing-release-tag) "CreateScanDataDefinition" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
 export class CreateScanDataDefinition extends FeedSubscriptionDataDefinition {
     constructor();
     // (undocumented)
-    criteria: ScanCriteria.BooleanNode;
+    criteria: Json;
     // (undocumented)
     name: string;
     // (undocumented)
@@ -4837,6 +4824,19 @@ export class CreateScanDataDefinition extends FeedSubscriptionDataDefinition {
     targetMarketIds: readonly MarketId[] | undefined;
     // (undocumented)
     targetTypeId: ScanTargetTypeId;
+    // (undocumented)
+    versionId: string;
+}
+
+// Warning: (ae-missing-release-tag) "CreateScanDataMessage" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export class CreateScanDataMessage extends DataMessage {
+    constructor();
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    static readonly typeId = DataMessageTypeId.CreateScan;
 }
 
 // Warning: (ae-missing-release-tag) "CriteriaTypeIdScansGridField" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -5455,7 +5455,7 @@ export const enum DataMessageTypeId {
     // (undocumented)
     ChartHistory = 22,
     // (undocumented)
-    CreateOrCopyWatchlist = 38,
+    CreateOrCopyWatchlist = 39,
     // (undocumented)
     CreateScan = 35,
     // (undocumented)
@@ -5467,7 +5467,7 @@ export const enum DataMessageTypeId {
     // (undocumented)
     Holdings = 13,
     // (undocumented)
-    LitIvemIdMatches = 37,
+    LitIvemIdMatches = 38,
     // (undocumented)
     Markets = 6,
     // (undocumented)
@@ -5487,7 +5487,9 @@ export const enum DataMessageTypeId {
     // (undocumented)
     PublisherSubscription_Warning = 2,
     // (undocumented)
-    Scans = 36,
+    QueryScan = 36,
+    // (undocumented)
+    Scans = 37,
     // (undocumented)
     Security = 10,
     // (undocumented)
@@ -5505,9 +5507,9 @@ export const enum DataMessageTypeId {
     // (undocumented)
     Transactions = 18,
     // (undocumented)
-    WatchlistLitIvemIds = 40,
+    WatchlistLitIvemIds = 41,
     // (undocumented)
-    Watchlists = 39,
+    Watchlists = 40,
     // (undocumented)
     ZenithCounter = 27,
     // (undocumented)
@@ -5740,6 +5742,10 @@ export class DataRecordsFeedSubscriptionDataItem<Record extends DataRecord> exte
     // (undocumented)
     getRecordByMapKey(mapKey: MapKey): Record | undefined;
     // (undocumented)
+    protected hasRecord(recordMapKey: MapKey): boolean;
+    // (undocumented)
+    protected indexOfRecordByMapKey(mapKey: MapKey): number;
+    // (undocumented)
     protected processCorrectnessChange(): void;
     // (undocumented)
     protected processSubscriptionPreOnline(): void;
@@ -5747,6 +5753,8 @@ export class DataRecordsFeedSubscriptionDataItem<Record extends DataRecord> exte
     protected processUsableChanged(): void;
     // (undocumented)
     get records(): Record[];
+    // (undocumented)
+    protected removeRecord(index: Integer): void;
     // (undocumented)
     protected setRecord(index: Integer, record: Record): void;
     // (undocumented)
@@ -7033,6 +7041,8 @@ export class EditableScan {
     // (undocumented)
     category: string;
     // (undocumented)
+    checkSetOffline(): void;
+    // (undocumented)
     criteria: ScanCriteria.BooleanNode;
     // (undocumented)
     criteriaTypeId: EditableScan.CriteriaTypeId;
@@ -7053,6 +7063,16 @@ export class EditableScan {
     // (undocumented)
     name: string;
     // (undocumented)
+    revert(): void;
+    // (undocumented)
+    save(): void;
+    // (undocumented)
+    setOnline(scan: Scan): void;
+    // (undocumented)
+    setZenithSource(text: string): void;
+    // (undocumented)
+    sync(scan: Scan): void;
+    // (undocumented)
     targetLitIvemIds: readonly LitIvemId[] | undefined;
     // (undocumented)
     targetMarketIds: readonly MarketId[] | undefined;
@@ -7064,6 +7084,10 @@ export class EditableScan {
     uppercaseDescription: string;
     // (undocumented)
     uppercaseName: string;
+    // (undocumented)
+    versionId: string;
+    // (undocumented)
+    zenithSource: string;
 }
 
 // @public (undocumented)
@@ -7157,6 +7181,9 @@ export namespace EditableScan {
     // (undocumented)
     export class ModifiedStatusIdRenderValue extends EnumRenderValue {
         constructor(data: ModifiedStatusId | undefined);
+    }
+    // (undocumented)
+    export const enum StateId {
     }
     // (undocumented)
     export class TargetTypeIdRenderValue extends EnumRenderValue {
@@ -7629,7 +7656,7 @@ export namespace ExchangesSettings {
 export class ExecuteScanDataDefinition extends FeedSubscriptionDataDefinition {
     constructor();
     // (undocumented)
-    criteria: ScanCriteria.BooleanNode;
+    criteria: Json;
     // (undocumented)
     get referencable(): boolean;
     // (undocumented)
@@ -8161,109 +8188,143 @@ export namespace ExternalError {
         // (undocumented)
         ZCTTDMCRU3339929166 = "ZCTTDMCRU3339929166",
         // (undocumented)
-        ZenithScanCriteriaParse_AltCodeSubFieldContainsSubFieldIsUnknown = "ZenithScanCriteriaParse_AltCodeSubFieldContainsSubFieldIsUnknown",
+        ZenithMessageConvert_CreateScan_Action = "ZMCCSA30666",
         // (undocumented)
-        ZenithScanCriteriaParse_AltCodeSubFieldHasValueSubFieldIsUnknown = "ZenithScanCriteriaParse_AltCodeSubFieldHasValueSubFieldParamIsUnknown",
+        ZenithMessageConvert_CreateScan_Controller = "ZMCCSC30666",
         // (undocumented)
-        ZenithScanCriteriaParse_AttributeSubFieldContainsSubFieldIsUnknown = "ZenithScanCriteriaParse_AttributeSubFieldContainsSubFieldIsUnknown",
+        ZenithMessageConvert_CreateScan_Topic = "ZMCCST30666",
         // (undocumented)
-        ZenithScanCriteriaParse_AttributeSubFieldHasValueSubFieldIsUnknown = "ZenithScanCriteriaParse_AttributeSubFieldHasValueSubFieldIsUnknown",
+        ZenithMessageConvert_Matches_Action = "ZMCMA69113",
         // (undocumented)
-        ZenithScanCriteriaParse_BooleanFieldCanOnlyHaveOneParameter = "ZenithScanCriteriaParse_BooleanFieldCanOnlyHaveOneParameter",
+        ZenithMessageConvert_Matches_AddUpdateRemoveMissingKey = "ZMCMAURMK69113",
         // (undocumented)
-        ZenithScanCriteriaParse_BooleanFieldEqualsTargetIsNotBoolean = "ZenithScanCriteriaParse_BooleanFieldEqualsTargetIsNotBoolean",
+        ZenithMessageConvert_Matches_Controller = "ZMCMC69113",
         // (undocumented)
-        ZenithScanCriteriaParse_BooleanTupleNodeArrayIsZeroLength = "ZenithScanCriteriaParse_BooleanTupleNodeArrayIsZeroLength",
+        ZenithMessageConvert_Matches_PublishTopic = "ZMCMPT69113",
         // (undocumented)
-        ZenithScanCriteriaParse_BooleanTupleNodeIsNotAnArray = "ZenithScanCriteriaParse_BooleanTupleNodeIsNotAnArray",
+        ZenithMessageConvert_Matches_SubTopic = "ZMCMSTS69113",
         // (undocumented)
-        ZenithScanCriteriaParse_BooleanTupleNodeTypeIsNotString = "ZenithScanCriteriaParse_BooleanTupleNodeTypeIsNotString",
+        ZenithMessageConvert_QueryScan_Action = "ZMCQSA44923",
         // (undocumented)
-        ZenithScanCriteriaParse_DateFieldEqualsTargetIsNotString = "ZenithScanCriteriaParse_DateFieldEqualsTargetIsNotString",
+        ZenithMessageConvert_QueryScan_Controller = "ZMCQSC44923",
         // (undocumented)
-        ZenithScanCriteriaParse_DateSubFieldEqualsSubFieldIsUnknown = "ZenithScanCriteriaParse_DateSubFieldEqualsSubFieldIsUnknown",
+        ZenithMessageConvert_QueryScan_Topic = "ZMCQST44923",
         // (undocumented)
-        ZenithScanCriteriaParse_DateSubFieldEqualsTargetIsNotString = "ZenithScanCriteriaParse_DateSubFieldEqualsTargetIsNotString",
+        ZenithMessageConvert_Scans_Action = "ZMCSA69113",
         // (undocumented)
-        ZenithScanCriteriaParse_DateSubFieldHasValueSubFieldIsUnknown = "ZenithScanCriteriaParse_DateSubFieldHasValueSubFieldIsUnknown",
+        ZenithMessageConvert_Scans_AddUpdateMissingScan = "ZMCSAUMS69113",
         // (undocumented)
-        ZenithScanCriteriaParse_FieldBooleanNodeHasTooManyParameters = "ZenithScanCriteriaParse_FieldBooleanNodeHasTooManyParameters",
+        ZenithMessageConvert_Scans_Controller = "ZMCSC69113",
         // (undocumented)
-        ZenithScanCriteriaParse_FirstParameterCannotBeObjectOrNull = "ZenithScanCriteriaParse_FirstParameterCannotBeObjectOrNull",
+        ZenithMessageConvert_Scans_PublishTopic = "ZMCSPT69113",
         // (undocumented)
-        ZenithScanCriteriaParse_IfTupleNodeRequiresAnEvenNumberOfParameters = "ZenithScanCriteriaParse_IfTupleNodeRequiresAnEvenNumberOfParameters",
+        ZenithMessageConvert_Scans_RemoveMissingScan = "ZMCSRMS69113",
         // (undocumented)
-        ZenithScanCriteriaParse_IfTupleNodeRequiresAtLeast4Parameters = "ZenithScanCriteriaParse_IfTupleNodeRequiresAtLeast4Parameters",
+        ZenithMessageConvert_Scans_SubTopic = "ZMCSSTS69113",
         // (undocumented)
-        ZenithScanCriteriaParse_LeftRightArithmeticNumericTupleNodeRequires3Parameters = "ZenithScanCriteriaParse_LeftRightArithmeticNumericTupleNodeRequires3Parameters",
+        ZenithScanCriteriaParse_AltCodeSubFieldContainsSubFieldIsUnknown = "ZSCPACSFCSFIU11906",
         // (undocumented)
-        ZenithScanCriteriaParse_LogicalBooleanMissingOperand = "ZenithScanCriteriaParse_LogicalBooleanMissingOperand",
+        ZenithScanCriteriaParse_AltCodeSubFieldHasValueSubFieldIsUnknown = "ZSCPACSFHVSFPIU11891",
         // (undocumented)
-        ZenithScanCriteriaParse_LogicalBooleanMissingOperands = "ZenithScanCriteriaParse_LogicalBooleanMissingOperands",
+        ZenithScanCriteriaParse_AttributeSubFieldContainsSubFieldIsUnknown = "ZSCPASFCSFIU11907",
         // (undocumented)
-        ZenithScanCriteriaParse_NamedParametersCannotBeNull = "ZenithScanCriteriaParse_NamedParametersCannotBeNull",
+        ZenithScanCriteriaParse_AttributeSubFieldHasValueSubFieldIsUnknown = "ZSCPASFHVSFIU11892",
         // (undocumented)
-        ZenithScanCriteriaParse_NumericComparisonDoesNotHave2Operands = "ZenithScanCriteriaParse_NumericComparisonDoesNotHave2Operands",
+        ZenithScanCriteriaParse_BooleanFieldCanOnlyHaveOneParameter = "ZSCPBFCOHOP11916",
         // (undocumented)
-        ZenithScanCriteriaParse_NumericParameterIsNotNumberOrComparableFieldOrArray = "ZenithScanCriteriaParse_NumericParameterIsNotNumberOrComparableFieldOrArray",
+        ZenithScanCriteriaParse_BooleanFieldEqualsTargetIsNotBoolean = "ZSCPBFETINB11902",
         // (undocumented)
-        ZenithScanCriteriaParse_NumericTupleNodeIsZeroLength = "ZenithScanCriteriaParse_NumericTupleNodeIsZeroLength",
+        ZenithScanCriteriaParse_BooleanTupleNodeArrayIsZeroLength = "ZSCPBTNAIZL11638",
         // (undocumented)
-        ZenithScanCriteriaParse_NumericTupleNodeRequires2Or3Parameters = "ZenithScanCriteriaParse_NumericTupleNodeRequires2Or3Parameters",
+        ZenithScanCriteriaParse_BooleanTupleNodeIsNotAnArray = "ZSCPBTNINAA05822",
         // (undocumented)
-        ZenithScanCriteriaParse_NumericTupleNodeTypeIsNotString = "ZenithScanCriteriaParse_NumericTupleNodeTypeIsNotString",
+        ZenithScanCriteriaParse_BooleanTupleNodeTypeIsNotString = "ZSCPBTNTINS96220",
         // (undocumented)
-        ZenithScanCriteriaParse_OnlySubFieldNodeCanHave4Parameters = "ZenithScanCriteriaParse_OnlySubFieldNodeCanHave4Parameters",
+        ZenithScanCriteriaParse_DateFieldEqualsTargetIsNotString = "ZSCPDFETINS11897",
         // (undocumented)
-        ZenithScanCriteriaParse_OnlySubFieldOrTextFieldNodesCanHave3Parameters = "ZenithScanCriteriaParse_OnlySubFieldOrTextFieldNodesCanHave3Parameters",
+        ZenithScanCriteriaParse_DateSubFieldEqualsSubFieldIsUnknown = "ZSCPDSFESFIU11904",
         // (undocumented)
-        ZenithScanCriteriaParse_OnlyTextSubFieldContainsNodeCanHave4Parameters = "ZenithScanCriteriaParse_OnlyTextSubFieldContainsNodeCanHave4Parameters",
+        ZenithScanCriteriaParse_DateSubFieldEqualsTargetIsNotString = "ZSCPDSFETINS11905",
         // (undocumented)
-        ZenithScanCriteriaParse_PriceSubFieldEqualsSubFieldIsUnknown = "ZenithScanCriteriaParse_PriceSubFieldEqualsSubFieldIsUnknown",
+        ZenithScanCriteriaParse_DateSubFieldHasValueSubFieldIsUnknown = "ZSCPDSFHVSFIU11890",
         // (undocumented)
-        ZenithScanCriteriaParse_PriceSubFieldHasValueSubFieldIsUnknown = "ZenithScanCriteriaParse_PriceSubFieldHasValueSubFieldIsUnknown",
+        ZenithScanCriteriaParse_FieldBooleanNodeHasTooManyParameters = "ZSCPFBNHTMP11920",
         // (undocumented)
-        ZenithScanCriteriaParse_RangeMaxHasInvalidDateFormat = "ZenithScanCriteriaParse_RangeMaxHasInvalidDateFormat",
+        ZenithScanCriteriaParse_FirstParameterCannotBeObjectOrNull = "ZSCPFPCBOON11914",
         // (undocumented)
-        ZenithScanCriteriaParse_RangeMaxIsDefinedButNotNumber = "ZenithScanCriteriaParse_RangeMaxIsDefinedButNotNumber",
+        ZenithScanCriteriaParse_IfTupleNodeRequiresAnEvenNumberOfParameters = "ZSCPITNRAENOP11930",
         // (undocumented)
-        ZenithScanCriteriaParse_RangeMaxIsDefinedButNotString = "ZenithScanCriteriaParse_RangeMaxIsDefinedButNotString",
+        ZenithScanCriteriaParse_IfTupleNodeRequiresAtLeast4Parameters = "ZSCPITNRAL4P11929",
         // (undocumented)
-        ZenithScanCriteriaParse_RangeMinAndMaxAreBothUndefined = "ZenithScanCriteriaParse_RangeMinAndMaxAreBothUndefined",
+        ZenithScanCriteriaParse_LeftRightArithmeticNumericTupleNodeRequires3Parameters = "ZSCPLRANTNR3P11925",
         // (undocumented)
-        ZenithScanCriteriaParse_RangeMinHasInvalidDateFormat = "ZenithScanCriteriaParse_RangeMinHasInvalidDateFormat",
+        ZenithScanCriteriaParse_LogicalBooleanMissingOperand = "ZSCPLBMO21100",
         // (undocumented)
-        ZenithScanCriteriaParse_RangeMinIsDefinedButNotNumber = "ZenithScanCriteriaParse_RangeMinIsDefinedButNotNumber",
+        ZenithScanCriteriaParse_LogicalBooleanMissingOperands = "ZSCPLBMO15996",
         // (undocumented)
-        ZenithScanCriteriaParse_RangeMinIsDefinedButNotString = "ZenithScanCriteriaParse_RangeMinIsDefinedButNotString",
+        ZenithScanCriteriaParse_NamedParametersCannotBeNull = "ZSCPNPCBN11913",
         // (undocumented)
-        ZenithScanCriteriaParse_SecondParameterCannotBeObjectOrNull = "ZenithScanCriteriaParse_SecondParameterCannotBeObjectOrNull",
+        ZenithScanCriteriaParse_NumericComparisonDoesNotHave2Operands = "ZSCPNCDNH2O10100",
         // (undocumented)
-        ZenithScanCriteriaParse_SubFieldIsNotString = "ZenithScanCriteriaParse_SubFieldIsNotString",
+        ZenithScanCriteriaParse_NumericParameterIsNotNumberOrComparableFieldOrArray = "ZSCPNPINNOCFOA60611",
         // (undocumented)
-        ZenithScanCriteriaParse_TargetHasInvalidDateFormat = "ZenithScanCriteriaParse_TargetHasInvalidDateFormat",
+        ZenithScanCriteriaParse_NumericTupleNodeIsZeroLength = "ZSCPNTNIZL11921",
         // (undocumented)
-        ZenithScanCriteriaParse_TargetIsNotNumber = "ZenithScanCriteriaParse_TargetIsNotNumber",
+        ZenithScanCriteriaParse_NumericTupleNodeRequires2Or3Parameters = "ZSCPNTNR2O3P11923",
         // (undocumented)
-        ZenithScanCriteriaParse_TextFieldContainsAsHasInvalidFormat = "ZenithScanCriteriaParse_TextFieldContainsAsHasInvalidFormat",
+        ZenithScanCriteriaParse_NumericTupleNodeTypeIsNotString = "ZSCPNTNTINS11922",
         // (undocumented)
-        ZenithScanCriteriaParse_TextFieldContainsAsIsNotBoolean = "ZenithScanCriteriaParse_TextFieldContainsAsIsNotBoolean",
+        ZenithScanCriteriaParse_OnlySubFieldNodeCanHave4Parameters = "ZSCPOSFNCH4P11918",
         // (undocumented)
-        ZenithScanCriteriaParse_TextFieldContainsAsIsNotString = "ZenithScanCriteriaParse_TextFieldContainsAsIsNotString",
+        ZenithScanCriteriaParse_OnlySubFieldOrTextFieldNodesCanHave3Parameters = "ZSCPOSFOTFNCH3P11917",
         // (undocumented)
-        ZenithScanCriteriaParse_TextFieldContainsValueIsNotString = "ZenithScanCriteriaParse_TextFieldContainsValueIsNotString",
+        ZenithScanCriteriaParse_OnlyTextSubFieldContainsNodeCanHave4Parameters = "ZSCPOTSFCNCH4P11919",
         // (undocumented)
-        ZenithScanCriteriaParse_UnaryArithmeticNumericTupleNodeRequires2Parameters = "ZenithScanCriteriaParse_UnaryArithmeticNumericTupleNodeRequires2Parameters",
+        ZenithScanCriteriaParse_PriceSubFieldEqualsSubFieldIsUnknown = "ZSCPPSFESFIU11903",
         // (undocumented)
-        ZenithScanCriteriaParse_UnexpectedBooleanParamType = "ZenithScanCriteriaParse_UnexpectedBooleanParamType",
+        ZenithScanCriteriaParse_PriceSubFieldHasValueSubFieldIsUnknown = "ZSCPPSFHVSFIU11889",
         // (undocumented)
-        ZenithScanCriteriaParse_UnknownBooleanTupleNodeType = "ZenithScanCriteriaParse_UnknownBooleanTupleNodeType",
+        ZenithScanCriteriaParse_RangeMaxHasInvalidDateFormat = "ZSCPRMHIDF11912",
         // (undocumented)
-        ZenithScanCriteriaParse_UnknownFieldBooleanParam = "ZenithScanCriteriaParse_UnknownFieldBooleanParam",
+        ZenithScanCriteriaParse_RangeMaxIsDefinedButNotNumber = "ZSCPRMIDBNN11895",
         // (undocumented)
-        ZenithScanCriteriaParse_UnknownNumericField = "ZenithScanCriteriaParse_UnknownNumericField",
+        ZenithScanCriteriaParse_RangeMaxIsDefinedButNotString = "ZSCPRMIDBNS11911",
         // (undocumented)
-        ZenithScanCriteriaParse_UnknownNumericTupleNodeType = "ZenithScanCriteriaParse_UnknownNumericTupleNodeType",
+        ZenithScanCriteriaParse_RangeMinAndMaxAreBothUndefined = "ZSCPRMAMABU11896",
+        // (undocumented)
+        ZenithScanCriteriaParse_RangeMinHasInvalidDateFormat = "ZSCPRMHIDF11910",
+        // (undocumented)
+        ZenithScanCriteriaParse_RangeMinIsDefinedButNotNumber = "ZSCPRMIDBNN11894",
+        // (undocumented)
+        ZenithScanCriteriaParse_RangeMinIsDefinedButNotString = "ZSCPRMIDBNS11909",
+        // (undocumented)
+        ZenithScanCriteriaParse_SecondParameterCannotBeObjectOrNull = "ZSCPSPCBOON11915",
+        // (undocumented)
+        ZenithScanCriteriaParse_SubFieldIsNotString = "ZSCPSFINS11888",
+        // (undocumented)
+        ZenithScanCriteriaParse_TargetHasInvalidDateFormat = "ZSCPTHIDF11908",
+        // (undocumented)
+        ZenithScanCriteriaParse_TargetIsNotNumber = "ZSCPTINN11893",
+        // (undocumented)
+        ZenithScanCriteriaParse_TextFieldContainsAsHasInvalidFormat = "ZSCPTFCAHIF11900",
+        // (undocumented)
+        ZenithScanCriteriaParse_TextFieldContainsAsIsNotBoolean = "ZSCPTFCAINB11901",
+        // (undocumented)
+        ZenithScanCriteriaParse_TextFieldContainsAsIsNotString = "ZSCPTFCAINS11899",
+        // (undocumented)
+        ZenithScanCriteriaParse_TextFieldContainsValueIsNotString = "ZSCPTFCVINS11898",
+        // (undocumented)
+        ZenithScanCriteriaParse_UnaryArithmeticNumericTupleNodeRequires2Parameters = "ZSCPUANTNR2P11924",
+        // (undocumented)
+        ZenithScanCriteriaParse_UnexpectedBooleanParamType = "ZSCPUBPT11886",
+        // (undocumented)
+        ZenithScanCriteriaParse_UnknownBooleanTupleNodeType = "ZSCPUBTNT11926",
+        // (undocumented)
+        ZenithScanCriteriaParse_UnknownFieldBooleanParam = "ZSCPUFBP11887",
+        // (undocumented)
+        ZenithScanCriteriaParse_UnknownNumericField = "ZSCPUNF11928",
+        // (undocumented)
+        ZenithScanCriteriaParse_UnknownNumericTupleNodeType = "ZSCPUNTNT11927",
         // (undocumented)
         ZOCLOC1052883977 = "ZOCLOC1052883977",
         // (undocumented)
@@ -12519,6 +12580,13 @@ export class LitIvemIdDataItemTableGridField extends CorrectnessTableGridField {
     protected compareDefined(left: CorrectnessTableGridValue, right: CorrectnessTableGridValue): number;
 }
 
+// Warning: (ae-missing-release-tag) "LitIvemIdMatchesDataDefinition" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export abstract class LitIvemIdMatchesDataDefinition extends MatchesDataDefinition {
+    constructor();
+}
+
 // Warning: (ae-missing-release-tag) "LitIvemIdMatchesDataMessage" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 // Warning: (ae-missing-release-tag) "LitIvemIdMatchesDataMessage" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -12526,7 +12594,7 @@ export class LitIvemIdDataItemTableGridField extends CorrectnessTableGridField {
 export class LitIvemIdMatchesDataMessage extends MatchesDataMessage {
     constructor();
     // (undocumented)
-    changes: MatchesDataMessage.Change[];
+    changes: LitIvemIdMatchesDataMessage.Change[];
     // (undocumented)
     static readonly typeId = DataMessageTypeId.LitIvemIdMatches;
 }
@@ -12534,8 +12602,7 @@ export class LitIvemIdMatchesDataMessage extends MatchesDataMessage {
 // @public (undocumented)
 export namespace LitIvemIdMatchesDataMessage {
     // (undocumented)
-    export interface AddUpdateChange extends AddUpdateRemoveChange, MatchesDataMessage.AddUpdateRemoveChange {
-    }
+    export type AddUpdateChange = AddUpdateRemoveChange;
     // (undocumented)
     export interface AddUpdateRemoveChange extends Change, MatchesDataMessage.AddUpdateRemoveChange {
         // (undocumented)
@@ -12547,6 +12614,10 @@ export namespace LitIvemIdMatchesDataMessage {
     // (undocumented)
     export interface ClearChange extends Change, MatchesDataMessage.Change {
     }
+    // (undocumented)
+    export function isAddUpdateChange(change: Change): change is AddUpdateChange;
+    // (undocumented)
+    export function isAddUpdateRemoveChange(change: Change): change is AddUpdateRemoveChange;
 }
 
 // Warning: (ae-missing-release-tag) "LitIvemIdPriceVolumeSequenceHistory" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -12676,6 +12747,13 @@ export namespace LitIvemIdPriceVolumeSequenceHistory {
 export namespace LitIvemIdPriceVolumeSequenceHistoryModule {
     // (undocumented)
     export function initialiseStatic(): void;
+}
+
+// Warning: (ae-missing-release-tag) "LitIvemIdQueryMatchesDataDefinition" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export class LitIvemIdQueryMatchesDataDefinition extends QueryMatchesDataDefinition {
+    constructor();
 }
 
 // Warning: (ae-missing-release-tag) "LitIvemIdRenderValue" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -13815,8 +13893,7 @@ export class MatchedRenderValue extends BooleanRenderValue {
 // Warning: (ae-missing-release-tag) "MatchesDataDefinition" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export class MatchesDataDefinition extends FeedSubscriptionDataDefinition {
-    constructor();
+export abstract class MatchesDataDefinition extends FeedSubscriptionDataDefinition {
     // (undocumented)
     get referencable(): boolean;
     // (undocumented)
@@ -13828,13 +13905,14 @@ export class MatchesDataDefinition extends FeedSubscriptionDataDefinition {
 //
 // @public (undocumented)
 export abstract class MatchesDataMessage extends DataMessage {
+    // (undocumented)
+    changes: MatchesDataMessage.Change[];
 }
 
 // @public (undocumented)
 export namespace MatchesDataMessage {
     // (undocumented)
-    export interface AddUpdateChange extends AddUpdateRemoveChange {
-    }
+    export type AddUpdateChange = AddUpdateRemoveChange;
     // (undocumented)
     export interface AddUpdateRemoveChange extends Change {
         // (undocumented)
@@ -13850,6 +13928,8 @@ export namespace MatchesDataMessage {
         // (undocumented)
         typeId: AurcChangeTypeId.Clear;
     }
+    // (undocumented)
+    export function isAddUpdateChange(change: Change): change is AddUpdateChange;
     // (undocumented)
     export function isAddUpdateRemoveChange(change: Change): change is AddUpdateRemoveChange;
 }
@@ -18276,8 +18356,7 @@ export class QueryMarketsDataDefinition extends PublisherSubscriptionDataDefinit
 // Warning: (ae-missing-release-tag) "QueryMatchesDataDefinition" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export class QueryMatchesDataDefinition extends FeedSubscriptionDataDefinition {
-    constructor();
+export abstract class QueryMatchesDataDefinition extends FeedSubscriptionDataDefinition {
     // (undocumented)
     get referencable(): boolean;
     // (undocumented)
@@ -18329,6 +18408,33 @@ export class QueryScanDataDefinition extends FeedSubscriptionDataDefinition {
     id: string;
     // (undocumented)
     get referencable(): boolean;
+}
+
+// Warning: (ae-missing-release-tag) "QueryScanDataMessage" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export class QueryScanDataMessage extends DataMessage {
+    constructor();
+    // (undocumented)
+    criteria: Json;
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    notifications: readonly ScanNotification[] | undefined;
+    // (undocumented)
+    scanDescription?: string;
+    // (undocumented)
+    targetLitIvemIds: readonly LitIvemId[] | undefined;
+    // (undocumented)
+    targetMarketIds: readonly MarketId[] | undefined;
+    // (undocumented)
+    targetTypeId: ScanTargetTypeId;
+    // (undocumented)
+    static readonly typeId = DataMessageTypeId.QueryScan;
+    // (undocumented)
+    versionId: string;
 }
 
 // Warning: (ae-missing-release-tag) "QueryScansDataDefinition" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -19716,20 +19822,19 @@ export class ScansDataMessage extends DataMessage {
 // @public (undocumented)
 export namespace ScansDataMessage {
     // (undocumented)
-    export interface AddUpdateChange extends AddUpdateRemoveChange {
+    export interface AddUpdateChange extends Change {
         // (undocumented)
-        description: string;
+        description: string | undefined;
+        // (undocumented)
+        id: string;
         // (undocumented)
         isWritable: boolean;
         // (undocumented)
         name: string;
         // (undocumented)
         typeId: AurcChangeTypeId.Add | AurcChangeTypeId.Update;
-    }
-    // (undocumented)
-    export interface AddUpdateRemoveChange extends Change {
         // (undocumented)
-        id: string;
+        versionId: string;
     }
     // (undocumented)
     export interface Change {
@@ -19742,9 +19847,13 @@ export namespace ScansDataMessage {
         typeId: AurcChangeTypeId.Clear;
     }
     // (undocumented)
-    export function isAddUpdateRemoveChange(change: Change): change is AddUpdateRemoveChange;
+    export function isAddUpdateChange(change: Change): change is AddUpdateChange;
     // (undocumented)
-    export interface RemoveChange extends AddUpdateRemoveChange {
+    export function isRemoveChange(change: Change): change is RemoveChange;
+    // (undocumented)
+    export interface RemoveChange extends Change {
+        // (undocumented)
+        id: string;
         // (undocumented)
         typeId: AurcChangeTypeId.Remove;
     }
@@ -19874,28 +19983,11 @@ export namespace ScansService {
     // (undocumented)
     export type CorrectnessChangeEventHandler = (this: void) => void;
     // (undocumented)
-    export interface InitialScan {
-        // (undocumented)
-        criteriaTypeId: EditableScan.CriteriaTypeId;
-        // (undocumented)
-        matchCount: Integer;
-        // (undocumented)
-        modifiedStatusId: EditableScan.ModifiedStatusId;
-        // (undocumented)
-        name: string;
-        // (undocumented)
-        targetLitIvemIds: readonly LitIvemId[] | undefined;
-        // (undocumented)
-        targetMarkets: readonly MarketId[] | undefined;
-        // (undocumented)
-        targetTypeId: ScanTargetTypeId;
-    }
-    // (undocumented)
     export type ListChangeEventHandler = (this: void, listChangeTypeId: UsableListChangeTypeId, index: Integer, count: Integer) => void;
     // (undocumented)
     export type RecordChangeEventHandler = (this: void, index: Integer) => void;
-    const // (undocumented)
-    initialScans: InitialScan[];
+    // (undocumented)
+    export type ScansOnlineResolve = (this: void, ready: boolean) => void;
 }
 
 // Warning: (ae-missing-release-tag) "ScanTargetType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -23900,17 +23992,17 @@ export const enum StringId {
     // (undocumented)
     ScanCriteriaViewTypeDescription_Default = 1819,
     // (undocumented)
-    ScanCriteriaViewTypeDescription_Formula = 1823,
+    ScanCriteriaViewTypeDescription_Filter = 1821,
     // (undocumented)
-    ScanCriteriaViewTypeDescription_Predefined = 1821,
+    ScanCriteriaViewTypeDescription_Formula = 1823,
     // (undocumented)
     ScanCriteriaViewTypeDescription_Zenith = 1825,
     // (undocumented)
     ScanCriteriaViewTypeDisplay_Default = 1818,
     // (undocumented)
-    ScanCriteriaViewTypeDisplay_Formula = 1822,
+    ScanCriteriaViewTypeDisplay_Filter = 1820,
     // (undocumented)
-    ScanCriteriaViewTypeDisplay_Predefined = 1820,
+    ScanCriteriaViewTypeDisplay_Formula = 1822,
     // (undocumented)
     ScanCriteriaViewTypeDisplay_Zenith = 1824,
     // (undocumented)
@@ -30051,7 +30143,7 @@ export class UnreachableCaseError extends BaseInternalError {
 export class UpdateScanDataDefinition extends FeedSubscriptionDataDefinition {
     constructor();
     // (undocumented)
-    criteria: ScanCriteria.BooleanNode;
+    criteria: Json;
     // (undocumented)
     id: string;
     // (undocumented)
@@ -30068,6 +30160,8 @@ export class UpdateScanDataDefinition extends FeedSubscriptionDataDefinition {
     targetMarketIds: readonly MarketId[] | undefined;
     // (undocumented)
     targetTypeId: ScanTargetTypeId;
+    // (undocumented)
+    versionId: string;
 }
 
 // @public (undocumented)
@@ -30355,6 +30449,3261 @@ export namespace WebsocketCloseCodeModule {
     export function initialiseStatic(): void;
 }
 
+// Warning: (ae-missing-release-tag) "Zenith" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export namespace Zenith {
+    // (undocumented)
+    export const enum AbbreviatedAuiChangeType {
+        // (undocumented)
+        Add = "A",
+        // (undocumented)
+        Initialise = "I",
+        // (undocumented)
+        Update = "U"
+    }
+    // (undocumented)
+    export const enum AbbreviatedAurcChangeType {
+        // (undocumented)
+        Add = "A",
+        // (undocumented)
+        Clear = "C",
+        // (undocumented)
+        Remove = "R",
+        // (undocumented)
+        Update = "U"
+    }
+    // (undocumented)
+    export const enum AurcChangeType {
+        // (undocumented)
+        Add = "Add",
+        // (undocumented)
+        Clear = "Clear",
+        // (undocumented)
+        Remove = "Remove",
+        // (undocumented)
+        Update = "Update"
+    }
+    // (undocumented)
+    export namespace AuthController {
+        // (undocumented)
+        export namespace AuthOwner {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = Identify;
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                ClientID: string;
+                // (undocumented)
+                ClientSecret?: string;
+                // (undocumented)
+                Password?: string;
+                // (undocumented)
+                Provider: string;
+                // (undocumented)
+                Scope?: string[];
+                // (undocumented)
+                Username?: string;
+            }
+        }
+        // (undocumented)
+        export namespace AuthToken {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = Identify;
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                AccessToken: string;
+                // (undocumented)
+                Provider: string;
+            }
+        }
+        // (undocumented)
+        export interface Identify {
+            // (undocumented)
+            AccessToken?: string;
+            // (undocumented)
+            DisplayName?: string;
+            // (undocumented)
+            ExpiresIn?: string;
+            // (undocumented)
+            ExpiryDate?: string;
+            // (undocumented)
+            Result: IdentifyResult;
+            // (undocumented)
+            Scope?: string[];
+            // (undocumented)
+            UserID?: string;
+        }
+        // (undocumented)
+        export const enum IdentifyResult {
+            // (undocumented)
+            Rejected = "Rejected",
+            // (undocumented)
+            Success = "Success"
+        }
+        // (undocumented)
+        export const enum Provider {
+            // (undocumented)
+            BasicAuth = "BasicAuth",
+            // (undocumented)
+            Bearer = "Bearer"
+        }
+        // (undocumented)
+        export const enum TopicName {
+            // (undocumented)
+            AuthOwner = "AuthOwner",
+            // (undocumented)
+            AuthToken = "AuthToken",
+            // (undocumented)
+            Identify = "Identify"
+        }
+    }
+    // (undocumented)
+    export const enum CallOrPut {
+        // (undocumented)
+        Call = "Call",
+        // (undocumented)
+        Put = "Put"
+    }
+    const // (undocumented)
+    timeDayTerminatorChar = ".";
+    const // (undocumented)
+    TimeHoursMinutesSecondsSeparatorChar = ":";
+    const // (undocumented)
+    timeFractionalSecondsIntroducerChar = ".";
+    const // (undocumented)
+    stringQuoteChar = "\"";
+    const // (undocumented)
+    commaTextDelimiterChar = ",";
+    const // (undocumented)
+    topicArgumentsAnnouncer = "!";
+    const // (undocumented)
+    topicArgumentsSeparator = ".";
+    const // (undocumented)
+    codeMarketSeparator = ".";
+    const // (undocumented)
+    marketDelimiter = ":";
+    const // (undocumented)
+    environmentOpenChar = "[";
+    const // (undocumented)
+    environmentCloseChar = "]";
+    const // (undocumented)
+    commaTextSeparator = ",";
+    // (undocumented)
+    export type CommaString = string;
+    // (undocumented)
+    export namespace ControllersCommon {
+        // (undocumented)
+        export namespace QueryConfigure {
+            // (undocumented)
+            export interface Payload {
+                // (undocumented)
+                ActionTimeout?: Time;
+                // (undocumented)
+                SubscriptionTimeout?: Time;
+            }
+            // (undocumented)
+            export interface PayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: Payload;
+            }
+            // (undocumented)
+            export type PublishMessageContainer = RequestMessageContainer;
+            const // (undocumented)
+            defaultActionTimeout = 35000;
+            const // (undocumented)
+            defaultSubscriptionTimeout = 35000;
+        }
+        // (undocumented)
+        export const enum TopicName {
+            // (undocumented)
+            Configure = "Configure",
+            // (undocumented)
+            QueryConfigure = "QueryConfigure"
+        }
+    }
+    // (undocumented)
+    export const enum Currency {
+        // (undocumented)
+        Aud = "AUD",
+        // (undocumented)
+        Myr = "MYR",
+        // (undocumented)
+        Usd = "USD"
+    }
+    // (undocumented)
+    export const enum DataEnvironment {
+        // (undocumented)
+        Delayed = "Delayed",
+        // (undocumented)
+        Demo = "Demo",
+        // (undocumented)
+        Production = "",
+        // (undocumented)
+        Sample = "Sample"
+    }
+    // (undocumented)
+    export type DateOptionalTimeIso8601 = string;
+    // (undocumented)
+    export type DateTimeIso8601 = string;
+    // (undocumented)
+    export type DateYYYYMMDD = string;
+    // (undocumented)
+    export type Decimal = number;
+    // (undocumented)
+    export const enum EquityOrderType {
+        // (undocumented)
+        Best = "Best",
+        // (undocumented)
+        Limit = "Limit",
+        // (undocumented)
+        Market = "Market",
+        // (undocumented)
+        MarketToLimit = "MarketToLimit",
+        // (undocumented)
+        Unknown = "Unknown"
+    }
+    // (undocumented)
+    export const enum EquityOrderValidity {
+        // (undocumented)
+        AllOrNone = "AllOrNone",
+        // (undocumented)
+        FillAndKill = "FillAndKill",
+        // (undocumented)
+        FillOrKill = "FillOrKill",
+        // (undocumented)
+        UntilCancel = "UntilCancel",
+        // (undocumented)
+        UntilDay = "UntilDay"
+    }
+    // (undocumented)
+    export const enum Exchange {
+        // (undocumented)
+        Asx = "ASX",
+        // (undocumented)
+        AsxCxa = "ASX+CXA",
+        // (undocumented)
+        Calastone = "Calastone",
+        // (undocumented)
+        Cxa = "CXA",
+        // (undocumented)
+        Fnsx = "FNSX",
+        // (undocumented)
+        Myx = "MYX",
+        // (undocumented)
+        Nsx = "NSX",
+        // (undocumented)
+        Nzx = "NZX",
+        // (undocumented)
+        Ptx = "PTX"
+    }
+    // (undocumented)
+    export const enum FeedStatus {
+        // (undocumented)
+        Active = "Active",
+        // (undocumented)
+        Closed = "Closed",
+        // (undocumented)
+        Expired = "Expired",
+        // (undocumented)
+        Impaired = "Impaired",
+        // (undocumented)
+        Inactive = "Inactive",
+        // (undocumented)
+        Initialising = "Initialising"
+    }
+    // (undocumented)
+    export namespace FragmentsController {
+        // (undocumented)
+        export interface Fragment {
+            // (undocumented)
+            Name: string;
+            // (undocumented)
+            Source?: string;
+        }
+        // (undocumented)
+        export interface FragmentData {
+            // (undocumented)
+            [name: string]: object;
+        }
+        // (undocumented)
+        export namespace QueryCustomFragments {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export type QueryPayload = FragmentData;
+            // (undocumented)
+            export interface QueryPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: QueryPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Fragments: Fragment[];
+                // (undocumented)
+                Source: string;
+                // (undocumented)
+                Target: unknown;
+                // (undocumented)
+                TradingDate?: DateTimeIso8601;
+            }
+        }
+        // (undocumented)
+        export namespace QueryFragments {
+            // (undocumented)
+            export namespace Fundamentals_TopShareholders {
+                const // (undocumented)
+                fragmentName = "Fundamentals.TopShareholders";
+                // (undocumented)
+                export interface Fragment extends FragmentsController.Fragment {
+                    // (undocumented)
+                    Name: 'Fundamentals.TopShareholders';
+                }
+                // (undocumented)
+                export interface FragmentData extends FragmentsController.FragmentData {
+                    // (undocumented)
+                    'Fundamentals.TopShareholders': TopShareholder[];
+                }
+                // (undocumented)
+                export interface PublishMessageContainer extends QueryFragments.PublishMessageContainer {
+                    // (undocumented)
+                    Data: QueryRequest;
+                }
+                // (undocumented)
+                export type QueryPayload = FragmentData;
+                // (undocumented)
+                export interface QueryPayloadMessageContainer extends QueryFragments.QueryPayloadMessageContainer {
+                    // (undocumented)
+                    Data: QueryPayload;
+                }
+                // (undocumented)
+                export interface QueryRequest extends QueryFragments.QueryRequest {
+                    // (undocumented)
+                    Code: string;
+                    // (undocumented)
+                    Fragments: Fragment[];
+                    // (undocumented)
+                    Market: string;
+                    // (undocumented)
+                    TradingDate?: DateTimeIso8601;
+                }
+                // (undocumented)
+                export interface TopShareholder {
+                    // (undocumented)
+                    Designation?: string;
+                    // (undocumented)
+                    HolderKey?: string;
+                    // (undocumented)
+                    Name?: string;
+                    // (undocumented)
+                    SharesHeld?: number;
+                    // (undocumented)
+                    TotalShreIssue?: number;
+                }
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export type QueryPayload = FragmentData;
+            // (undocumented)
+            export interface QueryPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: QueryPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Code: string;
+                // (undocumented)
+                Fragments: Fragment[];
+                // (undocumented)
+                Market: string;
+                // (undocumented)
+                TradingDate?: DateTimeIso8601;
+            }
+        }
+        // (undocumented)
+        export const enum TopicName {
+            // (undocumented)
+            QueryCustomFragments = "QueryCustomFragments",
+            // (undocumented)
+            QueryFragments = "QueryFragments"
+        }
+    }
+    // (undocumented)
+    export const enum IrrcChangeType {
+        // (undocumented)
+        Clear = "Clear",
+        // (undocumented)
+        Insert = "Insert",
+        // (undocumented)
+        Remove = "Remove",
+        // (undocumented)
+        Replace = "Replace"
+    }
+    // (undocumented)
+    export const enum Market1Node {
+        // (undocumented)
+        AsxBookBuild = "BB",
+        // (undocumented)
+        AsxDefault = "",
+        // (undocumented)
+        AsxPureMatch = "PM",
+        // (undocumented)
+        AsxTradeMatch = "TM",
+        // (undocumented)
+        AsxVolumeMatch = "V",
+        // (undocumented)
+        ChiXChiX = "",
+        // (undocumented)
+        FnsxFnsx = "",
+        // (undocumented)
+        MyxBuyIn = "BI",
+        // (undocumented)
+        MyxNormal = "",
+        // (undocumented)
+        MyxOddLot = "OD",
+        // (undocumented)
+        NsxNsx = "",
+        // (undocumented)
+        NzxMain = "",
+        // (undocumented)
+        PtxPtx = "",
+        // (undocumented)
+        SimVenture = "SV",
+        // (undocumented)
+        SouthPacific = "SP"
+    }
+    // (undocumented)
+    export const enum Market2Node {
+        // (undocumented)
+        AsxCentrePoint = "CP",
+        // (undocumented)
+        AsxPureMatchEquity1 = "E1",
+        // (undocumented)
+        AsxPureMatchEquity2 = "E2",
+        // (undocumented)
+        AsxPureMatchEquity3 = "E3",
+        // (undocumented)
+        AsxPureMatchEquity4 = "E4",
+        // (undocumented)
+        AsxPureMatchEquity5 = "E5",
+        // (undocumented)
+        AsxTradeMatchAD = "AD",
+        // (undocumented)
+        AsxTradeMatchAgric = "AGRIC",
+        // (undocumented)
+        AsxTradeMatchAus = "AUS",
+        // (undocumented)
+        AsxTradeMatchDerivatives = "D",
+        // (undocumented)
+        AsxTradeMatchED = "ED",
+        // (undocumented)
+        AsxTradeMatchEquity1 = "EQTY1",
+        // (undocumented)
+        AsxTradeMatchEquity2 = "EQTY2",
+        // (undocumented)
+        AsxTradeMatchEquity3 = "EQTY3",
+        // (undocumented)
+        AsxTradeMatchEquity4 = "EQTY4",
+        // (undocumented)
+        AsxTradeMatchEquity5 = "EQTY5",
+        // (undocumented)
+        AsxTradeMatchIndex = "INDEX",
+        // (undocumented)
+        AsxTradeMatchIndexDerivatives = "INDX",
+        // (undocumented)
+        AsxTradeMatchInterestRate = "IRM",
+        // (undocumented)
+        AsxTradeMatchPractice = "PRAC",
+        // (undocumented)
+        AsxTradeMatchPrivate = "PRV",
+        // (undocumented)
+        AsxTradeMatchQuoteDisplayBoard = "QDB",
+        // (undocumented)
+        AsxTradeMatchWarrants = "WAR",
+        // (undocumented)
+        ChixAustFarPoint = "FP",
+        // (undocumented)
+        ChixAustLimit = "LI",
+        // (undocumented)
+        ChixAustMarketOnClose = "MC",
+        // (undocumented)
+        ChixAustMidPoint = "MP",
+        // (undocumented)
+        ChixAustNearPoint = "NP",
+        // (undocumented)
+        Fnsx = "FNSX",
+        // (undocumented)
+        MyxDirectBusinessTransactionMarket = "DB",
+        // (undocumented)
+        MyxIndexMarket = "IN",
+        // (undocumented)
+        MyxNormalMarket = "NM",
+        // (undocumented)
+        NsxCertifiedProperty = "PROP",
+        // (undocumented)
+        NsxCommunityBanks = "COM",
+        // (undocumented)
+        NsxDebt = "DBT",
+        // (undocumented)
+        NsxIndustrial = "CRP",
+        // (undocumented)
+        NsxMiningAndEnergy = "MIN",
+        // (undocumented)
+        NsxProperty = "PRP",
+        // (undocumented)
+        NsxRestricted = "RST",
+        // (undocumented)
+        NzxComm = "COMM",
+        // (undocumented)
+        NzxDebtMarket = "NZDX",
+        // (undocumented)
+        NzxDerivativeFutures = "D-FUT",
+        // (undocumented)
+        NzxDerivativeOptions = "D-OPT",
+        // (undocumented)
+        NzxDStgy = "D-STGY",
+        // (undocumented)
+        NzxEOpt = "E-OPT",
+        // (undocumented)
+        NzxFonterraShareholders = "FSM",
+        // (undocumented)
+        NzxIndex = "INDX",
+        // (undocumented)
+        NzxIndexFutures = "I-FUT",
+        // (undocumented)
+        NzxMainBoard = "NZSX",
+        // (undocumented)
+        NzxMFut = "M-FUT",
+        // (undocumented)
+        NzxMOpt = "M-OPT",
+        // (undocumented)
+        NzxMStgy = "M-STGY",
+        // (undocumented)
+        NzxSpec = "SPEC",
+        // (undocumented)
+        Ptx = "PTX",
+        // (undocumented)
+        SouthPacificStockExchangeEquities = "EQY",
+        // (undocumented)
+        SouthPacificStockExchangeRestricted = "RST"
+    }
+    // (undocumented)
+    export namespace MarketController {
+        // (undocumented)
+        export namespace ChartHistory {
+            // (undocumented)
+            export type Payload = Record[];
+            // (undocumented)
+            export interface PayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: Payload;
+            }
+            // (undocumented)
+            export const enum PeriodTimeSpan {
+                // (undocumented)
+                FifteenMinutes = "00:15:00",
+                // (undocumented)
+                FiveMinutes = "00:05:00",
+                // (undocumented)
+                OneDay = "1.00:00:00",
+                // (undocumented)
+                OneMinute = "00:01:00",
+                // (undocumented)
+                ThirtyMinutes = "00:30:00"
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Code: string;
+                // (undocumented)
+                Count?: Integer;
+                // (undocumented)
+                FromDate?: DateTimeIso8601;
+                // (undocumented)
+                Market: string;
+                // (undocumented)
+                Period?: PeriodTimeSpan;
+                // (undocumented)
+                ToDate?: DateTimeIso8601;
+            }
+            // (undocumented)
+            export interface Record {
+                // (undocumented)
+                Close?: Decimal;
+                // (undocumented)
+                Date: DateOptionalTimeIso8601;
+                // (undocumented)
+                High?: Decimal;
+                // (undocumented)
+                Low?: Decimal;
+                // (undocumented)
+                Open?: Decimal;
+                // (undocumented)
+                Trades?: Integer;
+                // (undocumented)
+                Volume?: Integer;
+            }
+        }
+        // (undocumented)
+        export namespace Depth {
+            // (undocumented)
+            export interface Change {
+                // (undocumented)
+                O: AbbreviatedAurcChangeType;
+                // (undocumented)
+                Order?: Change.Order;
+            }
+            // (undocumented)
+            export namespace Change {
+                // (undocumented)
+                export interface Order {
+                    // (undocumented)
+                    Attributes?: string[];
+                    // (undocumented)
+                    Broker?: string;
+                    // (undocumented)
+                    CrossRef?: string;
+                    // (undocumented)
+                    HasUndisclosed?: boolean;
+                    // (undocumented)
+                    ID: string;
+                    // (undocumented)
+                    Market?: string;
+                    // (undocumented)
+                    Position?: Integer;
+                    // (undocumented)
+                    Price?: Decimal;
+                    // (undocumented)
+                    Quantity?: Integer | null;
+                    // (undocumented)
+                    Side?: Side;
+                }
+            }
+            // (undocumented)
+            export type Payload = Change[];
+            // (undocumented)
+            export interface PayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: Payload;
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Code: string;
+                // (undocumented)
+                Market: string;
+            }
+        }
+        // (undocumented)
+        export namespace DepthLevels {
+            // (undocumented)
+            export interface Change {
+                // (undocumented)
+                Level?: Change.Level;
+                // (undocumented)
+                O: AbbreviatedAurcChangeType;
+            }
+            // (undocumented)
+            export namespace Change {
+                // (undocumented)
+                export interface Level {
+                    // (undocumented)
+                    Count?: Integer;
+                    // (undocumented)
+                    HasUndisclosed?: boolean;
+                    // (undocumented)
+                    ID: string;
+                    // (undocumented)
+                    Market?: string;
+                    // (undocumented)
+                    Price?: number | null;
+                    // (undocumented)
+                    Side?: Side;
+                    // (undocumented)
+                    Volume?: Integer;
+                }
+            }
+            // (undocumented)
+            export type Payload = Change[];
+            // (undocumented)
+            export interface PayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: Payload;
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Code: string;
+                // (undocumented)
+                Market: string;
+            }
+        }
+        // (undocumented)
+        export namespace Markets {
+            // (undocumented)
+            export interface MarketState {
+                // (undocumented)
+                Code: string;
+                // (undocumented)
+                Feed: FeedStatus;
+                // (undocumented)
+                MarketTime?: DateTimeIso8601;
+                // (undocumented)
+                States?: TradingMarketState[];
+                // (undocumented)
+                Status?: string;
+                // (undocumented)
+                TradingDate?: DateYYYYMMDD;
+            }
+            // (undocumented)
+            export type Payload = MarketState[];
+            // (undocumented)
+            export interface PublishSubPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: Payload;
+            }
+            // (undocumented)
+            export type PublishSubUnsubMessageContainer = RequestMessageContainer;
+            // (undocumented)
+            export interface TradingMarketState {
+                // (undocumented)
+                Name: string;
+                // (undocumented)
+                Status: string;
+            }
+        }
+        // (undocumented)
+        export namespace SearchSymbols {
+            // (undocumented)
+            export const enum AlternateKey {
+                // (undocumented)
+                Base = "Base",
+                // (undocumented)
+                Gics = "GICS",
+                // (undocumented)
+                Isin = "ISIN",
+                // (undocumented)
+                Long = "Long",
+                // (undocumented)
+                Ric = "RIC",
+                // (undocumented)
+                Short = "Short",
+                // (undocumented)
+                Ticker = "Ticker",
+                // (undocumented)
+                Uid = "UID"
+            }
+            // (undocumented)
+            export interface Alternates {
+                // (undocumented)
+                Base?: string;
+                // (undocumented)
+                GICS?: string;
+                // (undocumented)
+                ISIN?: string;
+                // (undocumented)
+                Long?: string;
+                // (undocumented)
+                RIC?: string;
+                // (undocumented)
+                Short?: string;
+                // (undocumented)
+                Ticker?: string;
+                // (undocumented)
+                UID?: string;
+            }
+            // (undocumented)
+            export interface Attributes {
+                // (undocumented)
+                [index: string]: string | undefined;
+            }
+            // (undocumented)
+            export interface Condition {
+                // (undocumented)
+                Field?: Condition.Field;
+                // (undocumented)
+                Group?: string;
+                // (undocumented)
+                IsCaseSensitive?: boolean;
+                // (undocumented)
+                Key?: AlternateKey;
+                // (undocumented)
+                Match?: string;
+                // (undocumented)
+                Text: string;
+            }
+            // (undocumented)
+            export namespace Condition {
+                // (undocumented)
+                export const enum Field {
+                    // (undocumented)
+                    Alternate = "Alternate",
+                    // (undocumented)
+                    Attribute = "Attribute",
+                    // (undocumented)
+                    Code = "Code",
+                    // (undocumented)
+                    Name = "Name"
+                }
+                const // (undocumented)
+                fieldSeparator = ",";
+                // (undocumented)
+                export const enum Match {
+                    // (undocumented)
+                    Exact = "Exact",
+                    // (undocumented)
+                    FromEnd = "FromEnd",
+                    // (undocumented)
+                    FromStart = "FromStart"
+                }
+            }
+            // (undocumented)
+            export const enum DepthDirection {
+                // (undocumented)
+                AskBelowBid = "AskBelowBid",
+                // (undocumented)
+                BidBelowAsk = "BidBelowAsk"
+            }
+            // (undocumented)
+            export interface Detail {
+                // (undocumented)
+                Class: SecurityClass;
+                // (undocumented)
+                Code: string;
+                // (undocumented)
+                Exchange?: string;
+                // (undocumented)
+                Market: string;
+                // (undocumented)
+                Name?: string;
+                // (undocumented)
+                SubscriptionData: CommaString;
+                // (undocumented)
+                TradingMarkets: string[];
+            }
+            // (undocumented)
+            export namespace Detail {
+            }
+            // (undocumented)
+            export interface FullDetail extends Detail {
+                // (undocumented)
+                Alternate?: Alternates;
+                // (undocumented)
+                Attributes?: Attributes;
+                // (undocumented)
+                CallOrPut?: CallOrPut;
+                // (undocumented)
+                Categories?: string[];
+                // (undocumented)
+                CFI: string;
+                // (undocumented)
+                ContractSize?: Integer;
+                // (undocumented)
+                DepthDirection?: DepthDirection;
+                // (undocumented)
+                ExerciseType?: FullDetail.ExerciseType;
+                // (undocumented)
+                ExpiryDate?: DateYYYYMMDD;
+                // (undocumented)
+                IsIndex?: boolean;
+                // (undocumented)
+                Legs?: FullDetail.Leg[] | null;
+                // (undocumented)
+                LotSize?: Integer;
+                // (undocumented)
+                StrikePrice?: Decimal;
+            }
+            // (undocumented)
+            export namespace FullDetail {
+                // (undocumented)
+                export const enum ExerciseType {
+                    // (undocumented)
+                    American = "American",
+                    // (undocumented)
+                    Asian = "Asian",
+                    // (undocumented)
+                    European = "European",
+                    // (undocumented)
+                    Unknown = "Unknown"
+                }
+                // (undocumented)
+                export interface Leg {
+                    // (undocumented)
+                    Code: string;
+                    // (undocumented)
+                    Ratio: Decimal;
+                    // (undocumented)
+                    Side: Side;
+                }
+            }
+            // (undocumented)
+            export const enum KnownAttributeKey {
+                // (undocumented)
+                Category = "Category",
+                // (undocumented)
+                Class = "Class",
+                // (undocumented)
+                Delivery = "Delivery",
+                // (undocumented)
+                MaxRss = "MaxRSS",
+                // (undocumented)
+                Sector = "Sector",
+                // (undocumented)
+                Short = "Short",
+                // (undocumented)
+                ShortSuspended = "ShortSuspended",
+                // (undocumented)
+                SubSector = "SubSector"
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: Request;
+            }
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: ResponsePayload;
+            }
+            // (undocumented)
+            export interface Request {
+                // (undocumented)
+                CFI?: string;
+                // (undocumented)
+                Class?: Request.Class;
+                // (undocumented)
+                CombinationLeg?: string;
+                // (undocumented)
+                Conditions?: Condition[];
+                // (undocumented)
+                Count?: Integer;
+                // (undocumented)
+                Exchange?: string;
+                // (undocumented)
+                ExpiryDateMax?: DateTimeIso8601;
+                // (undocumented)
+                ExpiryDateMin?: DateTimeIso8601;
+                // (undocumented)
+                FullSymbol?: boolean;
+                // (undocumented)
+                Index?: boolean;
+                // (undocumented)
+                Market?: string;
+                // (undocumented)
+                Markets?: string[];
+                // (undocumented)
+                PreferExact?: boolean;
+                // (undocumented)
+                StartIndex?: Integer;
+                // (undocumented)
+                StrikePriceMax?: Decimal;
+                // (undocumented)
+                StrikePriceMin?: Decimal;
+            }
+            // (undocumented)
+            export namespace Request {
+                // (undocumented)
+                export const enum Class {
+                    // (undocumented)
+                    ManagedFund = "ManagedFund",
+                    // (undocumented)
+                    Market = "Market"
+                }
+            }
+            // (undocumented)
+            export type ResponsePayload = Detail[] | undefined | null;
+        }
+        // (undocumented)
+        export namespace Security {
+            // (undocumented)
+            export interface Extended {
+                // (undocumented)
+                High52?: Decimal;
+                // (undocumented)
+                HighLimit?: Decimal;
+                // (undocumented)
+                IDSS?: Decimal;
+                // (undocumented)
+                Low52?: Decimal;
+                // (undocumented)
+                LowLimit?: Decimal;
+                // (undocumented)
+                PDT?: Decimal;
+                // (undocumented)
+                PSS?: Decimal;
+                // (undocumented)
+                Reference?: Decimal;
+                // (undocumented)
+                RSS?: Decimal;
+            }
+            // (undocumented)
+            export const enum ExtendedKey {
+                // (undocumented)
+                High52 = "High52",
+                // (undocumented)
+                HighLimit = "HighLimit",
+                // (undocumented)
+                IDSS = "IDSS",
+                // (undocumented)
+                Low52 = "Low52",
+                // (undocumented)
+                LowLimit = "LowLimit",
+                // (undocumented)
+                PDT = "PDT",
+                // (undocumented)
+                PSS = "PSS",
+                // (undocumented)
+                Reference = "Reference",
+                // (undocumented)
+                RSS = "RSS"
+            }
+            // (undocumented)
+            export interface Payload {
+                // (undocumented)
+                AskCount?: Integer;
+                // (undocumented)
+                AskQuantity?: Integer;
+                // (undocumented)
+                AskUndisclosed?: boolean;
+                // (undocumented)
+                AuctionPrice?: Decimal | null;
+                // (undocumented)
+                AuctionQuantity?: Integer | null;
+                // (undocumented)
+                AuctionRemainder?: Integer | null;
+                // (undocumented)
+                BestAsk?: Decimal | null;
+                // (undocumented)
+                BestBid?: Decimal | null;
+                // (undocumented)
+                BidCount?: Integer;
+                // (undocumented)
+                BidQuantity?: Integer;
+                // (undocumented)
+                BidUndisclosed?: boolean;
+                // (undocumented)
+                CallOrPut?: CallOrPut;
+                // (undocumented)
+                CFI?: string;
+                // (undocumented)
+                Class?: SecurityClass;
+                // (undocumented)
+                Close?: Decimal | null;
+                // (undocumented)
+                Code?: string;
+                // (undocumented)
+                ContractSize?: Integer;
+                // (undocumented)
+                Exchange?: string;
+                // (undocumented)
+                ExpiryDate?: DateYYYYMMDD;
+                // (undocumented)
+                Extended?: Extended | null;
+                // (undocumented)
+                High?: Decimal | null;
+                // (undocumented)
+                IsIndex?: boolean;
+                // (undocumented)
+                Last?: Decimal | null;
+                // (undocumented)
+                Low?: Decimal | null;
+                // (undocumented)
+                Market?: string;
+                // (undocumented)
+                Name?: string;
+                // (undocumented)
+                NumberOfTrades?: Integer;
+                // (undocumented)
+                Open?: Decimal | null;
+                // (undocumented)
+                OpenInterest?: Integer | null;
+                // (undocumented)
+                QuotationBasis?: string | null;
+                // (undocumented)
+                Settlement?: Decimal | null;
+                // (undocumented)
+                ShareIssue?: Integer | null;
+                // (undocumented)
+                StatusNote?: string | null;
+                // (undocumented)
+                StrikePrice?: Decimal;
+                // (undocumented)
+                SubscriptionData?: CommaString;
+                // (undocumented)
+                TradingMarkets?: string[];
+                // (undocumented)
+                TradingState?: string;
+                // (undocumented)
+                Trend?: Trend;
+                // (undocumented)
+                ValueTraded?: number;
+                // (undocumented)
+                Volume?: Integer;
+                // (undocumented)
+                VWAP?: Decimal | null;
+            }
+            // (undocumented)
+            export interface PayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: Payload;
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Code: string;
+                // (undocumented)
+                Market: string;
+            }
+        }
+        // (undocumented)
+        export type SecurityClass = Zenith.SecurityClass;
+        // (undocumented)
+        export namespace SecurityClass {
+            const // (undocumented)
+            Unknown = Zenith.SecurityClass.Unknown;
+            const // (undocumented)
+            Market = Zenith.SecurityClass.Market;
+            const // (undocumented)
+            ManagedFund = Zenith.SecurityClass.ManagedFund;
+        }
+        // (undocumented)
+        export const enum TopicName {
+            // (undocumented)
+            Depth = "Depth",
+            // (undocumented)
+            Levels = "Levels",
+            // (undocumented)
+            Markets = "Markets",
+            // (undocumented)
+            QueryChartHistory = "QueryChartHistory",
+            // (undocumented)
+            QueryDepthFull = "QueryDepthFull",
+            // (undocumented)
+            QueryDepthLevels = "QueryDepthLevels",
+            // (undocumented)
+            QueryMarkets = "QueryMarkets",
+            // (undocumented)
+            QuerySecurity = "QuerySecurity",
+            // (undocumented)
+            QueryTrades = "QueryTrades",
+            // (undocumented)
+            QueryTradingStates = "QueryTradingStates",
+            // (undocumented)
+            SearchSymbols = "SearchSymbols",
+            // (undocumented)
+            Security = "Security",
+            // (undocumented)
+            Symbols = "Symbols",
+            // (undocumented)
+            Trades = "Trades"
+        }
+        // (undocumented)
+        export namespace Trades {
+            // (undocumented)
+            export const enum Affects {
+                // (undocumented)
+                None = "None",
+                // (undocumented)
+                Price = "Price",
+                // (undocumented)
+                Volume = "Volume",
+                // (undocumented)
+                Vwap = "VWAP"
+            }
+            // (undocumented)
+            export interface Change {
+                // (undocumented)
+                ID?: Integer;
+                // (undocumented)
+                O: AbbreviatedAuiChangeType;
+                // (undocumented)
+                Trade?: Data;
+            }
+            export interface Data {
+                // (undocumented)
+                Affects?: CommaString;
+                // (undocumented)
+                Attributes?: string[];
+                // (undocumented)
+                Buy?: string;
+                // (undocumented)
+                BuyBroker?: string;
+                // (undocumented)
+                BuyCrossRef?: string;
+                // (undocumented)
+                Codes?: string;
+                // (undocumented)
+                Flags?: CommaString;
+                // (undocumented)
+                ID: Integer;
+                // (undocumented)
+                Market?: string;
+                // (undocumented)
+                Price?: Decimal;
+                // (undocumented)
+                Quantity?: Integer;
+                // (undocumented)
+                RelatedID?: Integer;
+                // (undocumented)
+                Sell?: string;
+                // (undocumented)
+                SellBroker?: string;
+                // (undocumented)
+                SellCrossRef?: string;
+                // (undocumented)
+                Side?: Side;
+                // (undocumented)
+                Time?: DateTimeIso8601;
+                // (undocumented)
+                Trend?: Trend;
+            }
+            // (undocumented)
+            export const enum Flag {
+                // (undocumented)
+                Cancel = "Cancel",
+                // (undocumented)
+                OffMarket = "OffMarket",
+                // (undocumented)
+                PlaceHolder = "PlaceHolder"
+            }
+            // (undocumented)
+            export type Payload = Change[];
+            // (undocumented)
+            export interface PayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: Payload;
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Code: string;
+                // (undocumented)
+                Count?: Integer;
+                // (undocumented)
+                FirstTradeID?: Integer;
+                // (undocumented)
+                LastTradeID?: Integer;
+                // (undocumented)
+                Market: string;
+                // (undocumented)
+                TradingDate?: DateTimeIso8601;
+            }
+        }
+        // (undocumented)
+        export namespace TradingStates {
+            // (undocumented)
+            export const enum Allow {
+                // (undocumented)
+                All = "All",
+                // (undocumented)
+                Match = "Match",
+                // (undocumented)
+                None = "None",
+                // (undocumented)
+                OrderAmend = "OrderAmend",
+                // (undocumented)
+                OrderCancel = "OrderCancel",
+                // (undocumented)
+                OrderMove = "OrderMove",
+                // (undocumented)
+                OrderPlace = "OrderPlace",
+                // (undocumented)
+                OrdersOnly = "OrdersOnly",
+                // (undocumented)
+                ReportCancel = "ReportCancel"
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = TradeState[];
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Market: string;
+            }
+            // (undocumented)
+            export const enum Reason {
+                // (undocumented)
+                NewsRelease = "NewsRelease",
+                // (undocumented)
+                Normal = "Normal",
+                // (undocumented)
+                Suspend = "Suspend",
+                // (undocumented)
+                TradingHalt = "TradingHalt",
+                // (undocumented)
+                Unknown = "Unknown"
+            }
+            // (undocumented)
+            export interface TradeState {
+                // (undocumented)
+                Allows: CommaString;
+                // (undocumented)
+                Name: string;
+                // (undocumented)
+                Reason: Reason;
+            }
+        }
+        // (undocumented)
+        export const enum Trend {
+            // (undocumented)
+            Down = "Down",
+            // (undocumented)
+            None = "None",
+            // (undocumented)
+            Up = "Up"
+        }
+    }
+    // (undocumented)
+    export interface MessageContainer {
+        // (undocumented)
+        Action: MessageContainer.Action;
+        // (undocumented)
+        Confirm?: boolean;
+        // (undocumented)
+        Controller: MessageContainer.Controller;
+        // (undocumented)
+        Data?: object | string | string[] | null;
+        // (undocumented)
+        Topic: string;
+        // (undocumented)
+        TransactionID?: Integer;
+    }
+    // (undocumented)
+    export namespace MessageContainer {
+        // (undocumented)
+        export const enum Action {
+            // (undocumented)
+            Cancel = "Cancel",
+            // (undocumented)
+            Error = "Error",
+            // (undocumented)
+            Publish = "Publish",
+            // (undocumented)
+            Sub = "Sub",
+            // (undocumented)
+            Unsub = "Unsub"
+        }
+        // (undocumented)
+        export const enum Controller {
+            // (undocumented)
+            Auth = "Auth",
+            // (undocumented)
+            Fragments = "Fragments",
+            // (undocumented)
+            Market = "Market",
+            // (undocumented)
+            News = "News",
+            // (undocumented)
+            Notify = "Notify",
+            // (undocumented)
+            Trading = "Trading",
+            // (undocumented)
+            Watchlist = "Watchlist",
+            // (undocumented)
+            Zenith = "Zenith"
+        }
+    }
+    // (undocumented)
+    export const enum NewsEnvironment {
+        // (undocumented)
+        Demo = "Demo",
+        // (undocumented)
+        Production = ""
+    }
+    // (undocumented)
+    export namespace NotifyController {
+        // (undocumented)
+        export interface AddUpdateRemoveMatchChange extends MatchChange {
+            // (undocumented)
+            readonly Key: string;
+        }
+        // (undocumented)
+        export interface AddUpdateRemoveScanChange extends ScanChange {
+            // (undocumented)
+            readonly Scan: ScanState;
+        }
+        // (undocumented)
+        export interface ClearMatchChange extends MatchChange {
+            // (undocumented)
+            readonly Operation: AurcChangeType.Clear;
+        }
+        // (undocumented)
+        export interface ClearScanChange extends ScanChange {
+            // (undocumented)
+            readonly Operation: AurcChangeType.Clear;
+        }
+        // (undocumented)
+        export namespace CreateScan {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                readonly Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = Response;
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                readonly Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                readonly Details: ScanDetails;
+                // (undocumented)
+                readonly Parameters: ScanParameters;
+            }
+            // (undocumented)
+            export interface Response {
+                // (undocumented)
+                readonly ScanID: ScanID;
+            }
+        }
+        // (undocumented)
+        export namespace DeleteScan {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                readonly Data: QueryRequest;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                readonly ScanID: ScanID;
+            }
+        }
+        // (undocumented)
+        export namespace ExecuteScan {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                readonly Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = MatchChange[];
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                readonly Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                readonly Criteria: Json;
+                // (undocumented)
+                readonly Target: Target;
+                // (undocumented)
+                readonly Type: ScanType;
+            }
+        }
+        // (undocumented)
+        export interface MatchChange {
+            // (undocumented)
+            readonly Key?: string;
+            // (undocumented)
+            readonly Operation: AurcChangeType;
+        }
+        // (undocumented)
+        export namespace Matches {
+            // (undocumented)
+            export type Payload = readonly MatchChange[];
+            // (undocumented)
+            export interface PayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                readonly Data: Payload;
+            }
+            // (undocumented)
+            export type PublishMessageContainer = RequestMessageContainer;
+        }
+        // (undocumented)
+        export interface MetaData {
+            // (undocumented)
+            [name: string]: string;
+        }
+        // (undocumented)
+        export namespace QueryScan {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                readonly Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = Response;
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                readonly Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                readonly ScanID: ScanID;
+            }
+            // (undocumented)
+            export interface Response {
+                // (undocumented)
+                readonly Details: ScanDetails;
+                // (undocumented)
+                readonly Parameters: ScanParameters;
+                // (undocumented)
+                readonly ScanID: ScanID;
+            }
+        }
+        // (undocumented)
+        export interface ScanChange {
+            // (undocumented)
+            readonly Operation: AurcChangeType;
+            // (undocumented)
+            readonly Scan?: ScanState;
+        }
+        // (undocumented)
+        export interface ScanDetails {
+            // (undocumented)
+            readonly Description?: string;
+            // (undocumented)
+            readonly MetaData: MetaData;
+            // (undocumented)
+            readonly Name: string;
+        }
+        // (undocumented)
+        export type ScanID = string;
+        // (undocumented)
+        export interface ScanParameters {
+            // (undocumented)
+            readonly Criteria: Json;
+            // (undocumented)
+            readonly Notifications?: [unknown];
+            // (undocumented)
+            readonly Target: Target;
+            // (undocumented)
+            readonly Type: ScanType;
+        }
+        // (undocumented)
+        export namespace Scans {
+            // (undocumented)
+            export type Payload = readonly ScanChange[];
+            // (undocumented)
+            export interface PayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                readonly Data: Payload;
+            }
+            // (undocumented)
+            export type PublishMessageContainer = RequestMessageContainer;
+        }
+        // (undocumented)
+        export interface ScanState extends ScanDetails {
+            // (undocumented)
+            readonly ID: ScanID;
+            // (undocumented)
+            readonly IsWritable?: boolean;
+            // (undocumented)
+            readonly Type: ScanType;
+        }
+        // (undocumented)
+        export const enum ScanType {
+            // (undocumented)
+            MarketMonitor = "Market.Monitor",
+            // (undocumented)
+            MarketSearch = "Market.Search"
+        }
+        // (undocumented)
+        export type Target = readonly TargetSymbol[] | readonly TargetMarket[];
+        // (undocumented)
+        export type TargetMarket = string;
+        // (undocumented)
+        export type TargetSymbol = string;
+        // (undocumented)
+        export const enum TopicName {
+            // (undocumented)
+            CreateScan = "CreateScan",
+            // (undocumented)
+            DeleteScan = "DeleteScan",
+            // (undocumented)
+            ExecuteScan = "ExecuteScan",
+            // (undocumented)
+            Matches = "Matches",
+            // (undocumented)
+            QueryMatches = "QueryMatches",
+            // (undocumented)
+            QueryScan = "QueryScan",
+            // (undocumented)
+            QueryScans = "QueryScans",
+            // (undocumented)
+            Scans = "Scans",
+            // (undocumented)
+            UpdateScan = "UpdateScan"
+        }
+        // (undocumented)
+        export namespace UpdateScan {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                readonly Data: QueryRequest;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                readonly Details: ScanDetails;
+                // (undocumented)
+                readonly Parameters: ScanParameters;
+                // (undocumented)
+                readonly ScanID: ScanID;
+            }
+        }
+    }
+    // (undocumented)
+    export const enum OrderInstruction {
+        // (undocumented)
+        Any = "Any",
+        // (undocumented)
+        AnyHalf = "AnyHalf",
+        // (undocumented)
+        Best = "Best",
+        // (undocumented)
+        Block = "Block",
+        // (undocumented)
+        Dark = "Dark",
+        // (undocumented)
+        DarkHalf = "DarkHalf",
+        // (undocumented)
+        IDSS = "IDSS",
+        // (undocumented)
+        Mid = "Mid",
+        // (undocumented)
+        MidHalf = "MidHalf",
+        // (undocumented)
+        OnClose = "OnClose",
+        // (undocumented)
+        OnOpen = "OnOpen",
+        // (undocumented)
+        PDT = "PDT",
+        // (undocumented)
+        PSS = "PSS",
+        // (undocumented)
+        RSS = "RSS",
+        // (undocumented)
+        Session = "Session",
+        // (undocumented)
+        Single = "Single",
+        // (undocumented)
+        Sweep = "Sweep"
+    }
+    // (undocumented)
+    export const enum OrderPriceUnitType {
+        // (undocumented)
+        Currency = "Currency",
+        // (undocumented)
+        Units = "Units"
+    }
+    // (undocumented)
+    export const enum OrderRouteAlgorithm {
+        // (undocumented)
+        BestMarket = "BestMarket",
+        // (undocumented)
+        Fix = "FIX",
+        // (undocumented)
+        Market = "Market"
+    }
+    // (undocumented)
+    export type PhysicalMessage = string;
+    // (undocumented)
+    export type RequestMessageContainer = MessageContainer;
+    // (undocumented)
+    export interface ResponseUpdateMessageContainer extends MessageContainer {
+        // (undocumented)
+        Data: ResponseUpdateMessageContainer.Data;
+    }
+    // (undocumented)
+    export namespace ResponseUpdateMessageContainer {
+        // (undocumented)
+        export type Data = Payload | Error;
+        // (undocumented)
+        export type Error = string | string[] | undefined;
+        // (undocumented)
+        export namespace Error {
+            // (undocumented)
+            export const enum Code {
+                // (undocumented)
+                Limited = "Limited",
+                // (undocumented)
+                Retry = "Retry"
+            }
+        }
+        // (undocumented)
+        export type Payload = object | undefined | null;
+    }
+    // (undocumented)
+    export const enum SecurityClass {
+        // (undocumented)
+        ManagedFund = "ManagedFund",
+        // (undocumented)
+        Market = "Market",
+        // (undocumented)
+        Unknown = "Unknown"
+    }
+    // (undocumented)
+    export const enum Side {
+        // (undocumented)
+        Ask = "Ask",
+        // (undocumented)
+        Bid = "Bid"
+    }
+    // (undocumented)
+    export const enum SubscriptionData {
+        // (undocumented)
+        All = "All",
+        // (undocumented)
+        Asset = "Asset",
+        // (undocumented)
+        Depth = "Depth",
+        // (undocumented)
+        DepthFull = "DepthFull",
+        // (undocumented)
+        DepthShort = "DepthShort",
+        // (undocumented)
+        Trades = "Trades"
+    }
+    // (undocumented)
+    export type SubUnsubMessageContainer = RequestMessageContainer;
+    // (undocumented)
+    export type Time = string;
+    // (undocumented)
+    export namespace TradingController {
+        // (undocumented)
+        export namespace Accounts {
+            // (undocumented)
+            export interface AccountState {
+                // (undocumented)
+                Currency?: Currency;
+                // (undocumented)
+                Feed: FeedStatus;
+                // (undocumented)
+                ID: string;
+                // (undocumented)
+                Name?: string;
+                // (undocumented)
+                Provider?: string;
+            }
+            // (undocumented)
+            export type Payload = AccountState[];
+            // (undocumented)
+            export interface PublishSubPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: Payload;
+            }
+            // (undocumented)
+            export type PublishSubUnsubMessageContainer = RequestMessageContainer;
+        }
+        // (undocumented)
+        export namespace AmendOrder {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = Response;
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Account: string;
+                // (undocumented)
+                Condition?: PlaceOrder.Condition;
+                // (undocumented)
+                Details: PlaceOrder.Details;
+                // (undocumented)
+                Flags?: OrderRequestFlag[];
+                // (undocumented)
+                OrderID: string;
+                // (undocumented)
+                Route?: PlaceOrder.Route;
+            }
+            // (undocumented)
+            export interface Response {
+                // (undocumented)
+                Errors?: OrderRequestError[];
+                // (undocumented)
+                EstimatedBrokerage?: Decimal;
+                // (undocumented)
+                EstimatedTax?: Decimal;
+                // (undocumented)
+                EstimatedValue?: Decimal;
+                // (undocumented)
+                Order?: Orders.AddUpdateOrder;
+                // (undocumented)
+                Result: OrderRequestResult;
+            }
+        }
+        // (undocumented)
+        export namespace Balances {
+            // (undocumented)
+            export interface Balance {
+                // (undocumented)
+                Account: string;
+                // (undocumented)
+                Amount: Decimal;
+                // (undocumented)
+                Currency: Currency;
+                // (undocumented)
+                Type: string;
+            }
+            // (undocumented)
+            export type Payload = Balance[];
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export interface PublishSubPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: Payload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Account: string;
+            }
+        }
+        // (undocumented)
+        export namespace CancelOrder {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = Response;
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Account: string;
+                // (undocumented)
+                Flags?: OrderRequestFlag[];
+                // (undocumented)
+                OrderID: string;
+            }
+            // (undocumented)
+            export interface Response {
+                // (undocumented)
+                Errors?: OrderRequestError[];
+                // (undocumented)
+                Order?: Orders.AddUpdateOrder;
+                // (undocumented)
+                Result: OrderRequestResult;
+            }
+        }
+        // (undocumented)
+        export namespace Holdings {
+            // (undocumented)
+            export interface AddUpdateDetail extends Detail {
+                // (undocumented)
+                Code: string;
+                // (undocumented)
+                Cost: Decimal;
+                // (undocumented)
+                Currency: Currency;
+                // (undocumented)
+                Exchange: string;
+                // (undocumented)
+                Style: HoldingStyle;
+            }
+            // (undocumented)
+            export interface ChangeRecord {
+                // (undocumented)
+                Account?: string;
+                // (undocumented)
+                Holding?: Detail;
+                // (undocumented)
+                O: AbbreviatedAurcChangeType;
+            }
+            // (undocumented)
+            export interface Detail {
+                // (undocumented)
+                Account: string;
+            }
+            // (undocumented)
+            export type HoldingStyle = SecurityClass;
+            // (undocumented)
+            export namespace HoldingStyle {
+                const // (undocumented)
+                Unknown = SecurityClass.Unknown;
+                const // (undocumented)
+                Market = SecurityClass.Market;
+                const // (undocumented)
+                ManagedFund = SecurityClass.ManagedFund;
+            }
+            // (undocumented)
+            export interface ManagedFundDetail extends AddUpdateDetail {
+                // (undocumented)
+                BaseCost: Decimal;
+                // (undocumented)
+                TotalUnits: Decimal;
+            }
+            // (undocumented)
+            export interface MarketDetail extends AddUpdateDetail {
+                // (undocumented)
+                AveragePrice: Decimal;
+                // (undocumented)
+                TotalAvailable: Integer;
+                // (undocumented)
+                TotalQuantity: Integer;
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = AddUpdateDetail[];
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Account: string;
+                // (undocumented)
+                Code?: string;
+                // (undocumented)
+                Exchange?: string;
+            }
+            // (undocumented)
+            export interface RemoveDetail extends Detail {
+                // (undocumented)
+                Code: string;
+                // (undocumented)
+                Exchange: string;
+            }
+            // (undocumented)
+            export type SubPayload = ChangeRecord[];
+            // (undocumented)
+            export interface SubPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: SubPayload;
+            }
+        }
+        // (undocumented)
+        export namespace MoveOrder {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = Response;
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Account: string;
+                // (undocumented)
+                Destination: string;
+                // (undocumented)
+                Flags?: OrderRequestFlag[];
+                // (undocumented)
+                OrderID: string;
+            }
+            // (undocumented)
+            export interface Response {
+                // (undocumented)
+                Errors?: OrderRequestError[];
+                // (undocumented)
+                Order?: Orders.AddUpdateOrder;
+                // (undocumented)
+                Result: OrderRequestResult;
+            }
+        }
+        // (undocumented)
+        export namespace OrderAudit {
+            // (undocumented)
+            export interface Change {
+                // (undocumented)
+                Account: string | undefined;
+                // (undocumented)
+                Audit: Detail | undefined;
+                // (undocumented)
+                O: AbbreviatedAurcChangeType;
+            }
+            // (undocumented)
+            export interface Detail {
+                // (undocumented)
+                Account: string;
+                // (undocumented)
+                Order: Orders.AddUpdateOrder;
+                // (undocumented)
+                OrderID: string;
+                // (undocumented)
+                Request: Requests.Request;
+                // (undocumented)
+                Transaction: Transactions.Detail;
+                // (undocumented)
+                Type: Type;
+                // (undocumented)
+                Version: string;
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = Detail[];
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Account: string;
+                // (undocumented)
+                OrderID?: string;
+            }
+            // (undocumented)
+            export type SubPayload = Change[];
+            // (undocumented)
+            export interface SubPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: SubPayload;
+            }
+            // (undocumented)
+            export const enum Type {
+                // (undocumented)
+                Order = "Order",
+                // (undocumented)
+                Request = "Request",
+                // (undocumented)
+                Transaction = "Transaction"
+            }
+        }
+        // (undocumented)
+        export type OrderRequestError = string;
+        // (undocumented)
+        export namespace OrderRequestError {
+            // (undocumented)
+            export const enum Code {
+                // (undocumented)
+                Account = "Account",
+                // (undocumented)
+                Account_DailyGross = "Account.DailyGross",
+                // (undocumented)
+                Account_DailyNet = "Account.DailyNet",
+                // (undocumented)
+                Authority = "Authority",
+                // (undocumented)
+                Connection = "Connection",
+                // (undocumented)
+                Currency = "Currency",
+                // (undocumented)
+                Details = "Details",
+                // (undocumented)
+                Error = "Error",
+                // (undocumented)
+                Exchange = "Exchange",
+                // (undocumented)
+                ExpiryDate = "ExpiryDate",
+                // (undocumented)
+                Flags_PDS = "Flags.PDS",
+                // (undocumented)
+                HiddenQuantity = "HiddenQuantity",
+                // (undocumented)
+                HiddenQuantity_Symbol = "HiddenQuantity.Symbol",
+                // (undocumented)
+                Internal = "Internal",
+                // (undocumented)
+                Internal_NotFound = "Internal.NotFound",
+                // (undocumented)
+                LimitPrice = "LimitPrice",
+                // (undocumented)
+                LimitPrice_Distance = "LimitPrice.Distance",
+                // (undocumented)
+                LimitPrice_Given = "LimitPrice.Given",
+                // (undocumented)
+                LimitPrice_Maximum = "LimitPrice.Maximum",
+                // (undocumented)
+                LimitPrice_Missing = "LimitPrice.Missing",
+                // (undocumented)
+                MinimumQuantity = "MinimumQuantity",
+                // (undocumented)
+                MinimumQuantity_Symbol = "MinimumQuantity.Symbol",
+                // (undocumented)
+                Operation = "Operation",
+                // (undocumented)
+                Order = "Order",
+                // (undocumented)
+                OrderType = "OrderType",
+                // (undocumented)
+                OrderType_Market = "OrderType.Market",
+                // (undocumented)
+                OrderType_Status = "OrderType.Status",
+                // (undocumented)
+                OrderType_Symbol = "OrderType.Symbol",
+                // (undocumented)
+                Retry = "Retry",
+                // (undocumented)
+                Route = "Route",
+                // (undocumented)
+                Route_Algorithm = "Route.Algorithm",
+                // (undocumented)
+                Route_Market = "Route.Market",
+                // (undocumented)
+                Route_Symbol = "Route.Symbol",
+                // (undocumented)
+                Side = "Side",
+                // (undocumented)
+                Side_Maximum = "Side.Maximum",
+                // (undocumented)
+                Status = "Status",
+                // (undocumented)
+                Style = "Style",
+                // (undocumented)
+                Submitted = "Submitted",
+                // (undocumented)
+                Symbol = "Symbol",
+                // (undocumented)
+                Symbol_Authority = "Symbol.Authority",
+                // (undocumented)
+                Symbol_Status = "Symbol.Status",
+                // (undocumented)
+                TotalQuantity = "TotalQuantity",
+                // (undocumented)
+                TotalQuantity_Holdings = "TotalQuantity.Holdings",
+                // (undocumented)
+                TotalQuantity_Maximum = "TotalQuantity.Maximum",
+                // (undocumented)
+                TotalQuantity_Minimum = "TotalQuantity.Minimum",
+                // (undocumented)
+                TotalValue_Balance = "TotalValue.Balance",
+                // (undocumented)
+                TotalValue_Maximum = "TotalValue.Maximum",
+                // (undocumented)
+                UnitAmount = "UnitAmount",
+                // (undocumented)
+                UnitType = "UnitType",
+                // (undocumented)
+                Validity = "Validity",
+                // (undocumented)
+                Validity_Symbol = "Validity.Symbol",
+                // (undocumented)
+                VisibleQuantity = "VisibleQuantity"
+            }
+            const // (undocumented)
+            valueSeparator = " ";
+        }
+        // (undocumented)
+        export const enum OrderRequestFlag {
+            // (undocumented)
+            Pds = "PDS"
+        }
+        // (undocumented)
+        export const enum OrderRequestResult {
+            // (undocumented)
+            Error = "Error",
+            // (undocumented)
+            Incomplete = "Incomplete",
+            // (undocumented)
+            Invalid = "Invalid",
+            // (undocumented)
+            Rejected = "Rejected",
+            // (undocumented)
+            Success = "Success"
+        }
+        // (undocumented)
+        export namespace Orders {
+            // (undocumented)
+            export interface AddUpdateOrder extends Order {
+                // (undocumented)
+                Children: string[] | undefined;
+                // (undocumented)
+                Condition: PlaceOrder.Condition | undefined;
+                // (undocumented)
+                CreatedDate: DateTimeIso8601;
+                // (undocumented)
+                Currency: Currency;
+                // (undocumented)
+                CurrentBrokerage: number;
+                // (undocumented)
+                CurrentTax: number;
+                // (undocumented)
+                CurrentValue: number;
+                // (undocumented)
+                DepthOrderID: string | undefined;
+                // (undocumented)
+                Details: PlaceOrder.Details;
+                // (undocumented)
+                EstimatedBrokerage: number;
+                // (undocumented)
+                EstimatedTax: number;
+                // (undocumented)
+                ExternalID: string | undefined;
+                // (undocumented)
+                ID: string;
+                // (undocumented)
+                Market: string;
+                // (undocumented)
+                Route: PlaceOrder.Route;
+                // (undocumented)
+                Status: string;
+                // (undocumented)
+                Style: OrderStyle;
+                // (undocumented)
+                TradingMarket: string;
+                // (undocumented)
+                UpdatedDate: DateTimeIso8601;
+            }
+            // (undocumented)
+            export interface ManagedFundOrder extends AddUpdateOrder {
+                // (undocumented)
+                Style: SecurityClass.ManagedFund;
+            }
+            // (undocumented)
+            export interface MarketOrder extends AddUpdateOrder {
+                // (undocumented)
+                AveragePrice: number | null | undefined;
+                // (undocumented)
+                ExecutedQuantity: Integer;
+                // (undocumented)
+                Style: SecurityClass.Market;
+            }
+            // (undocumented)
+            export interface Order {
+                // (undocumented)
+                Account: string;
+            }
+            // (undocumented)
+            export interface OrderChangeRecord {
+                // (undocumented)
+                Account: string | undefined;
+                // (undocumented)
+                O: AbbreviatedAurcChangeType;
+                // (undocumented)
+                Order: AddUpdateOrder | undefined;
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = AddUpdateOrder[];
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Account: string;
+                // (undocumented)
+                OrderID?: string;
+            }
+            // (undocumented)
+            export interface RemoveOrder extends Order {
+                // (undocumented)
+                ID: string;
+            }
+            // (undocumented)
+            export type SubPayload = OrderChangeRecord[];
+            // (undocumented)
+            export interface SubPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: SubPayload;
+            }
+        }
+        // (undocumented)
+        export namespace OrderStatuses {
+            // (undocumented)
+            export const enum Allow {
+                // (undocumented)
+                All = "All",
+                // (undocumented)
+                Amend = "Amend",
+                // (undocumented)
+                Cancel = "Cancel",
+                // (undocumented)
+                Move = "Move",
+                // (undocumented)
+                None = "None",
+                // (undocumented)
+                Trade = "Trade"
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = Status[];
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Provider: string;
+            }
+            // (undocumented)
+            export const enum Reason {
+                // (undocumented)
+                Abnormal = "Abnormal",
+                // (undocumented)
+                Completed = "Completed",
+                // (undocumented)
+                Manual = "Manual",
+                // (undocumented)
+                Normal = "Normal",
+                // (undocumented)
+                Unknown = "Unknown",
+                // (undocumented)
+                Waiting = "Waiting"
+            }
+            // (undocumented)
+            export interface Status {
+                // (undocumented)
+                Allows: CommaString;
+                // (undocumented)
+                Code: string;
+                // (undocumented)
+                Exchange?: string;
+                // (undocumented)
+                Reason: CommaString;
+            }
+        }
+        // (undocumented)
+        export type OrderStyle = SecurityClass;
+        // (undocumented)
+        export namespace OrderStyle {
+            const // (undocumented)
+            Unknown = SecurityClass.Unknown;
+            const // (undocumented)
+            Market = SecurityClass.Market;
+            const // (undocumented)
+            ManagedFund = SecurityClass.ManagedFund;
+        }
+        // (undocumented)
+        export namespace PlaceOrder {
+            // (undocumented)
+            export interface BestMarketRoute extends Route {
+                // (undocumented)
+                Algorithm: OrderRouteAlgorithm.BestMarket;
+            }
+            // (undocumented)
+            export interface Condition {
+                // (undocumented)
+                Name: Condition.Name;
+            }
+            // (undocumented)
+            export namespace Condition {
+                // (undocumented)
+                export const enum Direction {
+                    // (undocumented)
+                    Down = "Down",
+                    // (undocumented)
+                    None = "None",
+                    // (undocumented)
+                    Up = "Up"
+                }
+                // (undocumented)
+                export const enum Name {
+                    // (undocumented)
+                    StopLoss = "StopLoss",
+                    // (undocumented)
+                    TrailingStopLoss = "TrailingStopLoss"
+                }
+                // (undocumented)
+                export const enum Reference {
+                    // (undocumented)
+                    BestAsk = "BestAsk",
+                    // (undocumented)
+                    BestBid = "BestBid",
+                    // (undocumented)
+                    Last = "Last"
+                }
+            }
+            // (undocumented)
+            export interface Details {
+                // (undocumented)
+                BrokerageSchedule?: string;
+                // (undocumented)
+                Code: string;
+                // (undocumented)
+                Exchange: string;
+                // (undocumented)
+                Instructions?: OrderInstruction[];
+                // (undocumented)
+                Side: Side;
+                // (undocumented)
+                Style: OrderStyle;
+            }
+            // (undocumented)
+            export interface FixRoute extends Route {
+                // (undocumented)
+                Algorithm: OrderRouteAlgorithm.Fix;
+            }
+            // (undocumented)
+            export interface ManagedFundDetails extends Details {
+                // (undocumented)
+                Currency?: string;
+                // (undocumented)
+                PhysicalDelivery?: boolean;
+                // (undocumented)
+                Style: SecurityClass.ManagedFund;
+                // (undocumented)
+                UnitAmount: number;
+                // (undocumented)
+                UnitType: OrderPriceUnitType;
+            }
+            // (undocumented)
+            export interface MarketDetails extends Details {
+                // (undocumented)
+                ExpiryDate?: DateTimeIso8601;
+                // (undocumented)
+                HiddenQuantity?: Integer;
+                // (undocumented)
+                LimitPrice?: number;
+                // (undocumented)
+                MinimumQuantity?: Integer;
+                // (undocumented)
+                Quantity: Integer;
+                // (undocumented)
+                ShortType?: ShortSellType;
+                // (undocumented)
+                Style: SecurityClass.Market;
+                // (undocumented)
+                Type: EquityOrderType;
+                // (undocumented)
+                Validity: EquityOrderValidity;
+            }
+            // (undocumented)
+            export interface MarketRoute extends Route {
+                // (undocumented)
+                Algorithm: OrderRouteAlgorithm.Market;
+                // (undocumented)
+                Market: string;
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = Response;
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Account: string;
+                // (undocumented)
+                Condition?: Condition;
+                // (undocumented)
+                Details: Details;
+                // (undocumented)
+                Flags?: OrderRequestFlag[];
+                // (undocumented)
+                Route: Route;
+            }
+            // (undocumented)
+            export interface Response {
+                // (undocumented)
+                Errors?: OrderRequestError[];
+                // (undocumented)
+                EstimatedBrokerage?: Decimal;
+                // (undocumented)
+                EstimatedTax?: Decimal;
+                // (undocumented)
+                EstimatedValue?: Decimal;
+                // (undocumented)
+                Order?: Orders.AddUpdateOrder;
+                // (undocumented)
+                Result: OrderRequestResult;
+            }
+            // (undocumented)
+            export interface Route {
+                // (undocumented)
+                Algorithm: OrderRouteAlgorithm;
+            }
+            // (undocumented)
+            export const enum ShortSellType {
+                // (undocumented)
+                ShortSell = "ShortSell",
+                // (undocumented)
+                ShortSellExempt = "ShortSellExempt"
+            }
+            // (undocumented)
+            export interface StopLossCondition extends Condition {
+                // (undocumented)
+                Direction?: Condition.Direction;
+                // (undocumented)
+                Name: Condition.Name.StopLoss;
+                // (undocumented)
+                Reference?: Condition.Reference;
+                // (undocumented)
+                Stop?: number;
+            }
+            // (undocumented)
+            export interface TrailingStopLossCondition extends Condition {
+                // (undocumented)
+                Limit: number;
+                // (undocumented)
+                Name: Condition.Name.TrailingStopLoss;
+                // (undocumented)
+                Stop?: number;
+                // (undocumented)
+                Type: TrailingStopLossCondition.Type;
+                // (undocumented)
+                Value: number;
+            }
+            // (undocumented)
+            export namespace TrailingStopLossCondition {
+                // (undocumented)
+                export const enum Type {
+                    // (undocumented)
+                    Percent = "Percent",
+                    // (undocumented)
+                    Price = "Price"
+                }
+            }
+        }
+        // (undocumented)
+        export namespace Requests {
+            // (undocumented)
+            export interface Change {
+                // (undocumented)
+                Account: string | undefined;
+                // (undocumented)
+                O: AbbreviatedAurcChangeType;
+                // (undocumented)
+                Request: Request | undefined;
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: Request;
+            }
+            // (undocumented)
+            export type PublishPayload = Request[];
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Account: string;
+                // (undocumented)
+                OrderID?: string;
+            }
+            // (undocumented)
+            export interface Request {
+                // (undocumented)
+                Account: string;
+                // (undocumented)
+                Condition?: PlaceOrder.Condition | undefined;
+                // (undocumented)
+                CreatedDate: DateTimeIso8601;
+                // (undocumented)
+                Details: PlaceOrder.Details;
+                // (undocumented)
+                ID: string;
+                // (undocumented)
+                OrderID: string;
+                // (undocumented)
+                Route: PlaceOrder.Route;
+                // (undocumented)
+                Status: Status;
+                // (undocumented)
+                Style: OrderStyle;
+                // (undocumented)
+                Type: Type;
+                // (undocumented)
+                UpdatedDate: DateTimeIso8601;
+            }
+            // (undocumented)
+            export const enum Status {
+                // (undocumented)
+                Authorised = 3,
+                // (undocumented)
+                Complete = 4,
+                // (undocumented)
+                Pending = 0,
+                // (undocumented)
+                PendingAuthorisation = 1,
+                // (undocumented)
+                Rejected = 2
+            }
+            // (undocumented)
+            export type SubPayload = Change[];
+            // (undocumented)
+            export interface SubPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: SubPayload;
+            }
+            // (undocumented)
+            export const enum Type {
+                // (undocumented)
+                Amend = "Amend",
+                // (undocumented)
+                Cancel = "Cancel",
+                // (undocumented)
+                Place = "Place"
+            }
+        }
+        // (undocumented)
+        export const enum TopicName {
+            // (undocumented)
+            Accounts = "Accounts",
+            // (undocumented)
+            AmendOrder = "AmendOrder",
+            // (undocumented)
+            Balances = "Balances",
+            // (undocumented)
+            CancelOrder = "CancelOrder",
+            // (undocumented)
+            Holdings = "Holdings",
+            // (undocumented)
+            MoveOrder = "MoveOrder",
+            // (undocumented)
+            Orders = "Orders",
+            // (undocumented)
+            PlaceOrder = "PlaceOrder",
+            // (undocumented)
+            QueryAccounts = "QueryAccounts",
+            // (undocumented)
+            QueryAudit = "QueryAudity",
+            // (undocumented)
+            QueryBalances = "QueryBalances",
+            // (undocumented)
+            QueryHoldings = "QueryHoldings",
+            // (undocumented)
+            QueryOrders = "QueryOrders",
+            // (undocumented)
+            QueryOrderStatuses = "QueryOrderStatuses",
+            // (undocumented)
+            QueryRequests = "QueryRequests",
+            // (undocumented)
+            QueryTransactions = "QueryTransactions",
+            // (undocumented)
+            Requests = "Requests",
+            // (undocumented)
+            Transactions = "Transactions"
+        }
+        // (undocumented)
+        export namespace Transactions {
+            // (undocumented)
+            export interface Change {
+                // (undocumented)
+                Account: string | undefined;
+                // (undocumented)
+                O: AbbreviatedAuiChangeType;
+                // (undocumented)
+                Transaction: Detail | undefined;
+            }
+            // (undocumented)
+            export interface Detail {
+                // (undocumented)
+                Account: string;
+                // (undocumented)
+                Code: string;
+                // (undocumented)
+                Currency?: Currency;
+                // (undocumented)
+                Exchange: string;
+                // (undocumented)
+                GrossAmount: Decimal;
+                // (undocumented)
+                ID: string;
+                // (undocumented)
+                NetAmount: Decimal;
+                // (undocumented)
+                OrderID: string;
+                // (undocumented)
+                SettlementAmount: Decimal;
+                // (undocumented)
+                SettlementDate: DateTimeIso8601;
+                // (undocumented)
+                Style: OrderStyle;
+                // (undocumented)
+                TradeDate: DateTimeIso8601;
+                // (undocumented)
+                TradingMarket: string;
+            }
+            // (undocumented)
+            export interface ManagedFundDetail extends Detail {
+                // (undocumented)
+                Style: SecurityClass.ManagedFund;
+                // (undocumented)
+                TotalUnits: Decimal;
+                // (undocumented)
+                UnitValue: Decimal;
+            }
+            // (undocumented)
+            export interface MarketDetail extends Detail {
+                // (undocumented)
+                AveragePrice: number;
+                // (undocumented)
+                Style: SecurityClass.Market;
+                // (undocumented)
+                TotalQuantity: Integer;
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = Detail[];
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                Account: string;
+                // (undocumented)
+                Code?: string;
+                // (undocumented)
+                Count?: Integer;
+                // (undocumented)
+                Exchange?: string;
+                // (undocumented)
+                FromDate?: DateTimeIso8601;
+                // (undocumented)
+                OrderID?: string;
+                // (undocumented)
+                ToDate?: DateTimeIso8601;
+                // (undocumented)
+                TradingMarket?: string;
+            }
+            // (undocumented)
+            export type SubPayload = Change[];
+            // (undocumented)
+            export interface SubPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: SubPayload;
+            }
+        }
+    }
+    // (undocumented)
+    export const enum TradingEnvironment {
+        // (undocumented)
+        Demo = "Demo",
+        // (undocumented)
+        Production = ""
+    }
+    // (undocumented)
+    export namespace WatchlistController {
+        // (undocumented)
+        export namespace AddToWatchlist {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                readonly Data: QueryRequest;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                readonly Members: string[];
+                // (undocumented)
+                readonly WatchlistID: WatchlistID;
+            }
+        }
+        // (undocumented)
+        export interface AddUpdateRemoveWatchlistChange extends WatchlistChange {
+            // (undocumented)
+            readonly Operation: AurcChangeType;
+            // (undocumented)
+            readonly Watchlist: Watchlist;
+        }
+        // (undocumented)
+        export interface AddWatchlistChange extends AddUpdateRemoveWatchlistChange {
+            // (undocumented)
+            readonly Operation: AurcChangeType.Add;
+        }
+        // (undocumented)
+        export interface ClearMemberChange extends MemberChange {
+            // (undocumented)
+            readonly Operation: IrrcChangeType.Clear;
+        }
+        // (undocumented)
+        export interface ClearWatchlistChange extends WatchlistChange {
+            // (undocumented)
+            readonly Operation: AurcChangeType.Clear;
+        }
+        // (undocumented)
+        export namespace CopyWatchlist {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                readonly Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = Response;
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                readonly Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                readonly Details: WatchlistDetails;
+                // (undocumented)
+                readonly WatchlistID: WatchlistID;
+            }
+            // (undocumented)
+            export interface Response {
+                // (undocumented)
+                readonly WatchlistID: string;
+            }
+        }
+        // (undocumented)
+        export namespace CreateWatchlist {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                readonly Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = Response;
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                readonly Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                readonly Details: WatchlistDetails;
+                // (undocumented)
+                readonly Members: string[];
+            }
+            // (undocumented)
+            export interface Response {
+                // (undocumented)
+                readonly WatchlistID: string;
+            }
+        }
+        // (undocumented)
+        export namespace DeleteWatchlist {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                readonly Data: QueryRequest;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                readonly WatchlistID: WatchlistID;
+            }
+        }
+        // (undocumented)
+        export namespace InsertIntoWatchlist {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                readonly Data: QueryRequest;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                readonly Members: string[];
+                // (undocumented)
+                readonly Offset: Integer;
+                // (undocumented)
+                readonly WatchlistID: WatchlistID;
+            }
+        }
+        // (undocumented)
+        export interface InsertRemoveReplaceMemberChange extends MemberChange {
+            // (undocumented)
+            readonly At: Integer;
+            // (undocumented)
+            readonly Count: Integer;
+            // (undocumented)
+            readonly Operation: IrrcChangeType;
+        }
+        // (undocumented)
+        export interface InsertReplaceMemberChange extends InsertRemoveReplaceMemberChange {
+            // (undocumented)
+            readonly At: Integer;
+            // (undocumented)
+            readonly Count: Integer;
+            // (undocumented)
+            readonly Members: string[];
+            // (undocumented)
+            readonly Operation: IrrcChangeType.Insert | IrrcChangeType.Replace;
+        }
+        // (undocumented)
+        export interface MemberChange {
+            // (undocumented)
+            readonly At?: Integer;
+            // (undocumented)
+            readonly Count?: Integer;
+            // (undocumented)
+            readonly Members?: string[];
+            // (undocumented)
+            readonly Operation: IrrcChangeType;
+        }
+        // (undocumented)
+        export namespace MoveInWatchlist {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                readonly Data: QueryRequest;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                readonly Count: Integer;
+                // (undocumented)
+                readonly Offset: Integer;
+                // (undocumented)
+                readonly Target: Integer;
+                // (undocumented)
+                readonly WatchlistID: WatchlistID;
+            }
+        }
+        // (undocumented)
+        export namespace QueryWatchlist {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                readonly Data: QueryRequest;
+            }
+            // (undocumented)
+            export type PublishPayload = AddWatchlistChange[];
+            // (undocumented)
+            export interface PublishPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                readonly Data: PublishPayload;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                readonly Watchlist: WatchlistID;
+            }
+        }
+        // (undocumented)
+        export interface RemoveChange extends InsertRemoveReplaceMemberChange {
+            // (undocumented)
+            readonly At: Integer;
+            // (undocumented)
+            readonly Count: Integer;
+            // (undocumented)
+            readonly Operation: IrrcChangeType.Remove;
+        }
+        // (undocumented)
+        export const enum TopicName {
+            // (undocumented)
+            AddToWatchlist = "AddToWatchlist",
+            // (undocumented)
+            CopyWatchlist = "CopyWatchlist",
+            // (undocumented)
+            CreateWatchlist = "CreateWatchlist",
+            // (undocumented)
+            DeleteWatchlist = "DeleteWatchlist",
+            // (undocumented)
+            InsertIntoWatchlist = "InsertIntoWatchlist",
+            // (undocumented)
+            MoveInWatchlist = "MoveInWatchlist",
+            // (undocumented)
+            QueryMembers = "QueryMembers",
+            // (undocumented)
+            QueryWatchlist = "QueryWatchlist",
+            // (undocumented)
+            QueryWatchlists = "QueryWatchlists",
+            // (undocumented)
+            UpdateWatchlist = "UpdateWatchlist",
+            // (undocumented)
+            Watchlist = "Watchlist",
+            // (undocumented)
+            Watchlists = "Watchlists"
+        }
+        // (undocumented)
+        export namespace UpdateWatchlist {
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                readonly Data: QueryRequest;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                readonly Details: WatchlistDetails;
+                // (undocumented)
+                readonly WatchlistID: WatchlistID;
+            }
+        }
+        // (undocumented)
+        export interface Watchlist extends WatchlistDetails {
+            // (undocumented)
+            readonly ID: WatchlistID;
+            // (undocumented)
+            readonly IsWritable?: boolean;
+        }
+        // (undocumented)
+        export namespace Watchlist {
+            // (undocumented)
+            export type Payload = readonly MemberChange[];
+            // (undocumented)
+            export interface PayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                readonly Data: Payload;
+            }
+            // (undocumented)
+            export interface PublishMessageContainer extends RequestMessageContainer {
+                // (undocumented)
+                readonly Data: QueryRequest;
+            }
+            // (undocumented)
+            export interface QueryRequest {
+                // (undocumented)
+                readonly Watchlist: WatchlistID;
+            }
+        }
+        // (undocumented)
+        export interface WatchlistChange {
+            // (undocumented)
+            readonly Operation: AurcChangeType;
+            // (undocumented)
+            readonly Watchlist?: Watchlist;
+        }
+        // (undocumented)
+        export interface WatchlistDetails {
+            // (undocumented)
+            readonly Category?: string;
+            // (undocumented)
+            readonly Description?: string;
+            // (undocumented)
+            readonly Name: string;
+        }
+        // (undocumented)
+        export type WatchlistID = string;
+        // (undocumented)
+        export namespace Watchlists {
+            // (undocumented)
+            export type Payload = readonly WatchlistChange[];
+            // (undocumented)
+            export interface PayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                readonly Data: Payload;
+            }
+            // (undocumented)
+            export type PublishMessageContainer = RequestMessageContainer;
+        }
+    }
+    // (undocumented)
+    export namespace WebSocket {
+        // (undocumented)
+        export const enum CloseCode {
+            // (undocumented)
+            DataTooLarge = 1009,
+            // (undocumented)
+            GoingAway = 1001,
+            // (undocumented)
+            KickedOff = 4000,
+            // (undocumented)
+            Normal = 1000,
+            // (undocumented)
+            Protocol = 1002,
+            // (undocumented)
+            ServerError = 1011,
+            // (undocumented)
+            ServerRestart = 1012,
+            // (undocumented)
+            SessionTerminatedRangeStart = 4000,
+            // (undocumented)
+            ViolatesPolicy = 1007
+        }
+    }
+    // (undocumented)
+    export namespace ZenithController {
+        // (undocumented)
+        export namespace Feeds {
+            // (undocumented)
+            export const enum AuthorityFeed {
+                // (undocumented)
+                TradingAuthority = "TradingAuthority",
+                // (undocumented)
+                Watchlist = "Watchlist"
+            }
+            // (undocumented)
+            export interface Feed {
+                // (undocumented)
+                Class: FeedClass;
+                // (undocumented)
+                Name: string;
+                // (undocumented)
+                Status: FeedStatus;
+            }
+            // (undocumented)
+            export const enum FeedClass {
+                // (undocumented)
+                Authority = "Authority",
+                // (undocumented)
+                Market = "Market",
+                // (undocumented)
+                News = "News",
+                // (undocumented)
+                Scanner = "Scanner",
+                // (undocumented)
+                Trading = "Trading",
+                // (undocumented)
+                Watchlist = "Watchlist"
+            }
+            // (undocumented)
+            export const enum NewsFeed {
+                // (undocumented)
+                Asx = "ASX",
+                // (undocumented)
+                Fnsx = "FNSX",
+                // (undocumented)
+                Myx = "MYX",
+                // (undocumented)
+                Nsx = "NSX",
+                // (undocumented)
+                Nzx = "NZX",
+                // (undocumented)
+                Ptx = "PTX"
+            }
+            // (undocumented)
+            export type Payload = Feed[];
+            // (undocumented)
+            export interface PayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: Payload;
+            }
+            // (undocumented)
+            export const enum TradingFeed {
+                // (undocumented)
+                Malacca = "Malacca",
+                // (undocumented)
+                Motif = "Motif"
+            }
+        }
+        // (undocumented)
+        export namespace ServerInfo {
+            // (undocumented)
+            export interface Payload {
+                // (undocumented)
+                Class: string;
+                // (undocumented)
+                Name: string;
+                // (undocumented)
+                Protocol: string;
+                // (undocumented)
+                Version: string;
+            }
+            // (undocumented)
+            export type SubPayload = Payload;
+            // (undocumented)
+            export interface SubPayloadMessageContainer extends ResponseUpdateMessageContainer {
+                // (undocumented)
+                Data: SubPayload;
+            }
+        }
+        // (undocumented)
+        export const enum TopicName {
+            // (undocumented)
+            Feeds = "Feeds",
+            // (undocumented)
+            ServerInfo = "ServerInfo"
+        }
+    }
+}
+
 // Warning: (ae-missing-release-tag) "ZenithConnectionStateEngine" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 // Warning: (ae-missing-release-tag) "ZenithConnectionStateEngine" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -30493,6 +33842,11 @@ export namespace ZenithConnectionStateEngineModule {
 // @public (undocumented)
 export namespace ZenithConvert {
     // (undocumented)
+    export namespace AbbreviatedAurcChangeType {
+        // (undocumented)
+        export function toId(value: Zenith.AbbreviatedAurcChangeType): AurcChangeTypeId;
+    }
+    // (undocumented)
     export namespace Accounts {
         // (undocumented)
         export function toDataMessageAccount(accountState: Zenith.TradingController.Accounts.AccountState): BrokerageAccountsDataMessage.Account;
@@ -30505,7 +33859,7 @@ export namespace ZenithConvert {
     // (undocumented)
     export namespace AurcChangeType {
         // (undocumented)
-        export function toId(value: Zenith.AbbreviatedAurcChangeType): AurcChangeTypeId;
+        export function toId(value: Zenith.AurcChangeType): AurcChangeTypeId;
     }
     // (undocumented)
     export namespace Balances {
@@ -30961,14 +34315,6 @@ export namespace ZenithConvert {
         // (undocumented)
         export function toId(value: Zenith.MarketController.Trend): MovementId;
     }
-}
-
-// Warning: (ae-missing-release-tag) "ZenithConvertModule" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export namespace ZenithConvertModule {
-    // (undocumented)
-    export function initialiseStatic(): void;
 }
 
 // Warning: (ae-missing-release-tag) "ZenithCounterDataMessage" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -31431,6 +34777,745 @@ export class ZenithReconnectDataMessage extends DataMessage {
     reconnectReasonId: ZenithPublisherReconnectReasonId;
     // (undocumented)
     static readonly typeId = DataMessageTypeId.ZenithReconnect;
+}
+
+// Warning: (ae-missing-release-tag) "ZenithScanCriteria" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export namespace ZenithScanCriteria {
+    // (undocumented)
+    export type AbsTupleNode = TupleNode<typeof AbsTupleNodeType>;
+    // (undocumented)
+    export type AddOrPosSymbolTupleNode = TupleNode<typeof AddOrPosSymbolTupleNodeType>;
+    // (undocumented)
+    export type AddTupleNode = TupleNode<typeof AddTupleNodeType>;
+    // (undocumented)
+    export type AllNoneTupleNode = [nodeType: TupleNodeType];
+    // (undocumented)
+    export type AllNoneTupleNodeUnion = AllTupleNode | NoneTupleNode;
+    // (undocumented)
+    export type AllTupleNode = TupleNode<typeof AllTupleNodeType>;
+    // (undocumented)
+    export type AltCodeSubbedField = typeof AltCodeTupleNodeType;
+    // (undocumented)
+    export type AltCodeSubField = Zenith.MarketController.SearchSymbols.AlternateKey;
+    // (undocumented)
+    export type AltCodeTupleNode = TupleNode<typeof AltCodeTupleNodeType>;
+    // (undocumented)
+    export type AndTupleNode = TupleNode<typeof AndTupleNodeType>;
+    // (undocumented)
+    export type AttributeSubbedField = typeof AttributeTupleNodeType;
+    // (undocumented)
+    export type AttributeSubField = Zenith.MarketController.SearchSymbols.KnownAttributeKey;
+    // (undocumented)
+    export type AttributeTupleNode = TupleNode<typeof AttributeTupleNodeType>;
+    // (undocumented)
+    export type AuctionLastTupleNode = TupleNode<typeof AuctionLastTupleNodeType>;
+    // (undocumented)
+    export type AuctionQuantityTupleNode = TupleNode<typeof AuctionQuantityTupleNodeType>;
+    // (undocumented)
+    export type AuctionTupleNode = TupleNode<typeof AuctionTupleNodeType>;
+    // (undocumented)
+    export type BestAskCountTupleNode = TupleNode<typeof BestAskCountTupleNodeType>;
+    // (undocumented)
+    export type BestAskPriceTupleNode = TupleNode<typeof BestAskPriceTupleNodeType>;
+    // (undocumented)
+    export type BestAskQuantityTupleNode = TupleNode<typeof BestAskQuantityTupleNodeType>;
+    // (undocumented)
+    export type BestBidCountTupleNode = TupleNode<typeof BestBidCountTupleNodeType>;
+    // (undocumented)
+    export type BestBidPriceTupleNode = TupleNode<typeof BestBidPriceTupleNodeType>;
+    // (undocumented)
+    export type BestBidQuantityTupleNode = TupleNode<typeof BestBidQuantityTupleNodeType>;
+    // (undocumented)
+    export type BinaryExpressionTupleNode = [nodeType: BinaryTupleNodeType, leftParam: unknown, rightParam: unknown];
+    // (undocumented)
+    export type BinaryExpressionTupleNodeUnion = AddTupleNode | DivSymbolTupleNode | DivTupleNode | ModSymbolTupleNode | ModTupleNode | MulSymbolTupleNode | MulTupleNode | SubTupleNode;
+    // (undocumented)
+    export type BinaryTupleNodeType = PickEnum<TupleNodeType, typeof AddTupleNodeType | typeof DivSymbolTupleNodeType | typeof DivTupleNodeType | typeof ModSymbolTupleNodeType | typeof ModTupleNodeType | typeof MulSymbolTupleNodeType | typeof MulTupleNodeType | typeof SubTupleNodeType>;
+    // (undocumented)
+    export type BoardTupleNode = TupleNode<typeof BoardTupleNodeType>;
+    // (undocumented)
+    export type BooleanField = PickEnum<TupleNodeType, typeof IsIndexTupleNodeType>;
+    // (undocumented)
+    export type BooleanParam = LogicalTupleNode | MatchingTupleNode | ComparisonTupleNode | AllNoneTupleNode | MatchingField;
+    // (undocumented)
+    export type BooleanSingle_DefaultMatchingTupleNode = [nodeType: BooleanField, ...params: BooleanSingleParam_Default];
+    // (undocumented)
+    export type BooleanSingle_ExistsMatchingTupleNode = [nodeType: BooleanField, ...params: BooleanSingleParam_Exists];
+    // (undocumented)
+    export type BooleanSingleMatchingTupleNode = [nodeType: BooleanField, ...params: BooleanSingleParam];
+    // (undocumented)
+    export type BooleanSingleParam = BooleanSingleParam_EqualsValue;
+    // (undocumented)
+    export type BooleanSingleParam_Default = BooleanSingleParam_EqualsValue | SingleParam_EqualsDefault;
+    // (undocumented)
+    export type BooleanSingleParam_EqualsValue = [value: boolean];
+    // (undocumented)
+    export type BooleanSingleParam_Exists = BooleanSingleParam_EqualsValue | SingleParam_IsSet;
+    // (undocumented)
+    export type BooleanTupleNode = LogicalTupleNode | MatchingTupleNode | ComparisonTupleNode | AllNoneTupleNode;
+    // (undocumented)
+    export type BooleanTupleNodeType = LogicalTupleNodeType | MatchingField | ComparisonTupleNodeType;
+    // (undocumented)
+    export type BooleanTupleNodeUnion = LogicalTupleNodeUnion | MatchingTupleNodeUnion | ComparisonTupleNodeUnion | AllNoneTupleNodeUnion;
+    // (undocumented)
+    export type CallOrPutTupleNode = TupleNode<typeof CallOrPutTupleNodeType>;
+    // (undocumented)
+    export type CategoryTupleNode = TupleNode<typeof CategoryTupleNodeType>;
+    // (undocumented)
+    export type CfiTupleNode = TupleNode<typeof CfiTupleNodeType>;
+    // (undocumented)
+    export type ClassTupleNode = TupleNode<typeof ClassTupleNodeType>;
+    // (undocumented)
+    export type ClosePriceTupleNode = TupleNode<typeof ClosePriceTupleNodeType>;
+    // (undocumented)
+    export type CodeTupleNode = TupleNode<typeof CodeTupleNodeType>;
+    // (undocumented)
+    export type ComparisonTupleNode = [nodeType: TupleNodeType, leftParam: unknown, rightParam: unknown];
+    // (undocumented)
+    export type ComparisonTupleNodeType = PickEnum<TupleNodeType, typeof EqualTupleNodeType | typeof GreaterThanTupleNodeType | typeof GreaterThanOrEqualTupleNodeType | typeof LessThanTupleNodeType | typeof LessThanOrEqualTupleNodeType | typeof AllTupleNodeType | typeof NoneTupleNodeType>;
+    // (undocumented)
+    export type ComparisonTupleNodeUnion = EqualTupleNode | GreaterThanTupleNode | GreaterThanOrEqualTupleNode | LessThanTupleNode | LessThanOrEqualTupleNode;
+    // (undocumented)
+    export type ConditionalArm = [condition: BooleanParam, value: NumericParam];
+    // (undocumented)
+    export type ConditionalParams = ConditionalParams_1True | ConditionalParams_2True | ConditionalParams_3True;
+    // (undocumented)
+    export type ConditionalParams_1True = [...trueArm1: ConditionalArm, ...falseArm: ConditionalArm];
+    // (undocumented)
+    export type ConditionalParams_2True = [...trueArm1: ConditionalArm, ...trueArm2: ConditionalArm, ...falseArm: ConditionalArm];
+    // (undocumented)
+    export type ConditionalParams_3True = [...trueArm1: ConditionalArm, ...trueArm2: ConditionalArm, ...trueArm3: ConditionalArm, ...falseArm: ConditionalArm];
+    // (undocumented)
+    export type ContractSizeTupleNode = TupleNode<typeof ContractSizeTupleNodeType>;
+    // (undocumented)
+    export type CurrencyTupleNode = TupleNode<typeof CurrencyTupleNodeType>;
+    // (undocumented)
+    export type DataTupleNode = TupleNode<typeof DataTupleNodeType>;
+    // (undocumented)
+    export type DateField = PickEnum<TupleNodeType, typeof DateTupleNodeType | typeof ExpiryDateTupleNodeType>;
+    // (undocumented)
+    export interface DateNamedParameters {
+        // (undocumented)
+        At?: DateString;
+        // (undocumented)
+        Max?: DateString;
+        // (undocumented)
+        Min?: DateString;
+    }
+    // (undocumented)
+    export type DateNamedRangeMatchingTupleNode = [nodeType: DateField, ...params: DateNamedRangeParams];
+    // (undocumented)
+    export type DateNamedRangeParams = DateNamedRangeParams_FirstForm | DateNamedRangeParams_SecondForm | DateNamedRangeParams_ThirdForm | DateNamedRangeParams_FourthForm;
+    // (undocumented)
+    export type DateNamedRangeParams_FirstForm = [subField: DateSubField];
+    // (undocumented)
+    export type DateNamedRangeParams_FourthForm = [subField: DateSubField, namedParameters: DateNamedParameters];
+    // (undocumented)
+    export type DateNamedRangeParams_SecondForm = [subField: DateSubField, value: DateString];
+    // (undocumented)
+    export type DateNamedRangeParams_ThirdForm = [subField: DateSubField, min: DateString | null, max: DateString | null];
+    // (undocumented)
+    export type DateRangeMatchingTupleNode = [nodeType: DateField, ...params: DateRangeParams];
+    // (undocumented)
+    export type DateRangeParams = DateRangeParams_FirstForm | DateRangeParams_SecondForm | DateRangeParams_ThirdForm | DateRangeParams_FourthForm;
+    // (undocumented)
+    export type DateRangeParams_FirstForm = [];
+    // (undocumented)
+    export type DateRangeParams_FourthForm = [namedParameters: DateNamedParameters];
+    // (undocumented)
+    export type DateRangeParams_SecondForm = [value: DateString];
+    // (undocumented)
+    export type DateRangeParams_ThirdForm = [min: DateString | null, max: DateString | null];
+    // (undocumented)
+    export type DateString = string;
+    // (undocumented)
+    export type DateSubbedField = typeof DateTupleNodeType;
+    // (undocumented)
+    export type DateSubField = DateSubFieldEnum;
+    // (undocumented)
+    export const enum DateSubFieldEnum {
+        // (undocumented)
+        Dividend = "Dividend"
+    }
+    // (undocumented)
+    export type DateTupleNode = TupleNode<typeof DateTupleNodeType>;
+    // (undocumented)
+    export type DivSymbolTupleNode = TupleNode<typeof DivSymbolTupleNodeType>;
+    // (undocumented)
+    export type DivTupleNode = TupleNode<typeof DivTupleNodeType>;
+    // (undocumented)
+    export type EqualTupleNode = TupleNode<typeof EqualTupleNodeType>;
+    // (undocumented)
+    export type ExchangeTupleNode = TupleNode<typeof ExchangeTupleNodeType>;
+    // (undocumented)
+    export type ExerciseTypeTupleNode = TupleNode<typeof ExerciseTypeTupleNodeType>;
+    // (undocumented)
+    export type ExpiryDateTupleNode = TupleNode<typeof ExpiryDateTupleNodeType>;
+    // (undocumented)
+    export type ExpressionTupleNodeType = BinaryTupleNodeType | UnaryTupleNodeType | UnaryOrBinaryTupleNodeType | typeof IfTupleNodeType;
+    // (undocumented)
+    export type GreaterThanOrEqualTupleNode = TupleNode<typeof GreaterThanOrEqualTupleNodeType>;
+    // (undocumented)
+    export type GreaterThanTupleNode = TupleNode<typeof GreaterThanTupleNodeType>;
+    // (undocumented)
+    export type HighPriceTupleNode = TupleNode<typeof HighPriceTupleNodeType>;
+    // (undocumented)
+    export type IfTupleNode = TupleNode<typeof IfTupleNodeType>;
+    // (undocumented)
+    export type IsIndexTupleNode = TupleNode<typeof IsIndexTupleNodeType>;
+    // (undocumented)
+    export type LastPriceTupleNode = TupleNode<typeof LastPriceTupleNodeType>;
+    // (undocumented)
+    export type LeftRightNumericParams = [left: NumericParam, right: NumericParam];
+    // (undocumented)
+    export type LeftRightNumericUnionParams = [left: NumericUnion, right: NumericUnion];
+    // (undocumented)
+    export type LegTupleNode = TupleNode<typeof LegTupleNodeType>;
+    // (undocumented)
+    export type LessThanOrEqualTupleNode = TupleNode<typeof LessThanOrEqualTupleNodeType>;
+    // (undocumented)
+    export type LessThanTupleNode = TupleNode<typeof LessThanTupleNodeType>;
+    // (undocumented)
+    export type LogicalParams = (BooleanParam)[];
+    // (undocumented)
+    export type LogicalTupleNode = [nodeType: LogicalTupleNodeType, ...params: BooleanParam[]];
+    // (undocumented)
+    export type LogicalTupleNodeType = PickEnum<TupleNodeType, typeof AndTupleNodeType | typeof OrTupleNodeType | typeof NotTupleNodeType>;
+    // (undocumented)
+    export type LogicalTupleNodeUnion = AndTupleNode | OrTupleNode | NotTupleNode;
+    // (undocumented)
+    export type LotSizeTupleNode = TupleNode<typeof LotSizeTupleNodeType>;
+    // (undocumented)
+    export type LowPriceTupleNode = TupleNode<typeof LowPriceTupleNodeType>;
+    // (undocumented)
+    export type MarketTupleNode = TupleNode<typeof MarketTupleNodeType>;
+    // (undocumented)
+    export type MatchingField = NumericField | DateField | BooleanField | TextField | NumericSubbedField | DateSubbedField | TextSubbedField;
+    // (undocumented)
+    export type MatchingTupleNode = NumericRangeMatchingTupleNode | NumericNamedRangeMatchingTupleNode | DateRangeMatchingTupleNode | DateNamedRangeMatchingTupleNode | TextMatchingTupleNode | NamedTextMatchingTupleNode | BooleanSingleMatchingTupleNode | BooleanSingle_DefaultMatchingTupleNode | BooleanSingle_ExistsMatchingTupleNode | NumericSingleMatchingTupleNode | NumericSingle_DefaultMatchingTupleNode | NumericSingle_ExistsMatchingTupleNode | TextSingleMatchingTupleNode | TextSingle_DefaultMatchingTupleNode | TextSingle_ExistsMatchingTupleNode;
+    // (undocumented)
+    export type MatchingTupleNodeUnion = AltCodeTupleNode | AttributeTupleNode | AuctionTupleNode | AuctionLastTupleNode | AuctionQuantityTupleNode | BestAskCountTupleNode | BestAskPriceTupleNode | BestAskQuantityTupleNode | BestBidCountTupleNode | BestBidPriceTupleNode | BestBidQuantityTupleNode | BoardTupleNode | CallOrPutTupleNode | CategoryTupleNode | CfiTupleNode | ClassTupleNode | ClosePriceTupleNode | CodeTupleNode | ContractSizeTupleNode | CurrencyTupleNode | DataTupleNode | DateTupleNode | ExerciseTypeTupleNode | ExchangeTupleNode | ExpiryDateTupleNode | HighPriceTupleNode | IsIndexTupleNode | LegTupleNode | LastPriceTupleNode | LotSizeTupleNode | LowPriceTupleNode | MarketTupleNode | NameTupleNode | OpenInterestTupleNode | OpenPriceTupleNode | PriceTupleNode | PreviousCloseTupleNode | QuotationBasisTupleNode | RemainderTupleNode | ShareIssueTupleNode | StateTupleNode | StateAllowsTupleNode | StatusNoteTupleNode | StrikePriceTupleNode | TradesTupleNode | TradingMarketTupleNode | ValueTradedTupleNode | VolumeTupleNode | VwapTupleNode;
+    // (undocumented)
+    export type ModSymbolTupleNode = TupleNode<typeof ModSymbolTupleNodeType>;
+    // (undocumented)
+    export type ModTupleNode = TupleNode<typeof ModTupleNodeType>;
+    // (undocumented)
+    export type MulSymbolTupleNode = TupleNode<typeof MulSymbolTupleNodeType>;
+    // (undocumented)
+    export type MulTupleNode = TupleNode<typeof MulTupleNodeType>;
+    // (undocumented)
+    export type NamedTextMatchingTupleNode = [nodeType: TextField, ...params: NamedTextParams];
+    // (undocumented)
+    export type NamedTextParams = NamedTextParams_FirstForm | NamedTextParams_SecondForm | NamedTextParams_ThirdForm | NamedTextParams_FourthForm;
+    // (undocumented)
+    export type NamedTextParams_FirstForm = [subField: TextSubField];
+    // (undocumented)
+    export type NamedTextParams_FourthForm = [subField: TextSubField, value: string, namedParameters: TextNamedParameters];
+    // (undocumented)
+    export type NamedTextParams_SecondForm = [subField: TextSubField, value: string];
+    // (undocumented)
+    export type NamedTextParams_ThirdForm = [subField: TextSubField, value: string, as?: TextContainsAsEnum, ignoreCase?: boolean];
+    // (undocumented)
+    export type NameTupleNode = TupleNode<typeof NameTupleNodeType>;
+    // (undocumented)
+    export type NegTupleNode = TupleNode<typeof NegTupleNodeType>;
+    // (undocumented)
+    export type NoneTupleNode = TupleNode<typeof NoneTupleNodeType>;
+    // (undocumented)
+    export type NoParams = [];
+    // (undocumented)
+    export type NotTupleNode = TupleNode<typeof NotTupleNodeType>;
+    // (undocumented)
+    export type NumericField = PickEnum<TupleNodeType, typeof AuctionTupleNodeType | typeof AuctionLastTupleNodeType | typeof AuctionQuantityTupleNodeType | typeof BestAskCountTupleNodeType | typeof BestAskPriceTupleNodeType | typeof BestAskQuantityTupleNodeType | typeof BestBidCountTupleNodeType | typeof BestBidPriceTupleNodeType | typeof BestBidQuantityTupleNodeType | typeof ClosePriceTupleNodeType | typeof ContractSizeTupleNodeType | typeof HighPriceTupleNodeType | typeof LastPriceTupleNodeType | typeof LotSizeTupleNodeType | typeof LowPriceTupleNodeType | typeof OpenInterestTupleNodeType | typeof OpenPriceTupleNodeType | typeof PriceTupleNodeType | typeof PreviousCloseTupleNodeType | typeof RemainderTupleNodeType | typeof ShareIssueTupleNodeType | typeof StrikePriceTupleNodeType | typeof TradesTupleNodeType | typeof ValueTradedTupleNodeType | typeof VolumeTupleNodeType | typeof VwapTupleNodeType>;
+    // (undocumented)
+    export type NumericIfTupleArm = [condition: unknown, value: unknown];
+    // (undocumented)
+    export type NumericIfTupleNode = [nodeType: typeof IfTupleNodeType, ...conditionAndValues: unknown[]];
+    // (undocumented)
+    export interface NumericNamedParameters {
+        // (undocumented)
+        At?: number;
+        // (undocumented)
+        Max?: number;
+        // (undocumented)
+        Min?: number;
+    }
+    // (undocumented)
+    export type NumericNamedRangeMatchingTupleNode = [nodeType: NumericField, ...params: NumericNamedRangeParams];
+    // (undocumented)
+    export type NumericNamedRangeParams = NumericNamedRangeParams_FirstForm | NumericNamedRangeParams_SecondForm | NumericNamedRangeParams_ThirdForm | NumericNamedRangeParams_FourthForm;
+    // (undocumented)
+    export type NumericNamedRangeParams_FirstForm = [subField: PriceSubField];
+    // (undocumented)
+    export type NumericNamedRangeParams_FourthForm = [subField: PriceSubField, namedParameters: NumericNamedParameters];
+    // (undocumented)
+    export type NumericNamedRangeParams_SecondForm = [subField: PriceSubField, value: number];
+    // (undocumented)
+    export type NumericNamedRangeParams_ThirdForm = [subField: PriceSubField, min: number | null, max: number | null];
+    // (undocumented)
+    export type NumericParam = number | NumericTupleNode | NumericField;
+    // (undocumented)
+    export type NumericParams = SingleNumericParams | LeftRightNumericParams;
+    // (undocumented)
+    export type NumericRangeMatchingTupleNode = [nodeType: NumericField, ...params: NumericRangeParams];
+    // (undocumented)
+    export type NumericRangeParams = NumericRangeParams_FirstForm | NumericRangeParams_SecondForm | NumericRangeParams_ThirdForm | NumericRangeParams_FourthForm;
+    // (undocumented)
+    export type NumericRangeParams_FirstForm = [];
+    // (undocumented)
+    export type NumericRangeParams_FourthForm = [namedParameters: NumericNamedParameters];
+    // (undocumented)
+    export type NumericRangeParams_SecondForm = [value: number];
+    // (undocumented)
+    export type NumericRangeParams_ThirdForm = [min: number | null, max: number | null];
+    // (undocumented)
+    export type NumericSingle_DefaultMatchingTupleNode = [nodeType: NumericField, ...params: NumericSingleParam_Default];
+    // (undocumented)
+    export type NumericSingle_ExistsMatchingTupleNode = [nodeType: NumericField, ...params: NumericSingleParam_Exists];
+    // (undocumented)
+    export type NumericSingleMatchingTupleNode = [nodeType: NumericField, ...params: NumericSingleParam];
+    // (undocumented)
+    export type NumericSingleParam = NumericSingleParam_EqualsValue;
+    // (undocumented)
+    export type NumericSingleParam_Default = NumericSingleParam_EqualsValue | SingleParam_EqualsDefault;
+    // (undocumented)
+    export type NumericSingleParam_EqualsValue = [value: number];
+    // (undocumented)
+    export type NumericSingleParam_Exists = NumericSingleParam_EqualsValue | SingleParam_IsSet;
+    // (undocumented)
+    export type NumericSubbedField = PriceSubbedField;
+    // (undocumented)
+    export type NumericTupleNode = UnaryExpressionTupleNode | BinaryExpressionTupleNode | UnaryOrBinaryExpressionTupleNode | NumericIfTupleNode;
+    // (undocumented)
+    export type NumericTupleNodeUnion = UnaryExpressionTupleNodeUnion | BinaryExpressionTupleNodeUnion | UnaryOrBinaryExpressionTupleNodeUnion;
+    // (undocumented)
+    export type NumericUnion = number | NumericTupleNodeUnion;
+    // (undocumented)
+    export type OpenInterestTupleNode = TupleNode<typeof OpenInterestTupleNodeType>;
+    // (undocumented)
+    export type OpenPriceTupleNode = TupleNode<typeof OpenPriceTupleNodeType>;
+    // (undocumented)
+    export type OrTupleNode = TupleNode<typeof OrTupleNodeType>;
+    // (undocumented)
+    export interface ParamTupleMap {
+        // (undocumented)
+        '%': LeftRightNumericParams;
+        // (undocumented)
+        '*': LeftRightNumericParams;
+        // (undocumented)
+        '+': SingleOrLeftRightNumericParams;
+        // (undocumented)
+        '-': SingleOrLeftRightNumericParams;
+        // (undocumented)
+        '/': LeftRightNumericParams;
+        // (undocumented)
+        '<': LeftRightNumericParams;
+        // (undocumented)
+        '<=': LeftRightNumericParams;
+        // (undocumented)
+        '=': LeftRightNumericParams;
+        // (undocumented)
+        '>': LeftRightNumericParams;
+        // (undocumented)
+        '>=': LeftRightNumericParams;
+        // (undocumented)
+        'Abs': SingleNumericParams;
+        // (undocumented)
+        'Add': LeftRightNumericParams;
+        // (undocumented)
+        'All': NoParams;
+        // (undocumented)
+        'AltCode': NamedTextParams;
+        // (undocumented)
+        'And': LogicalParams;
+        // (undocumented)
+        'Attribute': NamedTextParams;
+        // (undocumented)
+        'Auction': NumericRangeParams;
+        // (undocumented)
+        'AuctionLast': NumericRangeParams;
+        // (undocumented)
+        'AuctionQuantity': NumericRangeParams;
+        // (undocumented)
+        'BestAskCount': NumericRangeParams;
+        // (undocumented)
+        'BestAskPrice': NumericRangeParams;
+        // (undocumented)
+        'BestAskQuantity': NumericRangeParams;
+        // (undocumented)
+        'BestBidCount': NumericRangeParams;
+        // (undocumented)
+        'BestBidPrice': NumericRangeParams;
+        // (undocumented)
+        'BestBidQuantity': NumericRangeParams;
+        // (undocumented)
+        'Board': TextSingleParam;
+        // (undocumented)
+        'CallOrPut': TextSingleParam_Exists;
+        // (undocumented)
+        'Category': TextSingleParam;
+        // (undocumented)
+        'CFI': TextSingleParam;
+        // (undocumented)
+        'Class': TextSingleParam;
+        // (undocumented)
+        'ClosePrice': NumericRangeParams;
+        // (undocumented)
+        'Code': TextParams;
+        // (undocumented)
+        'ContractSize': NumericRangeParams;
+        // (undocumented)
+        'Currency': TextSingleParam;
+        // (undocumented)
+        'Data': TextSingleParam;
+        // (undocumented)
+        'Date': DateNamedRangeParams;
+        // (undocumented)
+        'Div': LeftRightNumericParams;
+        // (undocumented)
+        'Exchange': TextSingleParam;
+        // (undocumented)
+        'ExerciseType': TextSingleParam_Exists;
+        // (undocumented)
+        'ExpiryDate': DateRangeParams;
+        // (undocumented)
+        'HighPrice': NumericRangeParams;
+        // (undocumented)
+        'If': ConditionalParams;
+        // (undocumented)
+        'IsIndex': BooleanSingleParam_Default;
+        // (undocumented)
+        'LastPrice': NumericRangeParams;
+        // (undocumented)
+        'Leg': TextSingleParam;
+        // (undocumented)
+        'LotSize': NumericRangeParams;
+        // (undocumented)
+        'LowPrice': NumericRangeParams;
+        // (undocumented)
+        'Market': TextSingleParam;
+        // (undocumented)
+        'Mod': LeftRightNumericParams;
+        // (undocumented)
+        'Mul': LeftRightNumericParams;
+        // (undocumented)
+        'Name': TextParams;
+        // (undocumented)
+        'Neg': SingleNumericParams;
+        // (undocumented)
+        'None': NoParams;
+        // (undocumented)
+        'Not': LogicalParams;
+        // (undocumented)
+        'OpenInterest': NumericRangeParams;
+        // (undocumented)
+        'OpenPrice': NumericRangeParams;
+        // (undocumented)
+        'Or': LogicalParams;
+        // (undocumented)
+        'Pos': SingleNumericParams;
+        // (undocumented)
+        'PreviousClose': NumericRangeParams;
+        // (undocumented)
+        'Price': NumericNamedRangeParams;
+        // (undocumented)
+        'QuotationBasis': TextSingleParam;
+        // (undocumented)
+        'Remainder': NumericRangeParams;
+        // (undocumented)
+        'ShareIssue': NumericRangeParams;
+        // (undocumented)
+        'State': TextSingleParam;
+        // (undocumented)
+        'StateAllows': TextSingleParam;
+        // (undocumented)
+        'StatusNote': TextSingleParam;
+        // (undocumented)
+        'StrikePrice': NumericRangeParams;
+        // (undocumented)
+        'Sub': LeftRightNumericParams;
+        // (undocumented)
+        'Trades': NumericRangeParams;
+        // (undocumented)
+        'TradingMarket': TextSingleParam;
+        // (undocumented)
+        'ValueTraded': NumericRangeParams;
+        // (undocumented)
+        'Volume': NumericRangeParams;
+        // (undocumented)
+        'VWAP': NumericRangeParams;
+    }
+    // (undocumented)
+    export type PosTupleNode = TupleNode<typeof PosTupleNodeType>;
+    // (undocumented)
+    export type PreviousCloseTupleNode = TupleNode<typeof PreviousCloseTupleNodeType>;
+    // (undocumented)
+    export type PriceSubbedField = typeof PriceTupleNodeType;
+    // (undocumented)
+    export type PriceSubField = PriceSubFieldEnum;
+    // (undocumented)
+    export const enum PriceSubFieldEnum {
+        // (undocumented)
+        LastPrice = "LastPrice"
+    }
+    // (undocumented)
+    export type PriceTupleNode = TupleNode<typeof PriceTupleNodeType>;
+    // (undocumented)
+    export type QuotationBasisTupleNode = TupleNode<typeof QuotationBasisTupleNodeType>;
+    // (undocumented)
+    export type RemainderTupleNode = TupleNode<typeof RemainderTupleNodeType>;
+    // (undocumented)
+    export type ShareIssueTupleNode = TupleNode<typeof ShareIssueTupleNodeType>;
+    // (undocumented)
+    export type SingleNumericParams = [value: NumericParam];
+    // (undocumented)
+    export type SingleNumericUnionParams = [value: NumericUnion];
+    // (undocumented)
+    export type SingleOrLeftRightNumericParams = SingleNumericParams | LeftRightNumericParams;
+    // (undocumented)
+    export type SingleOrLeftRightNumericUnionParams = SingleNumericUnionParams | LeftRightNumericUnionParams;
+    // (undocumented)
+    export type SingleParam_EqualsDefault = [];
+    // (undocumented)
+    export type SingleParam_IsSet = [];
+    // (undocumented)
+    export type StateAllowsTupleNode = TupleNode<typeof StateAllowsTupleNodeType>;
+    // (undocumented)
+    export type StateTupleNode = TupleNode<typeof StateTupleNodeType>;
+    // (undocumented)
+    export type StatusNoteTupleNode = TupleNode<typeof StatusNoteTupleNodeType>;
+    // (undocumented)
+    export type StrikePriceTupleNode = TupleNode<typeof StrikePriceTupleNodeType>;
+    // (undocumented)
+    export type SubOrNegSymbolTupleNode = TupleNode<typeof SubOrNegSymbolTupleNodeType>;
+    // (undocumented)
+    export type SubTupleNode = TupleNode<typeof SubTupleNodeType>;
+    // (undocumented)
+    export const enum TextContainsAsEnum {
+        // (undocumented)
+        Exact = "Exact",
+        // (undocumented)
+        FromEnd = "FromEnd",
+        // (undocumented)
+        FromStart = "FromStart",
+        // (undocumented)
+        None = "None"
+    }
+    // (undocumented)
+    export type TextField = PickEnum<TupleNodeType, typeof AltCodeTupleNodeType | typeof AttributeTupleNodeType | typeof BoardTupleNodeType | typeof CallOrPutTupleNodeType | typeof CategoryTupleNodeType | typeof CfiTupleNodeType | typeof ClassTupleNodeType | typeof CodeTupleNodeType | typeof CurrencyTupleNodeType | typeof DataTupleNodeType | typeof ExchangeTupleNodeType | typeof ExerciseTypeTupleNodeType | typeof LegTupleNodeType | typeof MarketTupleNodeType | typeof NameTupleNodeType | typeof QuotationBasisTupleNodeType | typeof StateTupleNodeType | typeof StateAllowsTupleNodeType | typeof StatusNoteTupleNodeType | typeof TradingMarketTupleNodeType>;
+    // (undocumented)
+    export type TextMatchingTupleNode = [nodeType: TextField, ...params: TextParams];
+    // (undocumented)
+    export interface TextNamedParameters {
+        // (undocumented)
+        As?: TextContainsAsEnum;
+        // (undocumented)
+        IgnoreCase?: boolean;
+    }
+    // (undocumented)
+    export type TextParams = TextParams_FirstForm | TextParams_SecondForm | TextParams_ThirdForm | TextParams_FourthForm;
+    // (undocumented)
+    export type TextParams_FirstForm = [];
+    // (undocumented)
+    export type TextParams_FourthForm = [value: string, namedParameters: TextNamedParameters];
+    // (undocumented)
+    export type TextParams_SecondForm = [value: string];
+    // (undocumented)
+    export type TextParams_ThirdForm = [value: string, as?: TextContainsAsEnum, ignoreCase?: boolean];
+    // (undocumented)
+    export type TextSingle_DefaultMatchingTupleNode = [nodeType: TextField, ...params: TextSingleParam_Default];
+    // (undocumented)
+    export type TextSingle_ExistsMatchingTupleNode = [nodeType: TextField, ...params: TextSingleParam_Exists];
+    // (undocumented)
+    export type TextSingleMatchingTupleNode = [nodeType: TextField, ...params: TextSingleParam];
+    // (undocumented)
+    export type TextSingleParam = TextSingleParam_EqualsValue;
+    // (undocumented)
+    export type TextSingleParam_Default = TextSingleParam_EqualsValue | SingleParam_EqualsDefault;
+    // (undocumented)
+    export type TextSingleParam_EqualsValue = [value: string];
+    // (undocumented)
+    export type TextSingleParam_Exists = TextSingleParam_EqualsValue | SingleParam_IsSet;
+    // (undocumented)
+    export type TextSubbedField = AltCodeSubbedField | AttributeSubbedField;
+    // (undocumented)
+    export type TextSubField = AltCodeSubField | AttributeSubField;
+    // (undocumented)
+    export type TradesTupleNode = TupleNode<typeof TradesTupleNodeType>;
+    // (undocumented)
+    export type TradingMarketTupleNode = TupleNode<typeof TradingMarketTupleNodeType>;
+    // (undocumented)
+    export type TupleNode<T extends TupleNodeType> = [T, ...ParamTupleMap[T]];
+    // (undocumented)
+    export type TupleNodeType = keyof ParamTupleMap;
+    // (undocumented)
+    export type UnaryExpressionTupleNode = [nodeType: UnaryTupleNodeType, param: unknown];
+    // (undocumented)
+    export type UnaryExpressionTupleNodeUnion = NegTupleNode | PosTupleNode | AbsTupleNode;
+    // (undocumented)
+    export type UnaryOrBinaryExpressionTupleNode = [nodeType: UnaryOrBinaryTupleNodeType, leftOrUnaryparam: unknown, rightParam?: unknown];
+    // (undocumented)
+    export type UnaryOrBinaryExpressionTupleNodeUnion = SubOrNegSymbolTupleNode | AddOrPosSymbolTupleNode;
+    // (undocumented)
+    export type UnaryOrBinaryTupleNodeType = PickEnum<TupleNodeType, typeof SubOrNegSymbolTupleNodeType | typeof AddOrPosSymbolTupleNodeType>;
+    // (undocumented)
+    export type UnaryTupleNodeType = PickEnum<TupleNodeType, typeof NegTupleNodeType | typeof PosTupleNodeType | typeof AbsTupleNodeType>;
+    // (undocumented)
+    export type ValueTradedTupleNode = TupleNode<typeof ValueTradedTupleNodeType>;
+    const // (undocumented)
+    SingleDefault_IsIndex = true;
+    const // (undocumented)
+    AndTupleNodeType = "And";
+    const // (undocumented)
+    NotTupleNodeType = "Not";
+    const // (undocumented)
+    OrTupleNodeType = "Or";
+    const // (undocumented)
+    AltCodeTupleNodeType = "AltCode";
+    const // (undocumented)
+    AttributeTupleNodeType = "Attribute";
+    const // (undocumented)
+    AuctionTupleNodeType = "Auction";
+    const // (undocumented)
+    AuctionLastTupleNodeType = "AuctionLast";
+    const // (undocumented)
+    AuctionQuantityTupleNodeType = "AuctionQuantity";
+    const // (undocumented)
+    BestAskCountTupleNodeType = "BestAskCount";
+    const // (undocumented)
+    BestAskPriceTupleNodeType = "BestAskPrice";
+    const // (undocumented)
+    BestAskQuantityTupleNodeType = "BestAskQuantity";
+    const // (undocumented)
+    BestBidCountTupleNodeType = "BestBidCount";
+    const // (undocumented)
+    BestBidPriceTupleNodeType = "BestBidPrice";
+    const // (undocumented)
+    BestBidQuantityTupleNodeType = "BestBidQuantity";
+    const // (undocumented)
+    BoardTupleNodeType = "Board";
+    const // (undocumented)
+    CallOrPutTupleNodeType = "CallOrPut";
+    const // (undocumented)
+    CategoryTupleNodeType = "Category";
+    const // (undocumented)
+    CfiTupleNodeType = "CFI";
+    const // (undocumented)
+    ClassTupleNodeType = "Class";
+    const // (undocumented)
+    ClosePriceTupleNodeType = "ClosePrice";
+    const // (undocumented)
+    CodeTupleNodeType = "Code";
+    const // (undocumented)
+    ContractSizeTupleNodeType = "ContractSize";
+    const // (undocumented)
+    CurrencyTupleNodeType = "Currency";
+    const // (undocumented)
+    DataTupleNodeType = "Data";
+    const // (undocumented)
+    DateTupleNodeType = "Date";
+    const // (undocumented)
+    ExerciseTypeTupleNodeType = "ExerciseType";
+    const // (undocumented)
+    ExchangeTupleNodeType = "Exchange";
+    const // (undocumented)
+    ExpiryDateTupleNodeType = "ExpiryDate";
+    const // (undocumented)
+    HighPriceTupleNodeType = "HighPrice";
+    const // (undocumented)
+    IsIndexTupleNodeType = "IsIndex";
+    const // (undocumented)
+    LegTupleNodeType = "Leg";
+    const // (undocumented)
+    LastPriceTupleNodeType = "LastPrice";
+    const // (undocumented)
+    LotSizeTupleNodeType = "LotSize";
+    const // (undocumented)
+    LowPriceTupleNodeType = "LowPrice";
+    const // (undocumented)
+    MarketTupleNodeType = "Market";
+    const // (undocumented)
+    NameTupleNodeType = "Name";
+    const // (undocumented)
+    OpenInterestTupleNodeType = "OpenInterest";
+    const // (undocumented)
+    OpenPriceTupleNodeType = "OpenPrice";
+    const // (undocumented)
+    PriceTupleNodeType = "Price";
+    const // (undocumented)
+    PreviousCloseTupleNodeType = "PreviousClose";
+    const // (undocumented)
+    QuotationBasisTupleNodeType = "QuotationBasis";
+    const // (undocumented)
+    RemainderTupleNodeType = "Remainder";
+    const // (undocumented)
+    ShareIssueTupleNodeType = "ShareIssue";
+    const // (undocumented)
+    StateTupleNodeType = "State";
+    const // (undocumented)
+    StateAllowsTupleNodeType = "StateAllows";
+    const // (undocumented)
+    StatusNoteTupleNodeType = "StatusNote";
+    const // (undocumented)
+    StrikePriceTupleNodeType = "StrikePrice";
+    const // (undocumented)
+    TradesTupleNodeType = "Trades";
+    const // (undocumented)
+    TradingMarketTupleNodeType = "TradingMarket";
+    const // (undocumented)
+    ValueTradedTupleNodeType = "ValueTraded";
+    const // (undocumented)
+    VolumeTupleNodeType = "Volume";
+    const // (undocumented)
+    VwapTupleNodeType = "VWAP";
+    const // (undocumented)
+    EqualTupleNodeType = "=";
+    const // (undocumented)
+    GreaterThanTupleNodeType = ">";
+    const // (undocumented)
+    GreaterThanOrEqualTupleNodeType = ">=";
+    const // (undocumented)
+    LessThanTupleNodeType = "<";
+    const // (undocumented)
+    LessThanOrEqualTupleNodeType = "<=";
+    const // (undocumented)
+    AllTupleNodeType = "All";
+    const // (undocumented)
+    NoneTupleNodeType = "None";
+    const // (undocumented)
+    AddTupleNodeType = "Add";
+    const // (undocumented)
+    DivSymbolTupleNodeType = "/";
+    const // (undocumented)
+    DivTupleNodeType = "Div";
+    const // (undocumented)
+    ModSymbolTupleNodeType = "%";
+    const // (undocumented)
+    ModTupleNodeType = "Mod";
+    const // (undocumented)
+    MulSymbolTupleNodeType = "*";
+    const // (undocumented)
+    MulTupleNodeType = "Mul";
+    const // (undocumented)
+    SubTupleNodeType = "Sub";
+    const // (undocumented)
+    NegTupleNodeType = "Neg";
+    const // (undocumented)
+    PosTupleNodeType = "Pos";
+    const // (undocumented)
+    AbsTupleNodeType = "Abs";
+    const // (undocumented)
+    SubOrNegSymbolTupleNodeType = "-";
+    const // (undocumented)
+    AddOrPosSymbolTupleNodeType = "+";
+    const // (undocumented)
+    IfTupleNodeType = "If";
+    // (undocumented)
+    export type VolumeTupleNode = TupleNode<typeof VolumeTupleNodeType>;
+    // (undocumented)
+    export type VwapTupleNode = TupleNode<typeof VwapTupleNodeType>;
 }
 
 // Warning: (ae-missing-release-tag) "ZenithServerInfoDataDefinition" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)

@@ -4,7 +4,7 @@
  * License: motionite.trade/license/motif
  */
 
-import { AdiService, ScansDataDefinition } from '../adi/adi-internal-api';
+import { AdiService, Scan, ScansDataDefinition } from '../adi/adi-internal-api';
 import { ScansDataItem } from '../adi/scans-data-item';
 import { MultiEvent, UnreachableCaseError } from '../sys/sys-internal-api';
 import { Integer, UsableListChangeTypeId } from '../sys/types';
@@ -12,6 +12,7 @@ import { EditableScan } from './editable-scan';
 
 export class ScansService {
     private readonly _scans = new Array<EditableScan>();
+    private readonly _scanIdMap = new Map<string, EditableScan>();
     private _scansOnline = false;
     private _scansOnlineResolves = new Array<ScansService.ScansOnlineResolve>();
 
@@ -105,6 +106,10 @@ export class ScansService {
         this._badnessChangeMultiEvent.unsubscribe(subscriptionId);
     }
 
+    private notifyScansInserted(index: Integer, count: Integer) {
+        //
+    }
+
     private processScansListChange(listChangeTypeId: UsableListChangeTypeId, index: Integer, count: Integer) {
         switch (listChangeTypeId) {
             case UsableListChangeTypeId.Unusable:
@@ -135,7 +140,31 @@ export class ScansService {
     }
 
     private onlineScans(index: Integer, count: Integer) {
-        //
+        const nextIndex = index + count;
+        const addedScans = new Array<EditableScan>(count);
+        let addCount = 0;
+        for (let i = index; i < nextIndex; i++) {
+            const dataItemScan = this._scansDataItem.records[i];
+            const id = dataItemScan.id;
+            const scan = this.findScan(id);
+            if (scan !== undefined) {
+                scan.sync(dataItemScan);
+            } else {
+                const addedScan = this.createScan(dataItemScan);
+                addedScans[addCount++] = addedScan;
+                this._scanIdMap.set(addedScan.id, addedScan);
+            }
+        }
+
+        if (addCount > 0) {
+            const insertIndex = this._scans.length;
+            this._scans.length += addCount;
+            for (let i = 0; i < addCount; i++) {
+                this._scans[insertIndex + i] = addedScans[i];
+            }
+
+            this.notifyScansInserted(insertIndex, addCount);
+        }
     }
 
     private offlineScans(index: Integer, count: Integer) {
@@ -146,6 +175,15 @@ export class ScansService {
         for (const scan of this._scans) {
             scan.checkSetOffline();
         }
+    }
+
+    private createScan(dataItemScan: Scan): EditableScan {
+        const scan = new EditableScan();
+        return scan;
+    }
+
+    private findScan(id: string) {
+        return this._scanIdMap.get(id);
     }
 
     private resolveScansOnlinePromises(ready: boolean) {

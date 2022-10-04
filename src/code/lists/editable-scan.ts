@@ -68,6 +68,10 @@ export class EditableScan {
         //
     }
 
+    sync(scan: Scan) {
+
+    }
+
     private handleScanChangedEvent(changedFieldIds: Scan.FieldId[]) {
         //
     }

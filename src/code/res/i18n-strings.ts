@@ -1828,8 +1828,8 @@ export const enum StringId {
     ScanCriteriaTypeDisplay_TodayPriceDecreaseGreaterThanPercentage,
     ScanCriteriaViewTypeDisplay_Default,
     ScanCriteriaViewTypeDescription_Default,
-    ScanCriteriaViewTypeDisplay_Predefined,
-    ScanCriteriaViewTypeDescription_Predefined,
+    ScanCriteriaViewTypeDisplay_Filter,
+    ScanCriteriaViewTypeDescription_Filter,
     ScanCriteriaViewTypeDisplay_Formula,
     ScanCriteriaViewTypeDescription_Formula,
     ScanCriteriaViewTypeDisplay_Zenith,
@@ -11032,14 +11032,14 @@ export namespace I18nStrings {
                 en: 'View/edit scan criteria with either basic or formula view as appropriate',
             }
         },
-        ScanCriteriaViewTypeDisplay_Predefined: {
-            id: StringId.ScanCriteriaViewTypeDisplay_Predefined, translations: {
-                en: 'Basic',
+        ScanCriteriaViewTypeDisplay_Filter: {
+            id: StringId.ScanCriteriaViewTypeDisplay_Filter, translations: {
+                en: 'Filter',
             }
         },
-        ScanCriteriaViewTypeDescription_Predefined: {
-            id: StringId.ScanCriteriaViewTypeDescription_Predefined, translations: {
-                en: 'View/edit scan criteria with basic view',
+        ScanCriteriaViewTypeDescription_Filter: {
+            id: StringId.ScanCriteriaViewTypeDescription_Filter, translations: {
+                en: 'View/edit scan criteria as filter',
             }
         },
         ScanCriteriaViewTypeDisplay_Formula: {
@@ -11049,7 +11049,7 @@ export namespace I18nStrings {
         },
         ScanCriteriaViewTypeDescription_Formula: {
             id: StringId.ScanCriteriaViewTypeDescription_Formula, translations: {
-                en: 'View/edit scan criteria with formula view',
+                en: 'View/edit scan criteria as formula',
             }
         },
         ScanCriteriaViewTypeDisplay_Zenith: {
@@ -11059,7 +11059,7 @@ export namespace I18nStrings {
         },
         ScanCriteriaViewTypeDescription_Zenith: {
             id: StringId.ScanCriteriaViewTypeDescription_Zenith, translations: {
-                en: 'View/edit scan criteria with Zenith view (for API developers)',
+                en: 'View/edit scan criteria as Zenith JSON (for API developers)',
             }
         },
         ScansGridHeading_Id: {
